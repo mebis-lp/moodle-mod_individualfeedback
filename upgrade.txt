@@ -1,0 +1,44 @@
+=== 3.3.2 ===
+
+* individualfeedback_refresh_events() Now takes two additional parameters to refine the update to a specific instance. This function
+  now optionally takes the module instance object or ID, and the course module object or ID. Please try to send the full
+  objects instead of the ids to save DB calls.
+
+=== 3.3 ===
+
+* Method get_current_completed_tmp in mod_individualfeedback_completion class is now public.
+* Function individualfeedback_set_tmp_values is not deprecated anymore.
+
+=== 3.1 ===
+
+* individualfeedback_get_courses_from_sitecourse_map() now returns course id as 'id' attribute
+* Base class for individualfeedback items - individualfeedback_item_base - has been significantly changed, all item types now
+  must implement method complete_form_element() instead of print_item_preview(), print_item_complete(),
+  print_item_show_value(), check_values(), clean_input_value() and value_is_array(). Rendering the items
+  on complete form, individualfeedback preview, individualfeedback edit and when viewing response is done using moodleform.
+* The following functions have been deprecated:
+  * individualfeedback_print_item_preview()
+  * individualfeedback_print_item_complete()
+  * individualfeedback_print_item_show_value
+  * individualfeedback_check_values()
+  * individualfeedback_clean_input_value()
+  * individualfeedback_get_context()
+  * individualfeedback_create_item()
+  * individualfeedback_set_tmp_values()
+  * individualfeedback_delete_completedtmp()
+  * individualfeedback_get_page_to_continue()
+  * individualfeedback_save_values()
+  * individualfeedback_save_guest_values()
+  * individualfeedback_create_values()
+  * individualfeedback_update_values()
+  * individualfeedback_get_current_completed()
+  * individualfeedback_is_course_in_sitecourse_map()
+  * individualfeedback_is_individualfeedback_in_sitecourse_map()
+  * individualfeedback_clean_up_sitecourse_map()
+  * individualfeedback_print_numeric_option_list()
+
+=== 2.7 ===
+
+* The validation of the following events is now stricter (see MDL-45445):
+    - \mod_individualfeedback\event\response_deleted
+    - \mod_individualfeedback\event\response_submitted
