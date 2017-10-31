@@ -303,3 +303,23 @@ $string['radiobutton_rated'] = 'Radiobutton (rated)';
 // Deprecated since Moodle 3.2.
 $string['start'] = 'Start';
 $string['stop'] = 'End';
+
+$string['fourlevelapproval'] = '4 level approval';
+$string['fourlevelapprovaltype'] = '4 level approval type';
+$string['fourlevelapproval_options'] = 'Strongly disagree
+Disagree
+Agree
+Strongly agree';
+$string['fourlevelfrequency'] = '4 level frequency';
+$string['fourlevelfrequencytype'] = '4 level frequency type';
+$string['fourlevelfrequency_options'] = 'Never
+Sometimes
+Often
+Always';
+$string['fivelevelapproval'] = '5 level approval';
+$string['fivelevelapprovaltype'] = '5 level approval type';
+$string['fivelevelapproval_options'] = 'Strongly disagree
+Disagree
+Neither agree nor disagree
+Agree
+Strongly agree';
