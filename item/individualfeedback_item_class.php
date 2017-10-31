@@ -121,7 +121,7 @@ abstract class individualfeedback_item_base {
      * @return bool
      */
     public function can_switch_require() {
-        return true;
+        return false;
     }
 
     /**
