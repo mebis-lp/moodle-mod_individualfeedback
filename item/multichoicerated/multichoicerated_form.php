@@ -36,13 +36,13 @@ class individualfeedback_multichoicerated_form extends individualfeedback_item_f
         $mform->addElement('text',
                             'name',
                             get_string('item_name', 'individualfeedback'),
-                            array('size'=>individualfeedback_ITEM_NAME_TEXTBOX_SIZE,
+                            array('size'=>INDIVIDUALFEEDBACK_ITEM_NAME_TEXTBOX_SIZE,
                                   'maxlength'=>255));
 
         $mform->addElement('text',
                             'label',
                             get_string('item_label', 'individualfeedback'),
-                            array('size'=>individualfeedback_ITEM_LABEL_TEXTBOX_SIZE,
+                            array('size'=>INDIVIDUALFEEDBACK_ITEM_LABEL_TEXTBOX_SIZE,
                                   'maxlength'=>255));
 
         $mform->addElement('select',
@@ -103,17 +103,17 @@ class individualfeedback_multichoicerated_form extends individualfeedback_item_f
         $itemobj = new individualfeedback_item_multichoicerated();
 
         $presentation = $itemobj->prepare_presentation_values_save(trim($item->values),
-                                                individualfeedback_MULTICHOICERATED_VALUE_SEP2,
-                                                individualfeedback_MULTICHOICERATED_VALUE_SEP);
+                                                INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP2,
+                                                INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP);
         if (!isset($item->subtype)) {
             $subtype = 'r';
         } else {
             $subtype = substr($item->subtype, 0, 1);
         }
         if (isset($item->horizontal) AND $item->horizontal == 1 AND $subtype != 'd') {
-            $presentation .= individualfeedback_MULTICHOICERATED_ADJUST_SEP.'1';
+            $presentation .= INDIVIDUALFEEDBACK_MULTICHOICERATED_ADJUST_SEP.'1';
         }
-        $item->presentation = $subtype.individualfeedback_MULTICHOICERATED_TYPE_SEP.$presentation;
+        $item->presentation = $subtype.INDIVIDUALFEEDBACK_MULTICHOICERATED_TYPE_SEP.$presentation;
         if (!isset($item->hidenoselect)) {
             $item->hidenoselect = 1;
         }

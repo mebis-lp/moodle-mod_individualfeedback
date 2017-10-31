@@ -16,8 +16,8 @@
 
 require_once($CFG->libdir.'/formslib.php');
 
-define('individualfeedback_ITEM_NAME_TEXTBOX_SIZE', 80);
-define('individualfeedback_ITEM_LABEL_TEXTBOX_SIZE', 20);
+define('INDIVIDUALFEEDBACK_ITEM_NAME_TEXTBOX_SIZE', 80);
+define('INDIVIDUALFEEDBACK_ITEM_LABEL_TEXTBOX_SIZE', 20);
 abstract class individualfeedback_item_form extends moodleform {
     public function definition() {
         $item = $this->_customdata['item']; //the item object
@@ -48,7 +48,7 @@ abstract class individualfeedback_item_form extends moodleform {
             $mform->addElement('text',
                                 'dependvalue',
                                 get_string('dependvalue', 'individualfeedback'),
-                                array('size'=>individualfeedback_ITEM_LABEL_TEXTBOX_SIZE, 'maxlength'=>255));
+                                array('size'=>INDIVIDUALFEEDBACK_ITEM_LABEL_TEXTBOX_SIZE, 'maxlength'=>255));
             $mform->disabledIf('dependvalue', 'dependitem', 'eq', '0');
         } else {
             $mform->addElement('hidden', 'dependitem', 0);

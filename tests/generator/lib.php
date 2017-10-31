@@ -200,9 +200,9 @@ class mod_individualfeedback_generator extends testing_module_generator {
         $presentation = str_replace("\n", individualfeedback_MULTICHOICE_LINE_SEP, trim($record['values']));
 
         if ($record['horizontal'] == 1 AND $record['subtype'] != 'd') {
-            $presentation .= individualfeedback_MULTICHOICE_ADJUST_SEP.'1';
+            $presentation .= INDIVIDUALFEEDBACK_MULTICHOICE_ADJUST_SEP.'1';
         }
-        $record['presentation'] = $record['subtype'].individualfeedback_MULTICHOICE_TYPE_SEP.$presentation;
+        $record['presentation'] = $record['subtype'].INDIVIDUALFEEDBACK_MULTICHOICE_TYPE_SEP.$presentation;
 
         $itemobj->set_data((object) $record);
         return $itemobj->save_item();
@@ -246,12 +246,12 @@ class mod_individualfeedback_generator extends testing_module_generator {
 
         $itemobj = new individualfeedback_item_multichoicerated();
         $presentation = $itemobj->prepare_presentation_values_save(trim($record['values']),
-            individualfeedback_MULTICHOICERATED_VALUE_SEP2, individualfeedback_MULTICHOICERATED_VALUE_SEP);
+            INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP2, INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP);
 
         if ($record['horizontal'] == 1 AND $record['subtype'] != 'd') {
-            $presentation .= individualfeedback_MULTICHOICERATED_ADJUST_SEP.'1';
+            $presentation .= INDIVIDUALFEEDBACK_MULTICHOICERATED_ADJUST_SEP.'1';
         }
-        $record['presentation'] = $record['subtype'].individualfeedback_MULTICHOICERATED_TYPE_SEP.$presentation;
+        $record['presentation'] = $record['subtype'].INDIVIDUALFEEDBACK_MULTICHOICERATED_TYPE_SEP.$presentation;
 
         $itemobj->set_data((object) $record);
         return $itemobj->save_item();

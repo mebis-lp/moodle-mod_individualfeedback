@@ -36,13 +36,13 @@ class individualfeedback_multichoice_form extends individualfeedback_item_form {
         $mform->addElement('text',
                             'name',
                             get_string('item_name', 'individualfeedback'),
-                            array('size' => individualfeedback_ITEM_NAME_TEXTBOX_SIZE,
+                            array('size' => INDIVIDUALFEEDBACK_ITEM_NAME_TEXTBOX_SIZE,
                                   'maxlength' => 255));
 
         $mform->addElement('text',
                             'label',
                             get_string('item_label', 'individualfeedback'),
-                            array('size' => individualfeedback_ITEM_LABEL_TEXTBOX_SIZE,
+                            array('size' => INDIVIDUALFEEDBACK_ITEM_LABEL_TEXTBOX_SIZE,
                                   'maxlength' => 255));
 
         $mform->addElement('select',
@@ -85,7 +85,7 @@ class individualfeedback_multichoice_form extends individualfeedback_item_form {
 
         $item->subtype = $info->subtype;
 
-        $itemvalues = str_replace(individualfeedback_MULTICHOICE_LINE_SEP, "\n", $info->presentation);
+        $itemvalues = str_replace(INDIVIDUALFEEDBACK_MULTICHOICE_LINE_SEP, "\n", $info->presentation);
         $itemvalues = str_replace("\n\n", "\n", $itemvalues);
         $item->values = $itemvalues;
 
@@ -97,14 +97,14 @@ class individualfeedback_multichoice_form extends individualfeedback_item_form {
             return false;
         }
 
-        $presentation = str_replace("\n", individualfeedback_MULTICHOICE_LINE_SEP, trim($item->values));
+        $presentation = str_replace("\n", INDIVIDUALFEEDBACK_MULTICHOICE_LINE_SEP, trim($item->values));
         if (!isset($item->subtype)) {
             $subtype = 'r';
         } else {
             $subtype = substr($item->subtype, 0, 1);
         }
         if (isset($item->horizontal) AND $item->horizontal == 1 AND $subtype != 'd') {
-            $presentation .= individualfeedback_MULTICHOICE_ADJUST_SEP.'1';
+            $presentation .= INDIVIDUALFEEDBACK_MULTICHOICE_ADJUST_SEP.'1';
         }
         if (!isset($item->hidenoselect)) {
             $item->hidenoselect = 1;
@@ -113,7 +113,7 @@ class individualfeedback_multichoice_form extends individualfeedback_item_form {
             $item->ignoreempty = 0;
         }
 
-        $item->presentation = $subtype.individualfeedback_MULTICHOICE_TYPE_SEP.$presentation;
+        $item->presentation = $subtype.INDIVIDUALFEEDBACK_MULTICHOICE_TYPE_SEP.$presentation;
         return $item;
     }
 }

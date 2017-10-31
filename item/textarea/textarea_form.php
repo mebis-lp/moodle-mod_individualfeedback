@@ -35,11 +35,11 @@ class individualfeedback_textarea_form extends individualfeedback_item_form {
         $mform->addElement('text',
                             'name',
                             get_string('item_name', 'individualfeedback'),
-                            array('size'=>individualfeedback_ITEM_NAME_TEXTBOX_SIZE, 'maxlength'=>255));
+                            array('size'=>INDIVIDUALFEEDBACK_ITEM_NAME_TEXTBOX_SIZE, 'maxlength'=>255));
         $mform->addElement('text',
                             'label',
                             get_string('item_label', 'individualfeedback'),
-                            array('size'=>individualfeedback_ITEM_LABEL_TEXTBOX_SIZE, 'maxlength'=>255));
+                            array('size'=>INDIVIDUALFEEDBACK_ITEM_LABEL_TEXTBOX_SIZE, 'maxlength'=>255));
 
         $mform->addElement('select',
                             'itemwidth',

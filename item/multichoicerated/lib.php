@@ -17,16 +17,16 @@
 defined('MOODLE_INTERNAL') OR die('not allowed');
 require_once($CFG->dirroot.'/mod/individualfeedback/item/individualfeedback_item_class.php');
 
-define('individualfeedback_RADIORATED_ADJUST_SEP', '<<<<<');
+define('INDIVIDUALFEEDBACK_RADIORATED_ADJUST_SEP', '<<<<<');
 
-define('individualfeedback_MULTICHOICERATED_MAXCOUNT', 10); //count of possible items
-define('individualfeedback_MULTICHOICERATED_VALUE_SEP', '####');
-define('individualfeedback_MULTICHOICERATED_VALUE_SEP2', '/');
-define('individualfeedback_MULTICHOICERATED_TYPE_SEP', '>>>>>');
-define('individualfeedback_MULTICHOICERATED_LINE_SEP', '|');
-define('individualfeedback_MULTICHOICERATED_ADJUST_SEP', '<<<<<');
-define('individualfeedback_MULTICHOICERATED_IGNOREEMPTY', 'i');
-define('individualfeedback_MULTICHOICERATED_HIDENOSELECT', 'h');
+define('INDIVIDUALFEEDBACK_MULTICHOICERATED_MAXCOUNT', 10); //count of possible items
+define('INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP', '####');
+define('INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP2', '/');
+define('INDIVIDUALFEEDBACK_MULTICHOICERATED_TYPE_SEP', '>>>>>');
+define('INDIVIDUALFEEDBACK_MULTICHOICERATED_LINE_SEP', '|');
+define('INDIVIDUALFEEDBACK_MULTICHOICERATED_ADJUST_SEP', '<<<<<');
+define('INDIVIDUALFEEDBACK_MULTICHOICERATED_IGNOREEMPTY', 'i');
+define('INDIVIDUALFEEDBACK_MULTICHOICERATED_HIDENOSELECT', 'h');
 
 class individualfeedback_item_multichoicerated extends individualfeedback_item_base {
     protected $type = "multichoicerated";
@@ -116,7 +116,7 @@ class individualfeedback_item_multichoicerated extends individualfeedback_item_b
         //die moeglichen Antworten extrahieren
         $info = $this->get_info($item);
         $lines = null;
-        $lines = explode (individualfeedback_MULTICHOICERATED_LINE_SEP, $info->presentation);
+        $lines = explode (INDIVIDUALFEEDBACK_MULTICHOICERATED_LINE_SEP, $info->presentation);
         if (!is_array($lines)) {
             return null;
         }
@@ -131,7 +131,7 @@ class individualfeedback_item_multichoicerated extends individualfeedback_item_b
         $analysed_answer = array();
         $sizeoflines = count($lines);
         for ($i = 1; $i <= $sizeoflines; $i++) {
-            $item_values = explode(individualfeedback_MULTICHOICERATED_VALUE_SEP, $lines[$i-1]);
+            $item_values = explode(INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP, $lines[$i-1]);
             $ans = new stdClass();
             $ans->answertext = $item_values[1];
             $avg = 0.0;
@@ -162,11 +162,11 @@ class individualfeedback_item_multichoicerated extends individualfeedback_item_b
 
         $info = $this->get_info($item);
 
-        $presentation = explode (individualfeedback_MULTICHOICERATED_LINE_SEP, $info->presentation);
+        $presentation = explode (INDIVIDUALFEEDBACK_MULTICHOICERATED_LINE_SEP, $info->presentation);
         $index = 1;
         foreach ($presentation as $pres) {
             if ($value->value == $index) {
-                $item_label = explode(individualfeedback_MULTICHOICERATED_VALUE_SEP, $pres);
+                $item_label = explode(INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP, $pres);
                 $printval = format_string($item_label[1]);
                 break;
             }
@@ -275,10 +275,10 @@ class individualfeedback_item_multichoicerated extends individualfeedback_item_b
      */
     protected function get_options($item) {
         $info = $this->get_info($item);
-        $lines = explode(individualfeedback_MULTICHOICERATED_LINE_SEP, $info->presentation);
+        $lines = explode(INDIVIDUALFEEDBACK_MULTICHOICERATED_LINE_SEP, $info->presentation);
         $options = array();
         foreach ($lines as $idx => $line) {
-            list($weight, $optiontext) = explode(individualfeedback_MULTICHOICERATED_VALUE_SEP, $line);
+            list($weight, $optiontext) = explode(INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP, $line);
             $options[$idx + 1] = format_text("<span class=\"weight\">($weight) </span>".$optiontext,
                     FORMAT_HTML, array('noclean' => true, 'para' => false));
         }
@@ -345,14 +345,14 @@ class individualfeedback_item_multichoicerated extends individualfeedback_item_b
         if (is_array($dbvalue)) {
             $dbvalues = $dbvalue;
         } else {
-            $dbvalues = explode(individualfeedback_MULTICHOICERATED_LINE_SEP, $dbvalue);
+            $dbvalues = explode(INDIVIDUALFEEDBACK_MULTICHOICERATED_LINE_SEP, $dbvalue);
         }
 
         $info = $this->get_info($item);
-        $presentation = explode (individualfeedback_MULTICHOICERATED_LINE_SEP, $info->presentation);
+        $presentation = explode (INDIVIDUALFEEDBACK_MULTICHOICERATED_LINE_SEP, $info->presentation);
         $index = 1;
         foreach ($presentation as $pres) {
-            $presvalues = explode(individualfeedback_MULTICHOICERATED_VALUE_SEP, $pres);
+            $presvalues = explode(INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP, $pres);
 
             foreach ($dbvalues as $dbval) {
                 if ($dbval == $index AND trim($presvalues[1]) == $dependvalue) {
@@ -374,7 +374,7 @@ class individualfeedback_item_multichoicerated extends individualfeedback_item_b
         $info->presentation = '';
         $info->horizontal = false;
 
-        $parts = explode(individualfeedback_MULTICHOICERATED_TYPE_SEP, $item->presentation);
+        $parts = explode(INDIVIDUALFEEDBACK_MULTICHOICERATED_TYPE_SEP, $item->presentation);
         @list($info->subtype, $info->presentation) = $parts;
 
         if (!isset($info->subtype)) {
@@ -382,7 +382,7 @@ class individualfeedback_item_multichoicerated extends individualfeedback_item_b
         }
 
         if ($info->subtype != 'd') {
-            $parts = explode(individualfeedback_MULTICHOICERATED_ADJUST_SEP, $info->presentation);
+            $parts = explode(INDIVIDUALFEEDBACK_MULTICHOICERATED_ADJUST_SEP, $info->presentation);
             @list($info->presentation, $info->horizontal) = $parts;
 
             if (isset($info->horizontal) AND $info->horizontal == 1) {
@@ -393,8 +393,8 @@ class individualfeedback_item_multichoicerated extends individualfeedback_item_b
         }
 
         $info->values = $this->prepare_presentation_values_print($info->presentation,
-                                                    individualfeedback_MULTICHOICERATED_VALUE_SEP,
-                                                    individualfeedback_MULTICHOICERATED_VALUE_SEP2);
+                                                    INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP,
+                                                    INDIVIDUALFEEDBACK_MULTICHOICERATED_VALUE_SEP2);
         return $info;
     }
 
@@ -425,7 +425,7 @@ class individualfeedback_item_multichoicerated extends individualfeedback_item_b
 
     public function prepare_presentation_values_print($valuestring, $valuesep1, $valuesep2) {
         $valuestring = str_replace(array("\n","\r"), "", $valuestring);
-        return $this->prepare_presentation_values(individualfeedback_MULTICHOICERATED_LINE_SEP,
+        return $this->prepare_presentation_values(INDIVIDUALFEEDBACK_MULTICHOICERATED_LINE_SEP,
                                                   "\n",
                                                   $valuestring,
                                                   $valuesep1,
@@ -436,35 +436,35 @@ class individualfeedback_item_multichoicerated extends individualfeedback_item_b
         $valuestring = str_replace("\r", "\n", $valuestring);
         $valuestring = str_replace("\n\n", "\n", $valuestring);
         return $this->prepare_presentation_values("\n",
-                        individualfeedback_MULTICHOICERATED_LINE_SEP,
+                        INDIVIDUALFEEDBACK_MULTICHOICERATED_LINE_SEP,
                         $valuestring,
                         $valuesep1,
                         $valuesep2);
     }
 
     public function set_ignoreempty($item, $ignoreempty=true) {
-        $item->options = str_replace(individualfeedback_MULTICHOICERATED_IGNOREEMPTY, '', $item->options);
+        $item->options = str_replace(INDIVIDUALFEEDBACK_MULTICHOICERATED_IGNOREEMPTY, '', $item->options);
         if ($ignoreempty) {
-            $item->options .= individualfeedback_MULTICHOICERATED_IGNOREEMPTY;
+            $item->options .= INDIVIDUALFEEDBACK_MULTICHOICERATED_IGNOREEMPTY;
         }
     }
 
     public function ignoreempty($item) {
-        if (strstr($item->options, individualfeedback_MULTICHOICERATED_IGNOREEMPTY)) {
+        if (strstr($item->options, INDIVIDUALFEEDBACK_MULTICHOICERATED_IGNOREEMPTY)) {
             return true;
         }
         return false;
     }
 
     public function set_hidenoselect($item, $hidenoselect=true) {
-        $item->options = str_replace(individualfeedback_MULTICHOICERATED_HIDENOSELECT, '', $item->options);
+        $item->options = str_replace(INDIVIDUALFEEDBACK_MULTICHOICERATED_HIDENOSELECT, '', $item->options);
         if ($hidenoselect) {
-            $item->options .= individualfeedback_MULTICHOICERATED_HIDENOSELECT;
+            $item->options .= INDIVIDUALFEEDBACK_MULTICHOICERATED_HIDENOSELECT;
         }
     }
 
     public function hidenoselect($item) {
-        if (strstr($item->options, individualfeedback_MULTICHOICERATED_HIDENOSELECT)) {
+        if (strstr($item->options, INDIVIDUALFEEDBACK_MULTICHOICERATED_HIDENOSELECT)) {
             return true;
         }
         return false;
