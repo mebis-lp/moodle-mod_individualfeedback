@@ -119,3 +119,13 @@
 .path-mod-individualfeedback .response_navigation .prev_response {
     float: left;
 }
+
+div.individualfeedback_questiongroup_start {
+    border-top: 1px solid #00a8d5;
+    border-bottom: 1px solid #00a8d5;
+    margin-bottom: 30px;
+}
+
+div.movequestiongroup {
+    cursor: move;
+}

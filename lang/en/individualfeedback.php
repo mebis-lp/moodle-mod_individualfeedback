@@ -323,3 +323,11 @@ Disagree
 Neither agree nor disagree
 Agree
 Strongly agree';
+$string['questiongroup'] = 'Question group';
+$string['questiongroup_name'] = 'Question group name';
+$string['edit_questiongroup'] = 'Edit question group';
+$string['delete_questiongroup'] = 'Delete question group';
+$string['end_of_questiongroup'] = 'End of question group';
+$string['confirmdeleteitem_questiongroup'] = 'Are you sure you want to delete this element? 
+Please note: all questions within this group will be deleted.';
+$string['move_questiongroup'] = 'Move this question group';

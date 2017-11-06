@@ -53,6 +53,12 @@ switch ($action) {
             $return = individualfeedback_ajax_saveitemorder($itemlist, $individualfeedback);
         }
         break;
+    case 'savequestiongroupitemorder':
+        $itemlist = explode(',', trim($itemorder, ','));
+        if (count($itemlist) > 0) {
+            $return = individualfeedback_ajax_saveitemorder($itemlist, $individualfeedback);
+        }
+        break;
 }
 
 echo json_encode($return);

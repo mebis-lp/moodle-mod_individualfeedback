@@ -372,3 +372,82 @@ class individualfeedback_item_pagebreak extends individualfeedback_item_base {
         return;
     }
 }
+
+//a dummy class to realize questiongroupsend
+class individualfeedback_item_questiongroupend extends individualfeedback_item_base {
+    protected $type = "questiongroupend";
+
+    public function show_editform() {
+    }
+
+    /**
+     * Checks if the editing form was cancelled
+     * @return bool
+     */
+    public function is_cancelled() {
+    }
+    public function get_data() {
+    }
+    public function build_editform($item, $individualfeedback, $cm) {
+    }
+    public function save_item() {
+    }
+    public function create_value($data) {
+    }
+    public function get_hasvalue() {
+        return 0;
+    }
+    public function excelprint_item(&$worksheet, $row_offset,
+                            $xls_formats, $item,
+                            $groupid, $courseid = false) {
+    }
+
+    public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
+    }
+    public function get_printval($item, $value) {
+    }
+    public function can_switch_require() {
+        return false;
+    }
+
+    /**
+     * Adds an input element to the complete form
+     *
+     * @param stdClass $item
+     * @param mod_individualfeedback_complete_form $form
+     */
+    public function complete_form_element($item, $form) {
+        $form->add_form_element($item,
+            ['static',
+                $item->typ.'_'.$item->id,
+                '',
+                html_writer::tag('span', get_string('end_of_questiongroup', 'individualfeedback'), ['class' => 'individualfeedback_questiongroupend', 'id' => 'individualfeedback_item_' . $item->id])
+            ]);
+        $form->add_form_element($item, ['html', html_writer::end_tag('div')]);
+    }
+
+    /**
+     * Returns the list of actions allowed on this item in the edit mode
+     *
+     * @param stdClass $item
+     * @param stdClass $individualfeedback
+     * @param cm_info $cm
+     * @return action_menu_link[]
+     */
+    public function edit_actions($item, $individualfeedback, $cm) {
+        return array();
+    }
+
+    /**
+     * Return the analysis data ready for external functions.
+     *
+     * @param stdClass $item     the item (question) information
+     * @param int      $groupid  the group id to filter data (optional)
+     * @param int      $courseid the course id (optional)
+     * @return array an array of data with non scalar types json encoded
+     * @since  Moodle 3.3
+     */
+    public function get_analysed_for_external($item, $groupid = false, $courseid = false) {
+        return;
+    }
+}

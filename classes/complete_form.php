@@ -267,9 +267,11 @@ class mod_individualfeedback_complete_form extends moodleform {
      * @return string
      */
     protected function get_suggested_class($item) {
-        $class = "individualfeedback_itemlist individualfeedback-item-{$item->typ}";
+        $class = "individualfeedback_itemlist individualfeedback-item-{$item->typ} questiongroupmoveitem";
         if ($item->dependitem) {
-            $class .= " individualfeedback_is_dependent";
+            if ($item->typ != 'questiongroupend') {
+                $class .= " individualfeedback_is_dependent";
+            }
         }
         if ($item->typ !== 'pagebreak') {
             $itemobj = individualfeedback_get_item_class($item->typ);
@@ -407,10 +409,14 @@ class mod_individualfeedback_complete_form extends moodleform {
         if ($item->dependitem && ($this->mode == self::MODE_EDIT || $this->mode == self::MODE_VIEW_TEMPLATE)) {
             if (isset($allitems[$item->dependitem])) {
                 $dependitem = $allitems[$item->dependitem];
-                $name = $element->getLabel();
-                $name .= html_writer::span(' ('.format_string($dependitem->label).'-&gt;'.$item->dependvalue.')',
-                        'individualfeedback_depend');
-                $element->setLabel($name);
+                if ($dependitem->typ == 'questiongroup') {
+                    $element->setLabel('');
+                } else {
+                    $name = $element->getLabel();
+                    $name .= html_writer::span(' ('.format_string($dependitem->label).'-&gt;'.$item->dependvalue.')',
+                            'individualfeedback_depend');
+                    $element->setLabel($name);
+                }
             }
         }
     }
@@ -439,6 +445,10 @@ class mod_individualfeedback_complete_form extends moodleform {
      */
     protected function enhance_name_for_edit($item, $element) {
         global $OUTPUT;
+        if ($item->typ == 'questiongroupend') {
+            return;
+        }
+
         $menu = new action_menu();
         $menu->set_owner_selector('#' . $this->guess_element_id($item, $element));
         $menu->set_constraint('.individualfeedback_form');

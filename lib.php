@@ -1540,6 +1540,7 @@ function individualfeedback_load_individualfeedback_items_options() {
     global $CFG;
 
     $individualfeedback_options = array("pagebreak" => get_string('add_pagebreak', 'individualfeedback'));
+    $individualfeedback_options['questiongroup'] = get_string('questiongroup', 'individualfeedback');
 
     if (!$individualfeedback_names = individualfeedback_load_individualfeedback_items('mod/individualfeedback/item')) {
         return array();
@@ -1668,6 +1669,11 @@ function individualfeedback_delete_item($itemid, $renumber = true, $template = f
 
     $item = $DB->get_record('individualfeedback_item', array('id'=>$itemid));
 
+    // If we remove a group, make sure all group questions get deleted as well.
+    if ($item->typ == 'questiongroup') {
+        individualfeedback_delete_group_items($item);
+    }
+
     //deleting the files from the item
     $fs = get_file_storage();
 
@@ -1714,6 +1720,29 @@ function individualfeedback_delete_item($itemid, $renumber = true, $template = f
     $DB->delete_records("individualfeedback_item", array("id"=>$itemid));
     if ($renumber) {
         individualfeedback_renumber_items($item->individualfeedback);
+    }
+}
+
+/**
+ * deletes all items of the given group, before groups get's deleted.
+ *
+ * @global object
+ * @param int $individualfeedbackid
+ * @return void
+ */
+function individualfeedback_delete_group_items($groupitem) {
+    global $DB;
+
+    if (!$endgroupitem = $DB->get_record('individualfeedback_item', array('dependitem' => $groupitem->id, 'typ' => 'questiongroupend'))) {
+        return false;
+    }
+
+    $where = 'position > :startposition AND position <= :endposition';
+    $params = array('startposition' => $groupitem->position, 'endposition' => $endgroupitem->position);
+    if ($groupitems = $DB->get_records_select('individualfeedback_item', $where, $params)) {
+        foreach ($groupitems as $item) {
+            individualfeedback_delete_item($item->id);
+        }
     }
 }
 
@@ -3565,3 +3594,4 @@ function mod_individualfeedback_get_completion_active_rule_descriptions($cm) {
     }
     return $descriptions;
 }
+

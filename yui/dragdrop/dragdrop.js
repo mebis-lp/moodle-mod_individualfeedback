@@ -26,9 +26,12 @@ YUI.add('moodle-mod_individualfeedback-dragdrop', function(Y) {
             //Get the list of li's in the lists and add the drag handle.
             basenode = Y.Node.one(CSS.DRAGLIST);
             listitems = basenode.all(CSS.DRAGITEM).each(function(v) {
-                var item_id = this.get_node_id(v.get('id')); //Get the id of the individualfeedback item.
-                var mydraghandle = this.get_drag_handle(handletitle, CSS.DRAGHANDLE, 'icon');
-                v.append(mydraghandle); // Insert the new handle into the item box.
+                var classes = v.getAttribute('class');
+                if (classes.indexOf('individualfeedback-item-questiongroup') === -1) {
+                    var item_id = this.get_node_id(v.get('id')); //Get the id of the individualfeedback item.
+                    var mydraghandle = this.get_drag_handle(handletitle, CSS.DRAGHANDLE, 'icon');
+                    v.append(mydraghandle); // Insert the new handle into the item box.
+                }
             }, this);
 
             //We use a delegate to make all items draggable

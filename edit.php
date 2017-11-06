@@ -118,9 +118,11 @@ if (count($individualfeedbackitems) > 1) {
                'pluginname',
                'move_item',
                'position',
+               'move_questiongroup',
             ), 'individualfeedback');
         $PAGE->requires->yui_module('moodle-mod_individualfeedback-dragdrop', 'M.mod_individualfeedback.init_dragdrop',
                 array(array('cmid' => $cm->id)));
+        $PAGE->requires->js_call_amd('mod_individualfeedback/movequestiongroup', 'init', array('cmid' => $cm->id));
     }
 }
 
