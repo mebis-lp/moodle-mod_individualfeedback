@@ -129,3 +129,20 @@ div.individualfeedback_questiongroup_start {
 div.movequestiongroup {
     cursor: move;
 }
+
+div.subtabs_placeholder {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 0.8em;
+}
+
+div.questiongroup_analysed {
+    border-top: 1px solid #00a8d5;
+    border-bottom: 1px solid #00a8d5;
+    margin-top: 40px;
+    margin-bottom: 20px;  
+}
+
+select.questiongroup_select {
+    margin-left: 20px;
+}

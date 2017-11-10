@@ -100,79 +100,24 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         return $newitem;
     }
 
-
-    /**
-     * Helper function for collected data for exporting to excel
-     *
-     * @param stdClass $item the db-object from individualfeedback_item
-     * @param int $groupid
-     * @param int $courseid
-     * @return stdClass
-     */
-    protected function get_analysed($item, $groupid = false, $courseid = false) {
-
-        $analysed_val = new stdClass();
-        $analysed_val->data = null;
-        $analysed_val->name = $item->name;
-
-        $values = individualfeedback_get_group_values($item, $groupid, $courseid);
-        if ($values) {
-            $data = array();
-            foreach ($values as $value) {
-                $data[] = str_replace("\n", '<br />', $value->value);
-            }
-            $analysed_val->data = $data;
-        }
-        return $analysed_val;
-    }
-
     public function get_printval($item, $value) {
 
-        if (!isset($value->value)) {
+        if (!isset($value->name)) {
             return '';
         }
-        return $value->value;
+        return $value->name;
     }
 
     public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
-        $values = individualfeedback_get_group_values($item, $groupid, $courseid);
-        if ($values) {
-            echo "<table class=\"analysis itemtype_{$item->typ}\">";
-            echo '<tr><th colspan="2" align="left">';
-            echo $itemnr . ' ';
-            if (strval($item->label) !== '') {
-                echo '('. format_string($item->label).') ';
-            }
-            echo $this->get_display_name($item);
-            echo '</th></tr>';
-            foreach ($values as $value) {
-                $class = strlen(trim($value->value)) ? '' : ' class="isempty"';
-                echo '<tr'.$class.'><td colspan="2" class="singlevalue">';
-                echo str_replace("\n", '<br />', $value->value);
-                echo '</td></tr>';
-            }
-            echo '</table>';
-        }
+        echo html_writer::start_tag('div', array('class' => 'questiongroup_analysed', 'id' => 'questiongroup_' . $item->id));
+        echo html_writer::tag('div', $item->name);
     }
 
     public function excelprint_item(&$worksheet, $row_offset,
                              $xls_formats, $item,
                              $groupid, $courseid = false) {
 
-        $analysed_item = $this->get_analysed($item, $groupid, $courseid);
-
-        $worksheet->write_string($row_offset, 0, $item->label, $xls_formats->head2);
-        $worksheet->write_string($row_offset, 1, $item->name, $xls_formats->head2);
-        $data = $analysed_item->data;
-        if (is_array($data)) {
-            $worksheet->write_string($row_offset, 2, htmlspecialchars_decode($data[0], ENT_QUOTES), $xls_formats->value_bold);
-            $row_offset++;
-            $sizeofdata = count($data);
-            for ($i = 1; $i < $sizeofdata; $i++) {
-                $worksheet->write_string($row_offset, 2, htmlspecialchars_decode($data[$i], ENT_QUOTES), $xls_formats->default);
-                $row_offset++;
-            }
-        }
+        $worksheet->write_string($row_offset, 0, $item->name, $xls_formats->head2);
         $row_offset++;
         return $row_offset;
     }
@@ -184,11 +129,13 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
      * @param mod_individualfeedback_complete_form $form
      */
     public function complete_form_element($item, $form) {
-        global $OUTPUT;
+        global $OUTPUT, $PAGE;
 
         $form->add_form_element($item, ['html', html_writer::start_tag('div', ['class' => 'individualfeedback_questiongroup_start questiongroupmoveitem', 'id' => 'questiongroup_' . $item->id])]);
-        $moveicon = html_writer::div($OUTPUT->pix_icon('i/move_2d', get_string('move_questiongroup', 'individualfeedback')), 'float-left drag-handle movequestiongroup');
-        $form->add_form_element($item, ['html', $moveicon]);
+        if ($PAGE->url->get_param('do_show')) {
+            $moveicon = html_writer::div($OUTPUT->pix_icon('i/move_2d', get_string('move_questiongroup', 'individualfeedback')), 'float-left drag-handle movequestiongroup');
+            $form->add_form_element($item, ['html', $moveicon]);
+        }
         $name = $this->get_display_name($item);
         $form->add_form_element($item,
             ['static',
@@ -255,5 +202,13 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         );
 
         return $actions;
+    }
+
+    /**
+     * Wether this item type has a value that is expected from the user and saved in the stored values.
+     * @return int
+     */
+    public function get_hasvalue() {
+        return 0;
     }
 }

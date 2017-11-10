@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * shows an analysed view of individualfeedback
+ * shows an analysed view of individualfeedback based on subtab
  *
  * @copyright Andreas Grabs
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
@@ -28,8 +28,9 @@ require_once("lib.php");
 $current_tab = 'analysis';
 
 $id = required_param('id', PARAM_INT);  // Course module id.
+$currentsubtab = optional_param('subtab', 'detail_questions', PARAM_TEXT);
 
-$url = new moodle_url('/mod/individualfeedback/analysis.php', array('id'=>$id));
+$url = new moodle_url('/mod/individualfeedback/analysis.php', array('id' => $id, 'subtab' => $currentsubtab));
 $PAGE->set_url($url);
 
 list($course, $cm) = get_course_and_cm_from_cmid($id, 'individualfeedback');
@@ -54,48 +55,17 @@ echo $OUTPUT->heading(format_string($individualfeedback->name));
 /// print the tabs
 require('tabs.php');
 
+/// print the sub tabs
+echo html_writer::start_tag('div', array('class' => 'subtabs_placeholder'));
+require('evaluations_tabs.php');
+echo html_writer::end_tag('div');
 
-//get the groupid
-$mygroupid = groups_get_activity_group($cm, true);
-groups_print_activity_menu($cm, $url);
-
-// Button "Export to excel".
-if (has_capability('mod/individualfeedback:viewreports', $context) && $individualfeedbackstructure->get_items()) {
-    echo $OUTPUT->container_start('form-buttons');
-    $aurl = new moodle_url('/mod/individualfeedback/analysis_to_excel.php', ['sesskey' => sesskey(), 'id' => $id]);
-    echo $OUTPUT->single_button($aurl, get_string('export_to_excel', 'individualfeedback'));
-    echo $OUTPUT->container_end();
-}
-
-// Show the summary.
-$summary = new mod_individualfeedback\output\summary($individualfeedbackstructure, $mygroupid);
-echo $OUTPUT->render_from_template('mod_individualfeedback/summary', $summary->export_for_template($OUTPUT));
-
-// Get the items of the individualfeedback.
-$items = $individualfeedbackstructure->get_items(true);
-
-$check_anonymously = true;
-if ($mygroupid > 0 AND $individualfeedback->anonymous == INDIVIDUALFEEDBACK_ANONYMOUS_YES) {
-    $completedcount = $individualfeedbackstructure->count_completed_responses($mygroupid);
-    if ($completedcount < INDIVIDUALFEEDBACK_MIN_ANONYMOUS_COUNT_IN_GROUP) {
-        $check_anonymously = false;
-    }
-}
-
-echo '<div>';
-if ($check_anonymously) {
-    // Print the items in an analysed form.
-    foreach ($items as $item) {
-        $itemobj = individualfeedback_get_item_class($item->typ);
-        $printnr = ($individualfeedback->autonumbering && $item->itemnr) ? ($item->itemnr . '.') : '';
-        $itemobj->print_analysed($item, $printnr, $mygroupid);
-    }
+// Get the file based on the selected subtab.
+if (!file_exists($CFG->dirroot . "/mod/individualfeedback/" . $currentsubtab . ".php")) {
+    print_error('error_subtab', 'individualfeedback');
 } else {
-    echo $OUTPUT->heading_with_help(get_string('insufficient_responses_for_this_group', 'individualfeedback'),
-                                    'insufficient_responses',
-                                    'individualfeedback', '', '', 3);
+    require($currentsubtab . ".php");
 }
-echo '</div>';
 
 echo $OUTPUT->footer();
 

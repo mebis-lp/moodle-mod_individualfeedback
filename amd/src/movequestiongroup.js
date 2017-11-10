@@ -1,4 +1,4 @@
-define(['jquery', 'jqueryui', 'core/str'], function($, jqui) {
+define(['jquery', 'jqueryui'], function($, jqui) {
     return {
         init: function(cmid) {
             // Move question group within groups or items.

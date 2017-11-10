@@ -331,3 +331,13 @@ $string['end_of_questiongroup'] = 'End of question group';
 $string['confirmdeleteitem_questiongroup'] = 'Are you sure you want to delete this element? 
 Please note: all questions within this group will be deleted.';
 $string['move_questiongroup'] = 'Move this question group';
+$string['evaluations'] = 'Evaluations';
+$string['detail_questions'] = 'Detail (Questions)';
+$string['detail_groups'] = 'Detail (Groups)';
+$string['overview_questions'] = 'Overview (Questions)';
+$string['overview_groups'] = 'Overview (Groups)';
+$string['comparison_questions'] = 'Comparison (Questions)';
+$string['comparison_groups'] = 'Comparison (Groups)';
+$string['error_subtab'] = 'No valid subtab selected, can\'t load this page.';
+$string['all_results'] = 'All results';
+$string['filter_questiongroups'] = 'Filter question group:';

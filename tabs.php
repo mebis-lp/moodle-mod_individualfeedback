@@ -69,7 +69,7 @@ if (has_capability('mod/individualfeedback:viewreports', $context)) {
     } else {
         $analysisurl = new moodle_url('/mod/individualfeedback/analysis.php', $urlparams);
     }
-    $row[] = new tabobject('analysis', $analysisurl->out(), get_string('analysis', 'individualfeedback'));
+    $row[] = new tabobject('analysis', $analysisurl->out(), get_string('evaluations', 'individualfeedback'));
 
     $reporturl = new moodle_url('/mod/individualfeedback/show_entries.php', $urlparams);
     $row[] = new tabobject('showentries',

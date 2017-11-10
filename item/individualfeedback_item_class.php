@@ -400,9 +400,15 @@ class individualfeedback_item_questiongroupend extends individualfeedback_item_b
     public function excelprint_item(&$worksheet, $row_offset,
                             $xls_formats, $item,
                             $groupid, $courseid = false) {
+        $worksheet->write_string($row_offset, 0, get_string('end_of_questiongroup', 'individualfeedback'), $xls_formats->head2);
+        $row_offset++;
+        $row_offset++;
+        return $row_offset;
     }
 
     public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
+        echo html_writer::tag('div', get_string('end_of_questiongroup', 'individualfeedback'));
+        echo html_writer::end_tag('div');
     }
     public function get_printval($item, $value) {
     }

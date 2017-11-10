@@ -300,7 +300,7 @@ class mod_individualfeedback_completion extends mod_individualfeedback_structure
         $pages = [[]]; // The first page always exists.
         $items = $this->get_items();
         foreach ($items as $item) {
-            if ($item->typ === 'pagebreak') {
+            if ($item->typ === 'pagebreak' || $item->typ === 'questiongroupend') {
                 $pages[] = [];
             } else if ($this->can_see_item($item) !== false) {
                 $pages[count($pages) - 1][] = $item;
