@@ -173,6 +173,18 @@ $capabilities = array(
         )
     ),
 
+    'mod/individualfeedback:selfassessment' => array(
+
+        'riskbitmask' => RISK_PERSONAL,
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        )
+    ),
+
 );
 
 

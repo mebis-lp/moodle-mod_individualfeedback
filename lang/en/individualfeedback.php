@@ -341,3 +341,4 @@ $string['comparison_groups'] = 'Comparison (Groups)';
 $string['error_subtab'] = 'No valid subtab selected, can\'t load this page.';
 $string['all_results'] = 'All results';
 $string['filter_questiongroups'] = 'Filter question group:';
+$string['individualfeedback:selfassessment'] = 'Self assessment';

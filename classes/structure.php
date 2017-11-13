@@ -324,6 +324,9 @@ class mod_individualfeedback_structure {
      */
     public function count_completed_responses($groupid = 0) {
         global $DB;
+        
+        // Fixme - here - only the students can be counted, not the self assessment...
+
         if (intval($groupid) > 0) {
             $query = "SELECT COUNT(DISTINCT fbc.id)
                         FROM {individualfeedback_completed} fbc, {groups_members} gm

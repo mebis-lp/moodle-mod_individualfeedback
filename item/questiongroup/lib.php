@@ -131,12 +131,23 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
     public function complete_form_element($item, $form) {
         global $OUTPUT, $PAGE;
 
+        $name = $this->get_display_name($item);
+
+        // We need to create a dummy element to make sure the form starts outputting before the html within this function
+        // Will start with outputting the start div, and everything in the form will be part of the first group.
+        $form->add_dumy_form_element($item,
+            ['static',
+                'dummy_' . $item->typ.'_'.$item->id,
+                '',
+                html_writer::tag('span', $name, ['class' => 'dummy hidden'])
+            ]);
+
         $form->add_form_element($item, ['html', html_writer::start_tag('div', ['class' => 'individualfeedback_questiongroup_start questiongroupmoveitem', 'id' => 'questiongroup_' . $item->id])]);
         if ($PAGE->url->get_param('do_show')) {
             $moveicon = html_writer::div($OUTPUT->pix_icon('i/move_2d', get_string('move_questiongroup', 'individualfeedback')), 'float-left drag-handle movequestiongroup');
             $form->add_form_element($item, ['html', $moveicon]);
         }
-        $name = $this->get_display_name($item);
+
         $form->add_form_element($item,
             ['static',
                 $item->typ.'_'.$item->id,

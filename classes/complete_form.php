@@ -345,6 +345,40 @@ class mod_individualfeedback_complete_form extends moodleform {
     }
 
     /**
+     * Adds a dummy element to this form - to be used by items in their complete_form_element() method
+     *
+     * @param stdClass $item
+     * @param HTML_QuickForm_element|array $element either completed form element or an array that
+     *      can be passed as arguments to $this->_form->createElement() function
+     * @return HTML_QuickForm_element
+     */
+    public function add_dumy_form_element($item, $element) {
+        global $OUTPUT;
+        // Add element to the form.
+        if (is_array($element)) {
+            if ($this->is_frozen() && $element[0] === 'text') {
+                // Convert 'text' element to 'static' when freezing for better display.
+                $element = ['static', $element[1], $element[2]];
+            }
+            $element = call_user_func_array(array($this->_form, 'createElement'), $element);
+        }
+        $element = $this->_form->addElement($element);
+
+        // Prepend standard CSS classes to the element classes.
+        $attributes = $element->getAttributes();
+        $class = !empty($attributes['class']) ? ' ' . $attributes['class'] : '';
+        $attributes['class'] = 'dummy hidden' . $class;
+        $element->setAttributes($attributes);
+
+        // Freeze if needed.
+        if ($this->is_frozen()) {
+            $element->freeze();
+        }
+
+        return $element;
+    }
+
+    /**
      * Adds a group element to this form - to be used by items in their complete_form_element() method
      *
      * @param stdClass $item

@@ -2566,12 +2566,44 @@ function individualfeedback_get_group_values($item,
             $values = $DB->get_records_select('individualfeedback_value', $select, $params);
         }
     }
+    
+    // Don't count the self assessment values.
+    if (count($values)) {
+        $values = individualfeedback_filter_self_assessment_values($values);
+    }
+
     $params = array('id'=>$item->individualfeedback);
     if ($DB->get_field('individualfeedback', 'anonymous', $params) == INDIVIDUALFEEDBACK_ANONYMOUS_YES) {
         if (is_array($values)) {
             shuffle($values);
         }
     }
+    return $values;
+}
+
+/**
+ * Checks the value records from the db and filters the self assessment values
+ *
+ * @global object
+ * @param object $item
+ * @return array the value-records
+ */
+function individualfeedback_filter_self_assessment_values($values) {
+    global $DB, $PAGE;
+
+    foreach ($values as $value) {
+        $sql = "SELECT iv.id, ic.userid
+        FROM {individualfeedback_completed} ic
+        JOIN {individualfeedback_value} iv ON ic.id = iv.completed
+        WHERE iv.id = :valueid";
+        $params = array('valueid' => $value->id);
+        if ($record = $DB->get_record_sql($sql, $params)) {
+            if (has_capability('mod/individualfeedback:selfassessment', $PAGE->context, $record->userid)) {
+                unset($values[$record->id]);
+            }
+        }
+    }
+
     return $values;
 }
 
