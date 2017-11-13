@@ -85,7 +85,7 @@ class mod_individualfeedback_completion extends mod_individualfeedback_structure
                 // We must respect the anonymousity of the reply that the user saw when they were completing the individualfeedback,
                 // not the current state that may have been changed later by the teacher.
                 $params['anonymous_response'] = INDIVIDUALFEEDBACK_ANONYMOUS_NO;
-                $params['userid'] = $userid;
+                $params['userid'] = individualfeedback_hash_userid($userid);
             }
             $this->completed = $DB->get_record('individualfeedback_completed', $params, '*', MUST_EXIST);
             $this->courseid = $this->completed->courseid;
@@ -133,7 +133,7 @@ class mod_individualfeedback_completion extends mod_individualfeedback_structure
                 $params['courseid'] = $courseid;
             }
             if (isloggedin() && !isguestuser()) {
-                $params['userid'] = $USER->id;
+                $params['userid'] = individualfeedback_hash_userid($USER->id);
             } else {
                 $params['guestid'] = sesskey();
             }
@@ -443,12 +443,20 @@ class mod_individualfeedback_completion extends mod_individualfeedback_structure
             $record->courseid = $this->get_courseid();
         }
         if (isloggedin() && !isguestuser()) {
-            $record->userid = $USER->id;
+            $record->userid = individualfeedback_hash_userid($USER->id);
         } else {
             $record->guestid = sesskey();
         }
         $record->timemodified = time();
         $record->anonymous_response = $this->individualfeedback->anonymous;
+        
+        // Check if it's a self assessment.
+        $selfassessment = 0;
+        $context = context_module::instance($this->cm->id);
+        if (has_capability('mod/individualfeedback:selfassessment', $context)) {
+            $selfassessment = 1;
+        }
+        $record->selfassessment = $selfassessment;
         $id = $DB->insert_record('indfeedback_completedtmp', $record);
         $this->completedtmp = $DB->get_record('indfeedback_completedtmp', ['id' => $id]);
         $this->valuestmp = null;
@@ -595,7 +603,7 @@ class mod_individualfeedback_completion extends mod_individualfeedback_structure
             // Not possible to retrieve completed anonymous individualfeedback.
             return false;
         }
-        $params = array('individualfeedback' => $this->individualfeedback->id, 'userid' => $USER->id, 'anonymous_response' => INDIVIDUALFEEDBACK_ANONYMOUS_NO);
+        $params = array('individualfeedback' => $this->individualfeedback->id, 'userid' => individualfeedback_hash_userid($USER->id), 'anonymous_response' => INDIVIDUALFEEDBACK_ANONYMOUS_NO);
         if ($this->get_courseid()) {
             $params['courseid'] = $this->get_courseid();
         }

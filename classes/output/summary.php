@@ -70,7 +70,7 @@ class summary implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         $r = new stdClass();
-        $r->completedcount = $this->individualfeedbackstructure->count_completed_responses($this->mygroupid);
+        $r->completedcount = $this->individualfeedbackstructure->count_completed_responses();
         $r->itemscount = count($this->individualfeedbackstructure->get_items(true));
         if ($this->extradetails && ($timeopen = $this->individualfeedbackstructure->get_individualfeedback()->timeopen)) {
             $r->timeopen = userdate($timeopen);

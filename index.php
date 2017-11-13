@@ -40,10 +40,12 @@ $context = context_course::instance($course->id);
 require_login($course);
 $PAGE->set_pagelayout('incourse');
 
+/*
 // Trigger instances list viewed event.
 $event = \mod_individualfeedback\event\course_module_instance_list_viewed::create(array('context' => $context));
 $event->add_record_snapshot('course', $course);
 $event->trigger();
+*/
 
 /// Print the page header
 $strindividualfeedbacks = get_string("modulenameplural", "individualfeedback");

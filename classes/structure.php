@@ -266,7 +266,7 @@ class mod_individualfeedback_structure {
             return false;
         }
 
-        $params = array('userid' => $USER->id, 'individualfeedback' => $this->individualfeedback->id);
+        $params = array('userid' => individualfeedback_hash_userid($USER->id), 'individualfeedback' => $this->individualfeedback->id);
         if (!$anycourseid && $this->courseid) {
             $params['courseid'] = $this->courseid;
         }
@@ -317,31 +317,24 @@ class mod_individualfeedback_structure {
     /**
      * Counts records from {individualfeedback_completed} table for a given individualfeedback
      *
-     * If $groupid or $this->courseid is set, the records are filtered by the group/course
+     * If $this->courseid is set, the records are filtered by the course
      *
-     * @param int $groupid
      * @return mixed array of found completeds otherwise false
      */
-    public function count_completed_responses($groupid = 0) {
+    public function count_completed_responses() {
         global $DB;
         
-        // Fixme - here - only the students can be counted, not the self assessment...
-
-        if (intval($groupid) > 0) {
-            $query = "SELECT COUNT(DISTINCT fbc.id)
-                        FROM {individualfeedback_completed} fbc, {groups_members} gm
-                        WHERE fbc.individualfeedback = :individualfeedback
-                            AND gm.groupid = :groupid
-                            AND fbc.userid = gm.userid";
-        } else if ($this->courseid) {
+        if ($this->courseid) {
             $query = "SELECT COUNT(fbc.id)
                         FROM {individualfeedback_completed} fbc
                         WHERE fbc.individualfeedback = :individualfeedback
-                            AND fbc.courseid = :courseid";
+                            AND fbc.courseid = :courseid
+                            AND fbc.selfassessment = 0";
         } else {
-            $query = "SELECT COUNT(fbc.id) FROM {individualfeedback_completed} fbc WHERE fbc.individualfeedback = :individualfeedback";
+            $query = "SELECT COUNT(fbc.id) FROM {individualfeedback_completed} fbc 
+                        WHERE fbc.individualfeedback = :individualfeedback AND fbc.selfassessment = 0";
         }
-        $params = ['individualfeedback' => $this->individualfeedback->id, 'groupid' => $groupid, 'courseid' => $this->courseid];
+        $params = ['individualfeedback' => $this->individualfeedback->id, 'courseid' => $this->courseid];
         return $DB->get_field_sql($query, $params);
     }
 

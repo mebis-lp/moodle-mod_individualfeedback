@@ -60,6 +60,7 @@ class mod_individualfeedback_mod_form extends moodleform_mod {
         //-------------------------------------------------------------------------------
         $mform->addElement('header', 'individualfeedbackhdr', get_string('questionandsubmission', 'individualfeedback'));
 
+        /*
         $options=array();
         $options[1]  = get_string('anonymous', 'individualfeedback');
         $options[2]  = get_string('non_anonymous', 'individualfeedback');
@@ -67,6 +68,9 @@ class mod_individualfeedback_mod_form extends moodleform_mod {
                            'anonymous',
                            get_string('anonymous_edit', 'individualfeedback'),
                            $options);
+        */
+        $mform->addElement('hidden', 'anonymous', 1);
+        $mform->setType('anonymous', PARAM_INT);
 
         // check if there is existing responses to this individualfeedback
         if (is_numeric($this->_instance) AND

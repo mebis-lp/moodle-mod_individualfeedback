@@ -751,57 +751,23 @@ class mod_individualfeedback_external extends external_api {
             throw new required_capability_exception($context, 'mod/individualfeedback:viewanalysepage', 'nopermission', '');
         }
 
-        if (!empty($params['groupid'])) {
-            $groupid = $params['groupid'];
-            // Determine is the group is visible to user.
-            if (!groups_group_visible($groupid, $course, $cm)) {
-                throw new moodle_exception('notingroup');
-            }
-        } else {
-            // Check to see if groups are being used here.
-            if ($groupmode = groups_get_activity_groupmode($cm)) {
-                $groupid = groups_get_activity_group($cm);
-                // Determine is the group is visible to user (this is particullary for the group 0 -> all groups).
-                if (!groups_group_visible($groupid, $course, $cm)) {
-                    throw new moodle_exception('notingroup');
-                }
-            } else {
-                $groupid = 0;
-            }
-        }
+        $groupid = 0;
 
         // Summary data.
         $summary = new mod_individualfeedback\output\summary($individualfeedbackstructure, $groupid);
         $summarydata = $summary->export_for_template($PAGE->get_renderer('core'));
 
-        $checkanonymously = true;
-        if ($groupid > 0 AND $individualfeedback->anonymous == INDIVIDUALFEEDBACK_ANONYMOUS_YES) {
-            $completedcount = $individualfeedbackstructure->count_completed_responses($groupid);
-            if ($completedcount < INDIVIDUALFEEDBACK_MIN_ANONYMOUS_COUNT_IN_GROUP) {
-                $checkanonymously = false;
-            }
-        }
+        // Get the items of the individualfeedback.
+        $items = $individualfeedbackstructure->get_items(true);
+        foreach ($items as $item) {
+            $itemobj = individualfeedback_get_item_class($item->typ);
+            $itemnumber = empty($item->itemnr) ? null : $item->itemnr;
+            unset($item->itemnr);   // Added by the function, not part of the record.
+            $exporter = new individualfeedback_item_exporter($item, array('context' => $context, 'itemnumber' => $itemnumber));
 
-        if ($checkanonymously) {
-            // Get the items of the individualfeedback.
-            $items = $individualfeedbackstructure->get_items(true);
-            foreach ($items as $item) {
-                $itemobj = individualfeedback_get_item_class($item->typ);
-                $itemnumber = empty($item->itemnr) ? null : $item->itemnr;
-                unset($item->itemnr);   // Added by the function, not part of the record.
-                $exporter = new individualfeedback_item_exporter($item, array('context' => $context, 'itemnumber' => $itemnumber));
-
-                $itemsdata[] = array(
-                    'item' => $exporter->export($PAGE->get_renderer('core')),
-                    'data' => $itemobj->get_analysed_for_external($item, $groupid),
-                );
-            }
-        } else {
-            $warnings[] = array(
-                'item' => 'individualfeedback',
-                'itemid' => $individualfeedback->id,
-                'warningcode' => 'insufficientresponsesforthisgroup',
-                'message' => s(get_string('insufficient_responses_for_this_group', 'individualfeedback'))
+            $itemsdata[] = array(
+                'item' => $exporter->export($PAGE->get_renderer('core')),
+                'data' => $itemobj->get_analysed_for_external($item, $groupid),
             );
         }
 

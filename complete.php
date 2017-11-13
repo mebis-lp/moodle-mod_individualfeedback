@@ -83,7 +83,7 @@ if (!$individualfeedbackcompletion->is_open()) {
 
 // Mark activity viewed for completion-tracking.
 if (isloggedin() && !isguestuser()) {
-    $individualfeedbackcompletion->set_module_viewed();
+    //$individualfeedbackcompletion->set_module_viewed();
 }
 
 // Check if user is prevented from re-submission.

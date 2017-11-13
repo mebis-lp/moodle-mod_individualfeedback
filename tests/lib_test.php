@@ -152,7 +152,7 @@ class mod_individualfeedback_lib_testcase extends advanced_testcase {
 
         $record = [
             'individualfeedback' => $individualfeedback->id,
-            'userid' => $student->id,
+            'userid' => individualfeedback_hash_userid($student->id),
             'timemodified' => time(),
             'random_response' => 0,
             'anonymous_response' => INDIVIDUALFEEDBACK_ANONYMOUS_NO,
@@ -336,7 +336,7 @@ class mod_individualfeedback_lib_testcase extends advanced_testcase {
 
         $record = [
             'individualfeedback' => $individualfeedback->id,
-            'userid' => $user->id,
+            'userid' => individualfeedback_hash_userid($user->id),
             'timemodified' => time(),
             'random_response' => 0,
             'anonymous_response' => INDIVIDUALFEEDBACK_ANONYMOUS_NO,

@@ -24,10 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-//get the groupid
-$mygroupid = groups_get_activity_group($cm, true);
-groups_print_activity_menu($cm, $url);
-
 // Button "Export to excel".
 if (has_capability('mod/individualfeedback:viewreports', $context) && $individualfeedbackstructure->get_items()) {
     echo $OUTPUT->container_start('form-buttons');
@@ -37,31 +33,17 @@ if (has_capability('mod/individualfeedback:viewreports', $context) && $individua
 }
 
 // Show the summary.
-$summary = new mod_individualfeedback\output\summary($individualfeedbackstructure, $mygroupid);
+$summary = new mod_individualfeedback\output\summary($individualfeedbackstructure);
 echo $OUTPUT->render_from_template('mod_individualfeedback/summary', $summary->export_for_template($OUTPUT));
 
 // Get the items of the individualfeedback.
 $items = $individualfeedbackstructure->get_items(true);
 
-$check_anonymously = true;
-if ($mygroupid > 0 AND $individualfeedback->anonymous == INDIVIDUALFEEDBACK_ANONYMOUS_YES) {
-    $completedcount = $individualfeedbackstructure->count_completed_responses($mygroupid);
-    if ($completedcount < INDIVIDUALFEEDBACK_MIN_ANONYMOUS_COUNT_IN_GROUP) {
-        $check_anonymously = false;
-    }
-}
-
 echo '<div>';
-if ($check_anonymously) {
-    // Print the items in an analysed form.
-    foreach ($items as $item) {
-        $itemobj = individualfeedback_get_item_class($item->typ);
-        $printnr = ($individualfeedback->autonumbering && $item->itemnr) ? ($item->itemnr . '.') : '';
-        $itemobj->print_analysed($item, $printnr, $mygroupid);
-    }
-} else {
-    echo $OUTPUT->heading_with_help(get_string('insufficient_responses_for_this_group', 'individualfeedback'),
-                                    'insufficient_responses',
-                                    'individualfeedback', '', '', 3);
+// Print the items in an analysed form.
+foreach ($items as $item) {
+    $itemobj = individualfeedback_get_item_class($item->typ);
+    $printnr = ($individualfeedback->autonumbering && $item->itemnr) ? ($item->itemnr . '.') : '';
+    $itemobj->print_analysed($item, $printnr);
 }
 echo '</div>';

@@ -177,5 +177,67 @@ function xmldb_individualfeedback_upgrade($oldversion) {
     // Automatically generated Moodle v3.3.0 release upgrade line.
     // Put any upgrade step following this.
 
+    if ($oldversion < 2017111000) {
+
+        // Define index userid (not unique) to be dropped form individualfeedback_completed.
+        $table = new xmldb_table('individualfeedback_completed');
+        $index = new xmldb_index('userid', XMLDB_INDEX_NOTUNIQUE, array('userid'));
+
+        // Conditionally launch drop index userid.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Changing type of field userid on table individualfeedback_completed to char.
+        $table = new xmldb_table('individualfeedback_completed');
+        $field = new xmldb_field('userid', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '0', 'individualfeedback');
+
+        // Launch change of type for field userid.
+        $dbman->change_field_type($table, $field);
+
+        // Define index userid (not unique) to be dropped form indfeedback_completedtmp.
+        $table = new xmldb_table('indfeedback_completedtmp');
+        $index = new xmldb_index('userid', XMLDB_INDEX_NOTUNIQUE, array('userid'));
+
+        // Conditionally launch drop index userid.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Changing type of field userid on table indfeedback_completedtmp to char.
+        $table = new xmldb_table('indfeedback_completedtmp');
+        $field = new xmldb_field('userid', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, '0', 'individualfeedback');
+
+        // Launch change of type for field userid.
+        $dbman->change_field_type($table, $field);
+
+        // Individualfeedback savepoint reached.
+        upgrade_mod_savepoint(true, 2017111000, 'individualfeedback');
+    }
+
+    if ($oldversion < 2017111300) {
+
+        // Define field selfassessment to be added to individualfeedback_completed.
+        $table = new xmldb_table('individualfeedback_completed');
+        $field = new xmldb_field('selfassessment', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'courseid');
+
+        // Conditionally launch add field selfassessment.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field selfassessment to be added to indfeedback_completedtmp.
+        $table = new xmldb_table('indfeedback_completedtmp');
+        $field = new xmldb_field('selfassessment', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'courseid');
+
+        // Conditionally launch add field selfassessment.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Individualfeedback savepoint reached.
+        upgrade_mod_savepoint(true, 2017111300, 'individualfeedback');
+    }
+
     return true;
 }

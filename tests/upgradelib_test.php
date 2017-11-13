@@ -71,7 +71,7 @@ class mod_individualfeedback_upgradelib_testcase extends advanced_testcase {
 
         // Case 1. No errors in the data.
         $completed1 = $DB->insert_record('individualfeedback_completed',
-            ['individualfeedback' => $this->individualfeedback->id, 'userid' => $this->user->id]);
+            ['individualfeedback' => $this->individualfeedback->id, 'userid' => individualfeedback_hash_userid($this->user->id)]);
         $DB->insert_record('individualfeedback_value',
             ['completed' => $completed1, 'course_id' => $this->course1->id,
             'item' => 1, 'value' => 1]);
@@ -94,7 +94,7 @@ class mod_individualfeedback_upgradelib_testcase extends advanced_testcase {
 
         // Case 2. Errors in data (same individualfeedback_completed has values for different courses).
         $completed1 = $DB->insert_record('individualfeedback_completed',
-            ['individualfeedback' => $this->individualfeedback->id, 'userid' => $this->user->id]);
+            ['individualfeedback' => $this->individualfeedback->id, 'userid' => individualfeedback_hash_userid($this->user->id)]);
         $DB->insert_record('individualfeedback_value',
             ['completed' => $completed1, 'course_id' => $this->course1->id,
             'item' => 1, 'value' => 1]);
@@ -117,7 +117,7 @@ class mod_individualfeedback_upgradelib_testcase extends advanced_testcase {
 
         // Case 1. No errors in the data.
         $completed1 = $DB->insert_record('indfeedback_completedtmp',
-            ['individualfeedback' => $this->individualfeedback->id, 'userid' => $this->user->id]);
+            ['individualfeedback' => $this->individualfeedback->id, 'userid' => individualfeedback_hash_userid($this->user->id)]);
         $DB->insert_record('individualfeedback_valuetmp',
             ['completed' => $completed1, 'course_id' => $this->course1->id,
             'item' => 1, 'value' => 1]);
@@ -140,7 +140,7 @@ class mod_individualfeedback_upgradelib_testcase extends advanced_testcase {
 
         // Case 2. Errors in data (same individualfeedback_completed has values for different courses).
         $completed1 = $DB->insert_record('indfeedback_completedtmp',
-            ['individualfeedback' => $this->individualfeedback->id, 'userid' => $this->user->id]);
+            ['individualfeedback' => $this->individualfeedback->id, 'userid' => individualfeedback_hash_userid($this->user->id)]);
         $DB->insert_record('individualfeedback_valuetmp',
             ['completed' => $completed1, 'course_id' => $this->course1->id,
             'item' => 1, 'value' => 1]);
@@ -163,7 +163,7 @@ class mod_individualfeedback_upgradelib_testcase extends advanced_testcase {
 
         // Record in 'individualfeedback_completed' does not have corresponding values.
         $DB->insert_record('individualfeedback_completed',
-            ['individualfeedback' => $this->individualfeedback->id, 'userid' => $this->user->id]);
+            ['individualfeedback' => $this->individualfeedback->id, 'userid' => individualfeedback_hash_userid($this->user->id)]);
 
         $this->assertCount(1, $DB->get_records('individualfeedback_completed'));
         $record1 = $DB->get_record('individualfeedback_completed', []);
@@ -177,7 +177,7 @@ class mod_individualfeedback_upgradelib_testcase extends advanced_testcase {
         global $DB;
 
         $completed1 = $DB->insert_record('individualfeedback_completed',
-            ['individualfeedback' => $this->individualfeedback->id, 'userid' => $this->user->id]);
+            ['individualfeedback' => $this->individualfeedback->id, 'userid' => individualfeedback_hash_userid($this->user->id)]);
         $DB->insert_record('individualfeedback_value',
             ['completed' => $completed1, 'course_id' => $this->course1->id,
                 'item' => 1, 'value' => 1]);
@@ -209,7 +209,7 @@ class mod_individualfeedback_upgradelib_testcase extends advanced_testcase {
 
         // Insert duplicated values.
         $completed1 = $DB->insert_record('individualfeedback_completed',
-            ['individualfeedback' => $this->individualfeedback->id, 'userid' => $this->user->id]);
+            ['individualfeedback' => $this->individualfeedback->id, 'userid' => individualfeedback_hash_userid($this->user->id)]);
         $DB->insert_record('individualfeedback_value',
             ['completed' => $completed1, 'course_id' => $this->course1->id,
                 'item' => 1, 'value' => 1]);
@@ -240,7 +240,7 @@ class mod_individualfeedback_upgradelib_testcase extends advanced_testcase {
         global $DB;
 
         $completed1 = $DB->insert_record('indfeedback_completedtmp',
-            ['individualfeedback' => $this->individualfeedback->id, 'userid' => $this->user->id]);
+            ['individualfeedback' => $this->individualfeedback->id, 'userid' => individualfeedback_hash_userid($this->user->id)]);
         $DB->insert_record('individualfeedback_valuetmp',
             ['completed' => $completed1, 'course_id' => $this->course1->id,
                 'item' => 1, 'value' => 1]);
@@ -272,7 +272,7 @@ class mod_individualfeedback_upgradelib_testcase extends advanced_testcase {
 
         // Insert duplicated values.
         $completed1 = $DB->insert_record('indfeedback_completedtmp',
-            ['individualfeedback' => $this->individualfeedback->id, 'userid' => $this->user->id]);
+            ['individualfeedback' => $this->individualfeedback->id, 'userid' => individualfeedback_hash_userid($this->user->id)]);
         $DB->insert_record('individualfeedback_valuetmp',
             ['completed' => $completed1, 'course_id' => $this->course1->id,
                 'item' => 1, 'value' => 1]);

@@ -343,7 +343,7 @@ function individualfeedback_user_outline($course, $user, $mod, $individualfeedba
         // Do not disclose any user info if individualfeedback is anonymous.
         return $outline;
     }
-    $params = array('userid' => $user->id, 'individualfeedback' => $individualfeedback->id,
+    $params = array('userid' => individualfeedback_hash_userid($user->id), 'individualfeedback' => $individualfeedback->id,
         'anonymous_response' => INDIVIDUALFEEDBACK_ANONYMOUS_NO);
     $status = null;
     $context = context_module::instance($mod->id);
@@ -539,7 +539,7 @@ function individualfeedback_get_completion_state($course, $cm, $userid, $type) {
 
     // If completion option is enabled, evaluate it and return true/false
     if ($individualfeedback->completionsubmit) {
-        $params = array('userid'=>$userid, 'individualfeedback'=>$individualfeedback->id);
+        $params = array('userid'=>individualfeedback_hash_userid($userid), 'individualfeedback'=>$individualfeedback->id);
         return $DB->record_exists('individualfeedback_completed', $params);
     } else {
         // Completion option is not enabled so just return $type
@@ -562,7 +562,7 @@ function individualfeedback_user_complete($course, $user, $mod, $individualfeedb
         // Do not disclose any user info if individualfeedback is anonymous.
         return;
     }
-    $params = array('userid' => $user->id, 'individualfeedback' => $individualfeedback->id,
+    $params = array('userid' => individualfeedback_hash_userid($user->id), 'individualfeedback' => $individualfeedback->id,
         'anonymous_response' => INDIVIDUALFEEDBACK_ANONYMOUS_NO);
     $url = $status = null;
     $context = context_module::instance($mod->id);
@@ -2258,14 +2258,17 @@ function individualfeedback_save_values($usrid, $tmp = false) {
             'data directly from input', DEBUG_DEVELOPER);
 
     $completedid = optional_param('completedid', 0, PARAM_INT);
-    $tmpstr = $tmp ? 'tmp' : '';
+    $table = 'individualfeedback_completed';
+    if ($tmp) {
+        $table = 'indfeedback_completedtmp';
+    }
     $time = time();
     $timemodified = mktime(0, 0, 0, date('m', $time), date('d', $time), date('Y', $time));
 
     if ($usrid == 0) {
         return individualfeedback_create_values($usrid, $timemodified, $tmp);
     }
-    $completed = $DB->get_record('individualfeedback_completed'.$tmpstr, array('id'=>$completedid));
+    $completed = $DB->get_record($table, array('id'=>$completedid));
     if (!$completed) {
         return individualfeedback_create_values($usrid, $timemodified, $tmp);
     } else {
@@ -2379,17 +2382,21 @@ function individualfeedback_create_values($usrid, $timemodified, $tmp = false, $
             'data directly from input', DEBUG_DEVELOPER);
 
     $tmpstr = $tmp ? 'tmp' : '';
+    $table = 'individualfeedback_completed';
+    if ($tmp) {
+        $table = 'indfeedback_completedtmp';
+    }
     //first we create a new completed record
     $completed = new stdClass();
     $completed->individualfeedback           = $individualfeedbackid;
-    $completed->userid             = $usrid;
+    $completed->userid             = individualfeedback_hash_userid($usrid);
     $completed->guestid            = $guestid;
     $completed->timemodified       = $timemodified;
     $completed->anonymous_response = $anonymous_response;
 
-    $completedid = $DB->insert_record('individualfeedback_completed'.$tmpstr, $completed);
+    $completedid = $DB->insert_record($table, $completed);
 
-    $completed = $DB->get_record('individualfeedback_completed'.$tmpstr, array('id'=>$completedid));
+    $completed = $DB->get_record($table, array('id'=>$completedid));
 
     //the keys are in the form like abc_xxx
     //with explode we make an array with(abc, xxx) and (abc=typ und xxx=itemnr)
@@ -2448,8 +2455,12 @@ function individualfeedback_update_values($completed, $tmp = false) {
 
     $courseid = optional_param('courseid', false, PARAM_INT);
     $tmpstr = $tmp ? 'tmp' : '';
+    $table = 'individualfeedback_completed';
+    if ($tmp) {
+        $table = 'indfeedback_completedtmp';
+    }
 
-    $DB->update_record('individualfeedback_completed'.$tmpstr, $completed);
+    $DB->update_record($table, $completed);
     //get the values of this completed
     $values = $DB->get_records('individualfeedback_value'.$tmpstr, array('completed'=>$completed->id));
 
@@ -2523,87 +2534,37 @@ function individualfeedback_get_group_values($item,
                                    $ignore_empty = false) {
 
     global $CFG, $DB;
-
-    //if the groupid is given?
-    if (intval($groupid) > 0) {
-        $params = array();
-        if ($ignore_empty) {
-            $value = $DB->sql_compare_text('fbv.value');
-            $ignore_empty_select = "AND $value != :emptyvalue AND $value != :zerovalue";
-            $params += array('emptyvalue' => '', 'zerovalue' => '0');
-        } else {
-            $ignore_empty_select = "";
-        }
-
-        $query = 'SELECT fbv .  *
-                    FROM {individualfeedback_value} fbv, {individualfeedback_completed} fbc, {groups_members} gm
-                   WHERE fbv.item = :itemid
-                         AND fbv.completed = fbc.id
-                         AND fbc.userid = gm.userid
-                         '.$ignore_empty_select.'
-                         AND gm.groupid = :groupid
-                ORDER BY fbc.timemodified';
-        $params += array('itemid' => $item->id, 'groupid' => $groupid);
-        $values = $DB->get_records_sql($query, $params);
-
+    
+    // Get the values except for the self assessment values.
+    $params = array();
+    if ($ignore_empty) {
+        $value = $DB->sql_compare_text('value');
+        $ignore_empty_select = "AND $value != :emptyvalue AND $value != :zerovalue";
+        $params += array('emptyvalue' => '', 'zerovalue' => '0');
     } else {
-        $params = array();
-        if ($ignore_empty) {
-            $value = $DB->sql_compare_text('value');
-            $ignore_empty_select = "AND $value != :emptyvalue AND $value != :zerovalue";
-            $params += array('emptyvalue' => '', 'zerovalue' => '0');
-        } else {
-            $ignore_empty_select = "";
-        }
-
-        if ($courseid) {
-            $select = "item = :itemid AND course_id = :courseid ".$ignore_empty_select;
-            $params += array('itemid' => $item->id, 'courseid' => $courseid);
-            $values = $DB->get_records_select('individualfeedback_value', $select, $params);
-        } else {
-            $select = "item = :itemid ".$ignore_empty_select;
-            $params += array('itemid' => $item->id);
-            $values = $DB->get_records_select('individualfeedback_value', $select, $params);
-        }
+        $ignore_empty_select = "";
     }
     
-    // Don't count the self assessment values.
-    if (count($values)) {
-        $values = individualfeedback_filter_self_assessment_values($values);
+    if ($courseid) {
+        $select = "item = :itemid AND course_id = :courseid ".$ignore_empty_select;
+        $params += array('itemid' => $item->id, 'courseid' => $courseid);
+    } else {
+        $select = "item = :itemid ".$ignore_empty_select;
+        $params += array('itemid' => $item->id);
     }
-
+    $sql = "SELECT iv.*
+    FROM {individualfeedback_value} iv
+    JOIN {individualfeedback_completed} ic ON iv.completed = ic.id
+    WHERE {$select} 
+    AND ic.selfassessment = 0";
+    $values = $DB->get_records_sql($sql, $params);
+    
     $params = array('id'=>$item->individualfeedback);
     if ($DB->get_field('individualfeedback', 'anonymous', $params) == INDIVIDUALFEEDBACK_ANONYMOUS_YES) {
         if (is_array($values)) {
             shuffle($values);
         }
     }
-    return $values;
-}
-
-/**
- * Checks the value records from the db and filters the self assessment values
- *
- * @global object
- * @param object $item
- * @return array the value-records
- */
-function individualfeedback_filter_self_assessment_values($values) {
-    global $DB, $PAGE;
-
-    foreach ($values as $value) {
-        $sql = "SELECT iv.id, ic.userid
-        FROM {individualfeedback_completed} ic
-        JOIN {individualfeedback_value} iv ON ic.id = iv.completed
-        WHERE iv.id = :valueid";
-        $params = array('valueid' => $value->id);
-        if ($record = $DB->get_record_sql($sql, $params)) {
-            if (has_capability('mod/individualfeedback:selfassessment', $PAGE->context, $record->userid)) {
-                unset($values[$record->id]);
-            }
-        }
-    }
-
     return $values;
 }
 
@@ -2624,7 +2585,7 @@ function individualfeedback_is_already_submitted($individualfeedbackid, $coursei
         return false;
     }
 
-    $params = array('userid' => $USER->id, 'individualfeedback' => $individualfeedbackid);
+    $params = array('userid' => individualfeedback_hash_userid($USER->id), 'individualfeedback' => $individualfeedbackid);
     if ($courseid) {
         $params['courseid'] = $courseid;
     }
@@ -2655,14 +2616,18 @@ function individualfeedback_get_current_completed($individualfeedbackid,
     global $USER, $CFG, $DB;
 
     $tmpstr = $tmp ? 'tmp' : '';
+    $table = 'individualfeedback_completed';
+    if ($tmp) {
+        $table = 'indfeedback_completedtmp';
+    }
 
     if (!$courseid) {
         if ($guestid) {
             $params = array('individualfeedback'=>$individualfeedbackid, 'guestid'=>$guestid);
-            return $DB->get_record('individualfeedback_completed'.$tmpstr, $params);
+            return $DB->get_record($table, $params);
         } else {
-            $params = array('individualfeedback'=>$individualfeedbackid, 'userid'=>$USER->id);
-            return $DB->get_record('individualfeedback_completed'.$tmpstr, $params);
+            $params = array('individualfeedback'=>$individualfeedbackid, 'userid'=>individualfeedback_hash_userid($USER->id));
+            return $DB->get_record($table, $params);
         }
     }
 
@@ -2673,12 +2638,12 @@ function individualfeedback_get_current_completed($individualfeedbackid,
         $params['guestid'] = $guestid;
     } else {
         $userselect = "AND fc.userid = :userid";
-        $params['userid'] = $USER->id;
+        $params['userid'] = individualfeedback_hash_userid($USER->id);
     }
     //if courseid is set the individualfeedback is global.
     //there can be more than one completed on one individualfeedback
     $sql =  "SELECT DISTINCT fc.*
-               FROM {individualfeedback_value{$tmpstr}} fv, {individualfeedback_completed{$tmpstr}} fc
+               FROM {individualfeedback_value{$tmpstr}} fv, {$table} fc
               WHERE fv.course_id = :courseid
                     AND fv.completed = fc.id
                     $userselect
@@ -2690,7 +2655,7 @@ function individualfeedback_get_current_completed($individualfeedbackid,
         return false;
     }
     foreach ($sqlresult as $r) {
-        return $DB->get_record('individualfeedback_completed'.$tmpstr, array('id'=>$r->id));
+        return $DB->get_record($table, array('id'=>$r->id));
     }
 }
 
@@ -3453,7 +3418,7 @@ function individualfeedback_check_updates_since(cm_info $cm, $from, $filter = ar
     $updates->attemptsfinished = (object) array('updated' => false);
     $updates->attemptsunfinished = (object) array('updated' => false);
     $select = 'individualfeedback = ? AND userid = ? AND timemodified > ?';
-    $params = array($cm->instance, $USER->id, $from);
+    $params = array($cm->instance, individualfeedback_hash_userid($USER->id), $from);
 
     $attemptsfinished = $DB->get_records_select('individualfeedback_completed', $select, $params, '', 'id');
     if (!empty($attemptsfinished)) {
@@ -3627,3 +3592,7 @@ function mod_individualfeedback_get_completion_active_rule_descriptions($cm) {
     return $descriptions;
 }
 
+function individualfeedback_hash_userid($userid) {
+    $salt = 'IeJ8GI6CD06UDU0y3lUVMQ8D7slxBlZm0LVRZRZV';
+    return sha1($salt . $userid);
+}

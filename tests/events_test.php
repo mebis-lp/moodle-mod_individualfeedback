@@ -84,7 +84,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         // Create a response from a user.
         $response = new stdClass();
         $response->individualfeedback = $this->eventindividualfeedback->id;
-        $response->userid = $this->eventuser->id;
+        $response->userid = individualfeedback_hash_userid($this->eventuser->id);
         $response->anonymous_response = INDIVIDUALFEEDBACK_ANONYMOUS_YES;
         $completedid = $DB->insert_record('individualfeedback_completed', $response);
         $this->eventindividualfeedbackcompleted = $DB->get_record('individualfeedback_completed', array('id' => $completedid), '*', MUST_EXIST);
@@ -119,7 +119,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         $this->assertInstanceOf('\mod_individualfeedback\event\response_deleted', $event);
         $this->assertEquals($this->eventindividualfeedbackcompleted->id, $event->objectid);
         $this->assertEquals($USER->id, $event->userid);
-        $this->assertEquals($this->eventuser->id, $event->relateduserid);
+        $this->assertEquals(individualfeedback_hash_userid($this->eventuser->id), $event->relateduserid);
         $this->assertEquals('individualfeedback_completed', $event->objecttable);
         $this->assertEquals(null, $event->get_url());
         $this->assertEquals($this->eventindividualfeedbackcompleted, $event->get_record_snapshot('individualfeedback_completed', $event->objectid));
@@ -143,7 +143,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         // Create a response, with anonymous set to no and test can_view().
         $response = new stdClass();
         $response->individualfeedback = $this->eventcm->instance;
-        $response->userid = $this->eventuser->id;
+        $response->userid = individualfeedback_hash_userid($this->eventuser->id);
         $response->anonymous_response = INDIVIDUALFEEDBACK_ANONYMOUS_NO;
         $completedid = $DB->insert_record('individualfeedback_completed', $response);
         $DB->get_record('individualfeedback_completed', array('id' => $completedid), '*', MUST_EXIST);
@@ -205,7 +205,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         // Create a temporary response, with anonymous set to yes.
         $response = new stdClass();
         $response->individualfeedback = $this->eventcm->instance;
-        $response->userid = $this->eventuser->id;
+        $response->userid = individualfeedback_hash_userid($this->eventuser->id);
         $response->anonymous_response = INDIVIDUALFEEDBACK_ANONYMOUS_YES;
         $completedid = $DB->insert_record('indfeedback_completedtmp', $response);
         $completed = $DB->get_record('indfeedback_completedtmp', array('id' => $completedid), '*', MUST_EXIST);
@@ -226,8 +226,8 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         // Validate event data. individualfeedback is anonymous.
         $this->assertInstanceOf('\mod_individualfeedback\event\response_submitted', $event);
         $this->assertEquals($id, $event->objectid);
-        $this->assertEquals($USER->id, $event->userid);
-        $this->assertEquals($USER->id, $event->relateduserid);
+        $this->assertEquals(individualfeedback_hash_userid($USER->id), $event->userid);
+        $this->assertEquals(individualfeedback_hash_userid($USER->id), $event->relateduserid);
         $this->assertEquals('individualfeedback_completed', $event->objecttable);
         $this->assertEquals(1, $event->anonymous);
         $this->assertEquals(INDIVIDUALFEEDBACK_ANONYMOUS_YES, $event->other['anonymous']);
@@ -244,7 +244,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         // Create a temporary response, with anonymous set to no.
         $response = new stdClass();
         $response->individualfeedback = $this->eventcm->instance;
-        $response->userid = $this->eventuser->id;
+        $response->userid = individualfeedback_hash_userid($this->eventuser->id);
         $response->anonymous_response = INDIVIDUALFEEDBACK_ANONYMOUS_NO;
         $completedid = $DB->insert_record('indfeedback_completedtmp', $response);
         $completed = $DB->get_record('indfeedback_completedtmp', array('id' => $completedid), '*', MUST_EXIST);
@@ -264,7 +264,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
 
         // Test legacy data.
         $arr = array($this->eventcourse->id, 'individualfeedback', 'submit', 'view.php?id=' . $this->eventcm->id, $this->eventindividualfeedback->id,
-                     $this->eventcm->id, $this->eventuser->id);
+                     $this->eventcm->id, individualfeedback_hash_userid($this->eventuser->id));
         $this->assertEventLegacyLogData($arr, $event);
 
         // Test can_view().

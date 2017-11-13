@@ -878,7 +878,7 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         // Add one completion record..
         $record = [
             'individualfeedback' => $this->individualfeedback->id,
-            'userid' => $this->student->id,
+            'userid' => individualfeedback_hash_userid($this->student->id),
             'timemodified' => time() - DAYSECS,
             'random_response' => 0,
             'anonymous_response' => INDIVIDUALFEEDBACK_ANONYMOUS_YES,
@@ -905,7 +905,7 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         // Add one completion record..
         $record = [
             'individualfeedback' => $this->individualfeedback->id,
-            'userid' => $this->student->id,
+            'userid' => individualfeedback_hash_userid($this->student->id),
             'timemodified' => time() - DAYSECS,
             'random_response' => 0,
             'anonymous_response' => INDIVIDUALFEEDBACK_ANONYMOUS_NO,
