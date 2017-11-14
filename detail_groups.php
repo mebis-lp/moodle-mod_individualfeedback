@@ -56,12 +56,13 @@ if (count($groups)) {
     echo html_writer::end_tag('form');
 }
 
-
 echo '<div>';
 // Print the items in an analysed form.
 foreach ($items as $item) {
     $itemobj = individualfeedback_get_item_class($item->typ);
-    $printnr = ($individualfeedback->autonumbering && $item->itemnr) ? ($item->itemnr . '.') : '';
-    $itemobj->print_analysed($item, $printnr);
+    if (method_exists($itemobj, 'print_detail_groups')) {
+        $printnr = ($individualfeedback->autonumbering && $item->itemnr) ? ($item->itemnr . '.') : '';
+        $itemobj->print_detail_groups($item, $printnr);
+    }
 }
 echo '</div>';

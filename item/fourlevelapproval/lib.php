@@ -101,6 +101,53 @@ class individualfeedback_item_fourlevelapproval extends individualfeedback_item_
         return $DB->get_record('individualfeedback_item', array('id'=>$item->id));
     }
 
+    /**
+     * Helper function for collected data, for detailed analysis
+     *
+     * @param stdClass $item the db-object from individualfeedback_item
+     * @param int $groupid
+     * @param int $courseid
+     * @return array
+     */
+    public function get_answer_data($item, $groupid = false, $courseid = false) {
+        $info = $this->get_info($item);
+
+        $analysed_item = array();
+
+        //get the possible answers
+        $answers = null;
+        $answers = explode (INDIVIDUALFEEDBACK_FOURLEVELAPPROVAL_LINE_SEP, $info->presentation);
+        if (!is_array($answers)) {
+            $analysed_item['answers'] = 0;
+            return $analysed_item;
+        }
+
+        $sizeofanswers = count($answers);
+        $analysed_item['answers'] = $sizeofanswers;
+        $analysed_item['values'] = array();
+
+        //get the values
+        $values = individualfeedback_get_group_values($item, $groupid, $courseid, $this->ignoreempty($item));
+        if (!$values) {
+            return null;
+        }
+        $analysed_item['totalvalues'] = count($values);
+        
+        //get answertext, answercount and quotient for each answer
+        $analysed_answer = array();
+        for ($i = 1; $i <= $sizeofanswers; $i++) {
+            $answercount = 0;
+            foreach ($values as $value) {
+                //ist die Antwort gleich dem index der Antworten + 1?
+                if ($value->value == $i) {
+                    $answercount++;
+                }
+            }
+            $analysed_item['values'][$i] = $answercount;
+        }
+
+        return $analysed_item;
+    }
 
     //gets an array with three values(typ, name, XXX)
     //XXX is an object with answertext, answercount and quotient

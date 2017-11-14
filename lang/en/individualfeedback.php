@@ -342,3 +342,6 @@ $string['error_subtab'] = 'No valid subtab selected, can\'t load this page.';
 $string['all_results'] = 'All results';
 $string['filter_questiongroups'] = 'Filter question group:';
 $string['individualfeedback:selfassessment'] = 'Self assessment';
+$string['no_questions_in_group'] = 'No questions in this group';
+$string['error_calculating_averages'] = 'There are questions with varying numbers of answers in this group. No averages could be calculated.';
+$string['analysis_questiongroup'] = 'Question group with {$a} questions.';

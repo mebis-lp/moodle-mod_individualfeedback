@@ -410,6 +410,11 @@ class individualfeedback_item_questiongroupend extends individualfeedback_item_b
         echo html_writer::tag('div', get_string('end_of_questiongroup', 'individualfeedback'));
         echo html_writer::end_tag('div');
     }
+    
+    public function print_detail_groups($item, $itemnr = '', $groupid = false, $courseid = false) {
+        echo $this->print_analysed($item, $itemnr);
+    }
+
     public function get_printval($item, $value) {
     }
     public function can_switch_require() {

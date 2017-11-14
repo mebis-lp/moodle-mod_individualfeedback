@@ -113,6 +113,104 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         echo html_writer::tag('div', $item->name);
     }
 
+    public function print_detail_groups($item, $itemnr = '', $groupid = false, $courseid = false) {
+        global $OUTPUT;
+
+        echo $this->print_analysed($item, $itemnr);
+
+        // Get the questions within this group.
+        if (!$questions = $this->get_question_in_group($item)) {
+            echo html_writer::tag('p', get_string('no_questions_in_group', 'individualfeedback'));
+        } else {
+            // Get the data for each question.
+            $alldata = array();
+            foreach ($questions as $question) {
+                $questionobj = individualfeedback_get_item_class($question->typ);
+                $data = $questionobj->get_answer_data($question);
+                $alldata[$question->id] = $data;
+            }
+            
+            // Check if the number of answers are equal.
+            $canprint = true;
+            $first = true;
+            foreach ($alldata as $data) {
+                if ($first) {
+                    $numberofanswers = $data['answers'];
+                }
+                $first = false;
+
+                if ($numberofanswers != $data['answers']) {
+                    $canprint = false;
+                    break;
+                }
+            }
+
+            if (!$canprint) {
+                echo html_writer::tag('p', get_string('error_calculating_averages', 'individualfeedback'));
+            } else {
+                // Combine the data.
+                $combineddata = array();
+                $combineddata['values'] = array();
+                $combineddata['totalvalues'] = 0;
+                // Set the default values to 0.
+                for ($i = 1; $i <= $numberofanswers; $i++) {
+                    $combineddata['values'][$i] = 0;
+                }
+
+                foreach ($alldata as $data) {
+                    foreach ($data['values'] as $key => $value) {
+                        $combineddata['values'][$key] += $value;
+                    }
+                    $combineddata['totalvalues'] += $data['totalvalues'];
+                }
+                
+                $printdata = array();
+                foreach ($combineddata['values'] as $key => $value) {
+                    $printdata[$key] = new stdClass();
+                    $printdata[$key]->answertext = get_string('answer') . " " . $key;
+                    $printdata[$key]->answercount = $value;
+                    $printdata[$key]->quotient = $value / $combineddata['totalvalues'];
+                }
+
+                // Print the combined statistics graph.
+                $itemname = get_string('analysis_questiongroup', 'individualfeedback', count($questions));
+                echo "<table class=\"analysis itemtype_{$item->typ}\">";
+                echo '<tr><th colspan="2" align="left">';
+                echo $itemnr . ' ';
+                if (strval($item->label) !== '') {
+                    echo '('. format_string($item->label).') ';
+                }
+                echo format_string($itemname);
+                echo '</th></tr>';
+                echo "</table>";
+                $count = 0;
+                $data = [];
+                foreach ($printdata as $val) {
+                    $quotient = format_float($val->quotient * 100, 2);
+                    $strquotient = '';
+                    if ($val->quotient > 0) {
+                        $strquotient = ' ('. $quotient . ' %)';
+                    }
+                    $answertext = format_text(trim($val->answertext), FORMAT_HTML,
+                            array('noclean' => true, 'para' => false));
+
+                    $data['labels'][$count] = $answertext;
+                    $data['series'][$count] = $val->answercount;
+                    $data['series_labels'][$count] = $val->answercount . $strquotient;
+                    $count++;
+                }
+                $chart = new \core\chart_bar();
+                $chart->set_horizontal(true);
+                $series = new \core\chart_series(format_string(get_string("responses", "individualfeedback")), $data['series']);
+                $series->set_labels($data['series_labels']);
+                $chart->add_series($series);
+                $chart->set_labels($data['labels']);
+
+                echo $OUTPUT->render($chart);
+            }
+        }
+    }
+
     public function excelprint_item(&$worksheet, $row_offset,
                              $xls_formats, $item,
                              $groupid, $courseid = false) {
@@ -221,5 +319,31 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
      */
     public function get_hasvalue() {
         return 0;
+    }
+
+    /**
+     * Returns the question within the question group
+     *
+     * @param stdClass $item
+     * @return array of records
+     */
+    public function get_question_in_group($item) {
+        global $DB;
+        
+        $qtypes = array('multichoice', 'fourlevelapproval', 'fourlevelfrequency', 'fivelevelapproval');
+        list($where, $qparams) = $DB->get_in_or_equal($qtypes, SQL_PARAMS_NAMED);
+        $sql = "SELECT *
+        FROM {individualfeedback_item}
+        WHERE individualfeedback = :individualfeedback
+        AND typ {$where}
+        AND position > :startposition
+        AND position < 
+            (SELECT position 
+            FROM {individualfeedback_item}
+            WHERE dependitem = :itemid)
+        ORDER BY position";
+        $params = array('individualfeedback' => $item->individualfeedback, 'startposition' => $item->position, 'itemid' => $item->id);
+        $params = array_merge($params, $qparams);
+        return $DB->get_records_sql($sql, $params);
     }
 }
