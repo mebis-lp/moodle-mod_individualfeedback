@@ -2531,12 +2531,13 @@ function individualfeedback_update_values($completed, $tmp = false) {
 function individualfeedback_get_group_values($item,
                                    $groupid = false,
                                    $courseid = false,
-                                   $ignore_empty = false) {
+                                   $ignore_empty = false,
+                                   $selfassessment = false) {
 
     global $CFG, $DB;
-    
+
     // Get the values except for the self assessment values.
-    $params = array();
+    $params = array('selfassessment' => (int) $selfassessment);
     if ($ignore_empty) {
         $value = $DB->sql_compare_text('value');
         $ignore_empty_select = "AND $value != :emptyvalue AND $value != :zerovalue";
@@ -2544,7 +2545,7 @@ function individualfeedback_get_group_values($item,
     } else {
         $ignore_empty_select = "";
     }
-    
+
     if ($courseid) {
         $select = "item = :itemid AND course_id = :courseid ".$ignore_empty_select;
         $params += array('itemid' => $item->id, 'courseid' => $courseid);
@@ -2555,11 +2556,11 @@ function individualfeedback_get_group_values($item,
     $sql = "SELECT iv.*
     FROM {individualfeedback_value} iv
     JOIN {individualfeedback_completed} ic ON iv.completed = ic.id
-    WHERE {$select} 
-    AND ic.selfassessment = 0";
+    WHERE {$select}
+    AND ic.selfassessment = :selfassessment";
     $values = $DB->get_records_sql($sql, $params);
-    
-    $params = array('id'=>$item->individualfeedback);
+
+    $params = array('id' => $item->individualfeedback);
     if ($DB->get_field('individualfeedback', 'anonymous', $params) == INDIVIDUALFEEDBACK_ANONYMOUS_YES) {
         if (is_array($values)) {
             shuffle($values);
@@ -2567,6 +2568,7 @@ function individualfeedback_get_group_values($item,
     }
     return $values;
 }
+
 
 /**
  * check for multiple_submit = false.
@@ -3595,4 +3597,8 @@ function mod_individualfeedback_get_completion_active_rule_descriptions($cm) {
 function individualfeedback_hash_userid($userid) {
     $salt = 'IeJ8GI6CD06UDU0y3lUVMQ8D7slxBlZm0LVRZRZV';
     return sha1($salt . $userid);
+}
+
+function individualfeedback_get_statistic_question_types() {
+    return array('multichoice', 'fourlevelapproval', 'fourlevelfrequency', 'fivelevelapproval');
 }

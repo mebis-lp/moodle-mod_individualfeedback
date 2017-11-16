@@ -39,7 +39,6 @@ echo $OUTPUT->render_from_template('mod_individualfeedback/summary', $summary->e
 // Get the items of the individualfeedback.
 $items = $individualfeedbackstructure->get_items(true);
 
-
 echo '<div>';
 // Print the items in an analysed form.
 foreach ($items as $item) {

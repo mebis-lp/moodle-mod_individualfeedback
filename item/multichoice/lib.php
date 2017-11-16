@@ -122,10 +122,19 @@ class individualfeedback_item_multichoice extends individualfeedback_item_base {
         //get the values
         $values = individualfeedback_get_group_values($item, $groupid, $courseid, $this->ignoreempty($item));
         if (!$values) {
-            return null;
+            $analysed_item['totalvalues'] = 0;
+            return $analysed_item;
         }
-        $analysed_item['totalvalues'] = count($values);
-        
+
+        // Answer is not required, so check if an answer is given.
+        $totalvalues = 0;
+        foreach ($values as $value) {
+            if ($value->value != null) {
+                $totalvalues++;
+            }
+        }
+        $analysed_item['totalvalues'] = $totalvalues;
+
         //get answertext, answercount and quotient for each answer
         $analysed_answer = array();
         for ($i = 1; $i <= $sizeofanswers; $i++) {

@@ -328,7 +328,7 @@ $string['questiongroup_name'] = 'Question group name';
 $string['edit_questiongroup'] = 'Edit question group';
 $string['delete_questiongroup'] = 'Delete question group';
 $string['end_of_questiongroup'] = 'End of question group';
-$string['confirmdeleteitem_questiongroup'] = 'Are you sure you want to delete this element? 
+$string['confirmdeleteitem_questiongroup'] = 'Are you sure you want to delete this element?
 Please note: all questions within this group will be deleted.';
 $string['move_questiongroup'] = 'Move this question group';
 $string['evaluations'] = 'Evaluations';
@@ -345,3 +345,5 @@ $string['individualfeedback:selfassessment'] = 'Self assessment';
 $string['no_questions_in_group'] = 'No questions in this group';
 $string['error_calculating_averages'] = 'There are questions with varying numbers of answers in this group. No averages could be calculated.';
 $string['analysis_questiongroup'] = 'Question group with {$a} questions.';
+$string['selfassessment'] = 'Self assessment';
+$string['average_given_answer'] = 'Average given answer';

@@ -76,7 +76,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         } else {
             $DB->update_record('individualfeedback_item', $item);
         }
-        
+
         $newitem = $DB->get_record('individualfeedback_item', array('id'=>$item->id));
 
         // Also create a end of the group so you can actually determine what the group is.
@@ -96,7 +96,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         $enditem->options = '';
 
         $enditem->id = $DB->insert_record('individualfeedback_item', $enditem);
-        
+
         return $newitem;
     }
 
@@ -129,7 +129,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                 $data = $questionobj->get_answer_data($question);
                 $alldata[$question->id] = $data;
             }
-            
+
             // Check if the number of answers are equal.
             $canprint = true;
             $first = true;
@@ -163,7 +163,12 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     }
                     $combineddata['totalvalues'] += $data['totalvalues'];
                 }
-                
+
+                // If there are no answers yet, don't display a chart.
+                if (!$combineddata['totalvalues']) {
+                    return '';
+                }
+
                 $printdata = array();
                 foreach ($combineddata['values'] as $key => $value) {
                     $printdata[$key] = new stdClass();
@@ -199,6 +204,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     $data['series_labels'][$count] = $val->answercount . $strquotient;
                     $count++;
                 }
+
                 $chart = new \core\chart_bar();
                 $chart->set_horizontal(true);
                 $series = new \core\chart_series(format_string(get_string("responses", "individualfeedback")), $data['series']);
@@ -211,12 +217,131 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         }
     }
 
+    public function print_overview_questions($item, $itemnr = '', $groupid = false, $courseid = false) {
+        echo $this->print_analysed($item, $itemnr);
+    }
+
     public function excelprint_item(&$worksheet, $row_offset,
                              $xls_formats, $item,
                              $groupid, $courseid = false) {
 
         $worksheet->write_string($row_offset, 0, $item->name, $xls_formats->head2);
         $row_offset++;
+        return $row_offset;
+    }
+
+    public function excelprint_overview_questions(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false) {
+
+        return $this->excelprint_item($worksheet, $row_offset, $xls_formats, $item, $groupid, $courseid);
+    }
+
+    public function excelprint_detail_groups(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false) {
+
+        $worksheet->write_string($row_offset, 0, $item->name, $xls_formats->head2);
+        $row_offset++;
+
+        // Get the questions within this group.
+        if (!$questions = $this->get_question_in_group($item)) {
+            $worksheet->write_string($row_offset, 0, get_string('no_questions_in_group', 'individualfeedback'), $xls_formats->default);
+            $row_offset++;
+        } else {
+            // Get the data for each question.
+            $alldata = array();
+            foreach ($questions as $question) {
+                $questionobj = individualfeedback_get_item_class($question->typ);
+                $data = $questionobj->get_answer_data($question);
+                $alldata[$question->id] = $data;
+            }
+
+            // Check if the number of answers are equal.
+            $canprint = true;
+            $first = true;
+            foreach ($alldata as $data) {
+                if ($first) {
+                    $numberofanswers = $data['answers'];
+                }
+                $first = false;
+
+                if ($numberofanswers != $data['answers']) {
+                    $canprint = false;
+                    break;
+                }
+            }
+
+            if (!$canprint) {
+                $worksheet->write_string($row_offset, 0, get_string('error_calculating_averages', 'individualfeedback'), $xls_formats->default);
+                $row_offset++;
+            } else {
+                // Combine the data.
+                $combineddata = array();
+                $combineddata['values'] = array();
+                $combineddata['totalvalues'] = 0;
+                // Set the default values to 0.
+                for ($i = 1; $i <= $numberofanswers; $i++) {
+                    $combineddata['values'][$i] = 0;
+                }
+
+                foreach ($alldata as $data) {
+                    foreach ($data['values'] as $key => $value) {
+                        $combineddata['values'][$key] += $value;
+                    }
+                    $combineddata['totalvalues'] += $data['totalvalues'];
+                }
+
+                // If there are no answers yet, don't display a chart.
+                if (!$combineddata['totalvalues']) {
+                    return $row_offset;;
+                }
+
+                $printdata = array();
+                foreach ($combineddata['values'] as $key => $value) {
+                    $printdata[$key] = new stdClass();
+                    $printdata[$key]->answertext = get_string('answer') . " " . $key;
+                    $printdata[$key]->answercount = $value;
+                    $printdata[$key]->quotient = $value / $combineddata['totalvalues'];
+                }
+
+                // Print the combined statistics graph.
+                $itemname = get_string('analysis_questiongroup', 'individualfeedback', count($questions));
+                $worksheet->write_string($row_offset, 0, $item->label, $xls_formats->head2);
+                $worksheet->write_string($row_offset, 1, $itemname, $xls_formats->head2);
+                $row_offset++;
+
+                $column = 2;
+                foreach ($printdata as $val) {
+                    $quotient = format_float($val->quotient * 100, 2);
+                    $strquotient = '';
+                    if ($val->quotient > 0) {
+                        $strquotient = ' ('. $quotient . ' %)';
+                    }
+                    $answertext = format_text(trim($val->answertext), FORMAT_HTML,
+                            array('noclean' => true, 'para' => false));
+
+                    $worksheet->write_string($row_offset,
+                                             $column,
+                                             $answertext,
+                                             $xls_formats->head2);
+
+                    $worksheet->write_number($row_offset + 1,
+                                             $column,
+                                             $val->answercount,
+                                             $xls_formats->default);
+
+                    $worksheet->write_number($row_offset + 2,
+                                             $column,
+                                             $quotient,
+                                             $xls_formats->procent);
+
+                    $column++;
+                }
+                $row_offset += 3;
+            }
+        }
+
         return $row_offset;
     }
 
@@ -329,16 +454,16 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
      */
     public function get_question_in_group($item) {
         global $DB;
-        
-        $qtypes = array('multichoice', 'fourlevelapproval', 'fourlevelfrequency', 'fivelevelapproval');
+
+        $qtypes = individualfeedback_get_statistic_question_types();
         list($where, $qparams) = $DB->get_in_or_equal($qtypes, SQL_PARAMS_NAMED);
         $sql = "SELECT *
         FROM {individualfeedback_item}
         WHERE individualfeedback = :individualfeedback
         AND typ {$where}
         AND position > :startposition
-        AND position < 
-            (SELECT position 
+        AND position <
+            (SELECT position
             FROM {individualfeedback_item}
             WHERE dependitem = :itemid)
         ORDER BY position";

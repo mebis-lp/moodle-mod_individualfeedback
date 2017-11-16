@@ -43,7 +43,7 @@ class individualfeedback_item_fivelevelapproval extends individualfeedback_item_
         }
         //the elements for position dropdownlist
         $positionlist = array_slice(range(0, $i_formselect_last), 1, $i_formselect_last, true);
-        
+
         if (empty($item->presentation)) {
             $item->presentation = 'r' . INDIVIDUALFEEDBACK_FIVELEVELAPPROVAL_TYPE_SEP . get_string('fivelevelapproval_options', 'individualfeedback');
         }
@@ -129,10 +129,19 @@ class individualfeedback_item_fivelevelapproval extends individualfeedback_item_
         //get the values
         $values = individualfeedback_get_group_values($item, $groupid, $courseid, $this->ignoreempty($item));
         if (!$values) {
-            return null;
+            $analysed_item['totalvalues'] = 0;
+            return $analysed_item;
         }
-        $analysed_item['totalvalues'] = count($values);
-        
+
+        // Answer is not required, so check if an answer is given.
+        $totalvalues = 0;
+        foreach ($values as $value) {
+            if ($value->value != null) {
+                $totalvalues++;
+            }
+        }
+        $analysed_item['totalvalues'] = $totalvalues;
+
         //get answertext, answercount and quotient for each answer
         $analysed_answer = array();
         for ($i = 1; $i <= $sizeofanswers; $i++) {
@@ -145,6 +154,7 @@ class individualfeedback_item_fivelevelapproval extends individualfeedback_item_
             }
             $analysed_item['values'][$i] = $answercount;
         }
+
 
         return $analysed_item;
     }

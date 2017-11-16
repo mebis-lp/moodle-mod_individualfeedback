@@ -45,12 +45,16 @@ class individualfeedback_multichoice_form extends individualfeedback_item_form {
                             array('size' => INDIVIDUALFEEDBACK_ITEM_LABEL_TEXTBOX_SIZE,
                                   'maxlength' => 255));
 
+/*
         $mform->addElement('select',
                             'subtype',
                             get_string('multichoicetype', 'individualfeedback').'&nbsp;',
                             array('r'=>get_string('radio', 'individualfeedback'),
                                   'c'=>get_string('check', 'individualfeedback'),
                                   'd'=>get_string('dropdown', 'individualfeedback')));
+*/
+        $mform->addElement('hidden', 'subtype', 'r');
+        $mform->setType('subtype', PARAM_TEXT);
 
         $mform->addElement('select',
                             'horizontal',

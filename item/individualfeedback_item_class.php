@@ -285,6 +285,134 @@ abstract class individualfeedback_item_base {
      * @since  Moodle 3.3
      */
     abstract public function get_analysed_for_external($item, $groupid = false, $courseid = false);
+
+    public function print_overview_questions($item, $itemnr = '', $groupid = false, $courseid = false) {
+        global $OUTPUT;
+
+        $availableitems = individualfeedback_get_statistic_question_types();
+        if (!in_array($item->typ, $availableitems)) {
+            return;
+        }
+
+        $overviewdata = array();
+        if ($data = $this->get_answer_data($item, $groupid, $courseid)) {
+            if (!$data['totalvalues']) {
+                $overviewdata['average'] = 0;
+            } else {
+                $totalvalue = 0;
+                foreach ($data['values'] as $key => $value) {
+                    $totalvalue += ($key * $value);
+                }
+                $average = $totalvalue / $data['totalvalues'];
+                $overviewdata['average'] = $average;
+            }
+        }
+
+        $overviewdata['selfassessment'] = 0;
+        if ($selfassessment = $this->check_and_get_self_assessment_data($item)) {
+            $overviewdata['selfassessment'] = $selfassessment->value;
+        }
+
+        if (!$overviewdata['average'] && !$overviewdata['selfassessment']) {
+            return '';
+        }
+
+        echo "<table class=\"analysis itemtype_{$item->typ}\">";
+        echo '<tr><th colspan="2" align="left">';
+        echo $itemnr . ' ';
+        if (strval($item->label) !== '') {
+            echo '('. format_string($item->label).') ';
+        }
+        echo format_string($item->name);
+        echo '</th></tr>';
+        echo "</table>";
+        $graphdata = array();
+        $graphdata['series_labels1'] = array($overviewdata['average']);
+        $graphdata['series_labels2'] = array($overviewdata['selfassessment']);
+        $graphdata['series1'] = array($overviewdata['average']);
+        $graphdata['series2'] = array($overviewdata['selfassessment']);
+
+        $chart = new \core\chart_bar();
+        $chart->set_horizontal(true);
+        $series = new \core\chart_series(format_string(get_string('average', 'individualfeedback')), $graphdata['series1']);
+        $series->set_labels($graphdata['series_labels1']);
+        $chart->add_series($series);
+        $series = new \core\chart_series(format_string(get_string('selfassessment', 'individualfeedback')), $graphdata['series2']);
+        $series->set_labels($graphdata['series_labels2']);
+        $chart->add_series($series);
+
+        $answers = array();
+        for ($i = 1; $i <= $data['answers']; $i++) {
+            $answers[] = get_string('answer') . " " . $i;
+        }
+
+        $xaxis = $chart->get_xaxis(0, true);
+        $xaxis->set_stepsize(1);
+        $xaxis->set_min(1);
+        $xaxis->set_max(($i));
+        $xaxis->set_labels($answers);
+        $chart->set_xaxis($xaxis);
+
+        echo $OUTPUT->render($chart);
+    }
+
+
+    public function excelprint_overview_questions(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false) {
+
+        $availableitems = individualfeedback_get_statistic_question_types();
+        if (!in_array($item->typ, $availableitems)) {
+            return $row_offset;
+        }
+
+        $overviewdata = array();
+        if ($data = $this->get_answer_data($item, $groupid, $courseid)) {
+            if (!$data['totalvalues']) {
+                $overviewdata['average'] = 0;
+            } else {
+                $totalvalue = 0;
+                foreach ($data['values'] as $key => $value) {
+                    $totalvalue += ($key * $value);
+                }
+                $average = $totalvalue / $data['totalvalues'];
+                $overviewdata['average'] = $average;
+            }
+        }
+
+        $overviewdata['selfassessment'] = 0;
+        if ($selfassessment = $this->check_and_get_self_assessment_data($item)) {
+            $overviewdata['selfassessment'] = $selfassessment->value;
+        }
+
+        if (!$overviewdata['average'] && !$overviewdata['selfassessment']) {
+            return $row_offset;
+        }
+
+        $worksheet->write_string($row_offset, 0, $item->label, $xls_formats->head2);
+        $worksheet->write_string($row_offset, 1, format_string($item->name), $xls_formats->head2);
+        $worksheet->write_string($row_offset, 2, get_string('average', 'individualfeedback'), $xls_formats->head2);
+        $worksheet->write_number($row_offset + 1, 2, $overviewdata['average'], $xls_formats->default);
+        $worksheet->write_string($row_offset, 3, get_string('selfassessment', 'individualfeedback'), $xls_formats->head2);
+        $worksheet->write_number($row_offset + 1, 3, $overviewdata['selfassessment'], $xls_formats->default);
+
+        $row_offset += 2;
+
+        return $row_offset;
+    }
+
+
+    private function check_and_get_self_assessment_data($item) {
+        global $DB, $PAGE;
+
+        $data = array();
+        if (!has_capability('mod/individualfeedback:selfassessment', $PAGE->context)) {
+            return $data;
+        }
+        $data = individualfeedback_get_group_values($item, false, false, $this->ignoreempty($item), true);
+        return reset($data);
+    }
+
 }
 
 //a dummy class to realize pagebreaks
@@ -406,12 +534,29 @@ class individualfeedback_item_questiongroupend extends individualfeedback_item_b
         return $row_offset;
     }
 
+    public function excelprint_detail_groups(&$worksheet, $row_offset,
+                            $xls_formats, $item,
+                            $groupid, $courseid = false) {
+        return $this->excelprint_item($worksheet, $row_offset, $xls_formats, $item, $groupid, $courseid);
+    }
+
+    public function excelprint_overview_questions(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false) {
+
+        return $this->excelprint_item($worksheet, $row_offset, $xls_formats, $item, $groupid, $courseid);
+    }
+
     public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
         echo html_writer::tag('div', get_string('end_of_questiongroup', 'individualfeedback'));
         echo html_writer::end_tag('div');
     }
-    
+
     public function print_detail_groups($item, $itemnr = '', $groupid = false, $courseid = false) {
+        echo $this->print_analysed($item, $itemnr);
+    }
+
+    public function print_overview_questions($item, $itemnr = '', $groupid = false, $courseid = false) {
         echo $this->print_analysed($item, $itemnr);
     }
 

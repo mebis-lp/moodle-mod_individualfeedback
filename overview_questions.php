@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 // Button "Export to excel".
 if (has_capability('mod/individualfeedback:viewreports', $context) && $individualfeedbackstructure->get_items()) {
     echo $OUTPUT->container_start('form-buttons');
-    $aurl = new moodle_url('/mod/individualfeedback/analysis_to_excel.php', ['sesskey' => sesskey(), 'id' => $id]);
+    $aurl = new moodle_url('/mod/individualfeedback/overview_questions_to_excel.php', ['sesskey' => sesskey(), 'id' => $id]);
     echo $OUTPUT->single_button($aurl, get_string('export_to_excel', 'individualfeedback'));
     echo $OUTPUT->container_end();
 }
@@ -37,15 +37,15 @@ $summary = new mod_individualfeedback\output\summary($individualfeedbackstructur
 echo $OUTPUT->render_from_template('mod_individualfeedback/summary', $summary->export_for_template($OUTPUT));
 
 // Get the items of the individualfeedback.
-$items = $individualfeedbackstructure->get_items(true);
-
-// Fixme - here...
+$items = $individualfeedbackstructure->get_items();
 
 echo '<div>';
 // Print the items in an analysed form.
 foreach ($items as $item) {
     $itemobj = individualfeedback_get_item_class($item->typ);
-    $printnr = ($individualfeedback->autonumbering && $item->itemnr) ? ($item->itemnr . '.') : '';
-    $itemobj->print_analysed($item, $printnr);
+    if (method_exists($itemobj, 'print_overview_questions')) {
+        $printnr = ($individualfeedback->autonumbering && $item->itemnr) ? ($item->itemnr . '.') : '';
+        $itemobj->print_overview_questions($item, $printnr);
+    }
 }
 echo '</div>';
