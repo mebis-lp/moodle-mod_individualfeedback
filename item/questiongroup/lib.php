@@ -601,7 +601,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
             ]);
 
         $form->add_form_element($item, ['html', html_writer::start_tag('div', ['class' => 'individualfeedback_questiongroup_start questiongroupmoveitem', 'id' => 'questiongroup_' . $item->id])]);
-        if ($PAGE->url->get_param('do_show')) {
+        if ($form->get_mode() == $form::MODE_EDIT) {
             $moveicon = html_writer::div($OUTPUT->pix_icon('i/move_2d', get_string('move_questiongroup', 'individualfeedback')), 'float-left drag-handle movequestiongroup');
             $form->add_form_element($item, ['html', $moveicon]);
         }
