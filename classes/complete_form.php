@@ -168,6 +168,20 @@ class mod_individualfeedback_complete_form extends moodleform {
     protected function definition_preview() {
         foreach ($this->structure->get_items() as $individualfeedbackitem) {
             $itemobj = individualfeedback_get_item_class($individualfeedbackitem->typ);
+
+            // Add checkboxes in template view for selecting which questions to import.
+            if ($this->get_mode() == self::MODE_VIEW_TEMPLATE) {
+                $params = array('type' => 'checkbox', 'name' => 'question_' . $individualfeedbackitem->id,
+                                    'data-id' => $individualfeedbackitem->id, 'data-typ' => $individualfeedbackitem->typ,
+                                    'data-dependitem' => $individualfeedbackitem->dependitem,
+                                    'class' => 'questionselect', 'checked' => 'checked');
+                if ($individualfeedbackitem->typ == 'questiongroupend') {
+                    $params['disabled'] = 'disabled';
+                }
+                $checkbox = html_writer::tag('input', '', $params);
+                $this->add_form_element($individualfeedbackitem, ['html', $checkbox]);
+            }
+
             $itemobj->complete_form_element($individualfeedbackitem, $this);
         }
     }

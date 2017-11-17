@@ -1349,9 +1349,9 @@ function individualfeedback_delete_template($template) {
  * @uses CONTEXT_MODULE
  * @param object $individualfeedback
  * @param int $templateid
- * @param boolean $deleteold
+ * @param object $formdata - the posted formdata
  */
-function individualfeedback_items_from_template($individualfeedback, $templateid, $deleteold = false) {
+function individualfeedback_items_from_template($individualfeedback, $templateid, $formdata) {
     global $DB, $CFG;
 
     require_once($CFG->libdir.'/completionlib.php');
@@ -1379,6 +1379,7 @@ function individualfeedback_items_from_template($individualfeedback, $templateid
 
     //if deleteold then delete all old items before
     //get all items
+    $deleteold = $formdata->deleteolditems;
     if ($deleteold) {
         if ($individualfeedbackitems = $DB->get_records('individualfeedback_item', array('individualfeedback'=>$individualfeedback->id))) {
             //delete all items of this individualfeedback
@@ -1413,6 +1414,11 @@ function individualfeedback_items_from_template($individualfeedback, $templateid
     $dependitemsmap = array();
     $itembackup = array();
     foreach ($templitems as $t_item) {
+        // Only import the selected items.
+        $formkey = 'import_' . $t_item->id;
+        if (!isset($formdata->$formkey) || !$formdata->$formkey) {
+            continue;
+        }
         $item = clone($t_item);
         unset($item->id);
         $item->individualfeedback = $individualfeedback->id;
@@ -1483,6 +1489,18 @@ function individualfeedback_get_template_list($course, $onlyownorpublic = '') {
             break;
     }
     return $templates;
+}
+
+/**
+ * Get the items of a template
+ *
+ * @param int $templateid
+ * @return array the template items
+ */
+function individualfeedback_get_template_items($templateid) {
+    global $DB;
+
+    return $DB->get_records('individualfeedback_item', array('template' => $templateid), 'position');
 }
 
 ////////////////////////////////////////////////

@@ -47,6 +47,14 @@ class mod_individualfeedback_use_templ_form extends moodleform {
         $mform->setType('do_show', PARAM_INT);
         $mform->setConstant('do_show', 'edit');
 
+        $questions = $this->_customdata['questions'];
+        if (count($questions)) {
+            foreach ($questions as $question) {
+                $mform->addElement('hidden', 'import_' . $question->id, 1);
+                $mform->setType('import_' . $question->id, PARAM_INT);
+            }
+        }
+
         //-------------------------------------------------------------------------------
         // buttons
         $this->add_action_buttons();

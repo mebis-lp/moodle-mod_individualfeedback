@@ -46,15 +46,19 @@ $individualfeedbackstructure = new mod_individualfeedback_structure($individualf
 
 require_capability('mod/individualfeedback:edititems', $context);
 
-$mform = new mod_individualfeedback_use_templ_form();
+$data = array();
+$data['questions'] = individualfeedback_get_template_items($templateid);
+$mform = new mod_individualfeedback_use_templ_form(null, $data);
 $mform->set_data(array('id' => $id, 'templateid' => $templateid));
 
 if ($mform->is_cancelled()) {
     redirect('edit.php?id='.$id.'&do_show=templates');
 } else if ($formdata = $mform->get_data()) {
-    individualfeedback_items_from_template($individualfeedback, $templateid, $formdata->deleteolditems);
+    individualfeedback_items_from_template($individualfeedback, $templateid, $formdata);
     redirect('edit.php?id=' . $id);
 }
+
+$PAGE->requires->js_call_amd('mod_individualfeedback/usetemplate', 'init');
 
 /// Print the page header
 $strindividualfeedbacks = get_string("modulenameplural", "individualfeedback");
