@@ -105,8 +105,8 @@ $rowoffset1++;
 foreach ($items as $item) {
     // Get the class of item-typ.
     $itemobj = individualfeedback_get_item_class($item->typ);
-    if (method_exists($itemobj, 'excelprint_detail_groups')) {
-        $rowoffset1 = $itemobj->excelprint_detail_groups($worksheet1,
+    if (method_exists($itemobj, 'excelprint_overview_groups')) {
+        $rowoffset1 = $itemobj->excelprint_overview_groups($worksheet1,
             $rowoffset1,
             $xlsformats,
             $item,

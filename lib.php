@@ -2566,6 +2566,7 @@ function individualfeedback_get_group_values($item,
             shuffle($values);
         }
     }
+
     return $values;
 }
 

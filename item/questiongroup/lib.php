@@ -221,6 +221,131 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         echo $this->print_analysed($item, $itemnr);
     }
 
+    public function print_overview_groups($item, $itemnr = '', $groupid = false, $courseid = false) {
+        global $OUTPUT;
+
+        echo $this->print_analysed($item, $itemnr);
+
+        // Get the questions within this group.
+        if (!$questions = $this->get_question_in_group($item)) {
+            echo html_writer::tag('p', get_string('no_questions_in_group', 'individualfeedback'));
+        } else {
+            // Get the data for each question.
+            $alldata = array();
+            $selfassessment = array();
+            foreach ($questions as $question) {
+                $questionobj = individualfeedback_get_item_class($question->typ);
+                $data = $questionobj->get_answer_data($question);
+                $alldata[$question->id] = $data;
+                if ($selfdata = $this->check_and_get_self_assessment_data($question)) {
+                    $selfassessment[$question->id] = $selfdata;
+                }
+            }
+
+            // Check if the number of answers are equal.
+            $canprint = true;
+            $first = true;
+            foreach ($alldata as $data) {
+                if ($first) {
+                    $numberofanswers = $data['answers'];
+                }
+                $first = false;
+
+                if ($numberofanswers != $data['answers']) {
+                    $canprint = false;
+                    break;
+                }
+            }
+
+            if (!$canprint) {
+                echo html_writer::tag('p', get_string('error_calculating_averages', 'individualfeedback'));
+            } else {
+                // Calculate the averages.
+                $averages = array();
+                foreach ($alldata as $data) {
+                    if (!$data['totalvalues']) {
+                        $averages[] = 0;
+                        continue;
+                    }
+
+                    $total = 0;
+                    foreach ($data['values'] as $key => $value) {
+                        $total += ($key * $value);
+                    }
+                    $averages[] = ($total / $data['totalvalues']);
+                }
+
+                $totalofaverages = 0;
+                foreach ($averages as $average) {
+                    $totalofaverages += $average;
+                }
+
+                // Self asessement averages
+                $selfaverages = array();
+                foreach ($selfassessment as $record) {
+                    $selfaverages[] = $record->value;
+                }
+
+                $totalselfaverages = 0;
+                foreach ($selfaverages as $average) {
+                    $totalselfaverages += $average;
+                }
+
+                // If there are no answers yet, don't display a chart.
+                if (!$totalofaverages && !$totalselfaverages) {
+                    return '';
+                }
+
+                $totalaverage = ($totalofaverages /  count($averages));
+                $totalselfaverage = ($totalselfaverages /  count($selfaverages));
+
+                // Print the combined statistics graph.
+                $itemname = get_string('analysis_questiongroup', 'individualfeedback', count($questions));
+                echo "<table class=\"analysis itemtype_{$item->typ}\">";
+                echo '<tr><th colspan="2" align="left">';
+                echo $itemnr . ' ';
+                if (strval($item->label) !== '') {
+                    echo '('. format_string($item->label).') ';
+                }
+                echo format_string($itemname);
+                echo '</th></tr>';
+                echo "</table>";
+                $graphdata = array();
+                $graphdata['series_labels1'] = array($totalaverage);
+                $graphdata['series_labels2'] = array($totalselfaverage);
+                $graphdata['series1'] = array($totalaverage);
+                $graphdata['series2'] = array($totalselfaverage);
+
+                $chart = new \core\chart_bar();
+                $chart->set_horizontal(true);
+                if ($totalaverage) {
+                    $series = new \core\chart_series(format_string(get_string('average', 'individualfeedback')), $graphdata['series1']);
+                    $series->set_labels($graphdata['series_labels1']);
+                    $chart->add_series($series);
+                }
+                if ($totalselfaverage) {
+                    $series = new \core\chart_series(format_string(get_string('selfassessment', 'individualfeedback')), $graphdata['series2']);
+                    $series->set_labels($graphdata['series_labels2']);
+                    $chart->add_series($series);
+                }
+
+                $answers = array();
+                for ($i = 1; $i <= $data['answers']; $i++) {
+                    $answers[] = get_string('answer') . " " . $i;
+                }
+
+                $xaxis = $chart->get_xaxis(0, true);
+                $xaxis->set_stepsize(1);
+                $xaxis->set_min(1);
+                $xaxis->set_max(($i));
+                $xaxis->set_labels($answers);
+                $chart->set_xaxis($xaxis);
+
+                echo $OUTPUT->render($chart);
+            }
+        }
+    }
+
     public function excelprint_item(&$worksheet, $row_offset,
                              $xls_formats, $item,
                              $groupid, $courseid = false) {
@@ -294,7 +419,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
 
                 // If there are no answers yet, don't display a chart.
                 if (!$combineddata['totalvalues']) {
-                    return $row_offset;;
+                    return $row_offset;
                 }
 
                 $printdata = array();
@@ -313,11 +438,6 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
 
                 $column = 2;
                 foreach ($printdata as $val) {
-                    $quotient = format_float($val->quotient * 100, 2);
-                    $strquotient = '';
-                    if ($val->quotient > 0) {
-                        $strquotient = ' ('. $quotient . ' %)';
-                    }
                     $answertext = format_text(trim($val->answertext), FORMAT_HTML,
                             array('noclean' => true, 'para' => false));
 
@@ -339,6 +459,121 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     $column++;
                 }
                 $row_offset += 3;
+            }
+        }
+
+        return $row_offset;
+    }
+
+    public function excelprint_overview_groups(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false) {
+
+        $worksheet->write_string($row_offset, 0, $item->name, $xls_formats->head2);
+        $row_offset++;
+
+        // Get the questions within this group.
+        if (!$questions = $this->get_question_in_group($item)) {
+            $worksheet->write_string($row_offset, 0, get_string('no_questions_in_group', 'individualfeedback'), $xls_formats->default);
+            $row_offset++;
+        } else {
+            // Get the data for each question.
+            $alldata = array();
+            $selfassessment = array();
+            foreach ($questions as $question) {
+                $questionobj = individualfeedback_get_item_class($question->typ);
+                $data = $questionobj->get_answer_data($question);
+                $alldata[$question->id] = $data;
+                if ($selfdata = $this->check_and_get_self_assessment_data($question)) {
+                    $selfassessment[$question->id] = $selfdata;
+                }
+            }
+
+            // Check if the number of answers are equal.
+            $canprint = true;
+            $first = true;
+            foreach ($alldata as $data) {
+                if ($first) {
+                    $numberofanswers = $data['answers'];
+                }
+                $first = false;
+
+                if ($numberofanswers != $data['answers']) {
+                    $canprint = false;
+                    break;
+                }
+            }
+
+            if (!$canprint) {
+                $worksheet->write_string($row_offset, 0, get_string('error_calculating_averages', 'individualfeedback'), $xls_formats->default);
+                $row_offset++;
+            } else {
+                // Calculate the averages.
+                $averages = array();
+                foreach ($alldata as $data) {
+                    if (!$data['totalvalues']) {
+                        $averages[] = 0;
+                        continue;
+                    }
+
+                    $total = 0;
+                    foreach ($data['values'] as $key => $value) {
+                        $total += ($key * $value);
+                    }
+                    $averages[] = ($total / $data['totalvalues']);
+                }
+
+                $totalofaverages = 0;
+                foreach ($averages as $average) {
+                    $totalofaverages += $average;
+                }
+
+                // Self asessement averages
+                $selfaverages = array();
+                foreach ($selfassessment as $record) {
+                    $selfaverages[] = $record->value;
+                }
+
+                $totalselfaverages = 0;
+                foreach ($selfaverages as $average) {
+                    $totalselfaverages += $average;
+                }
+
+                // If there are no answers yet, don't display a chart.
+                if (!$totalofaverages && !$totalselfaverages) {
+                    return $row_offset;
+                }
+
+                $totalaverage = ($totalofaverages /  count($averages));
+                $totalselfaverage = ($totalselfaverages /  count($selfaverages));
+
+                // Print the combined statistics graph.
+                $itemname = get_string('analysis_questiongroup', 'individualfeedback', count($questions));
+                $worksheet->write_string($row_offset, 0, $item->label, $xls_formats->head2);
+                $worksheet->write_string($row_offset, 1, $itemname, $xls_formats->head2);
+                $row_offset++;
+
+                $worksheet->write_string($row_offset,
+                                         2,
+                                         get_string('average', 'individualfeedback'),
+                                         $xls_formats->head2);
+
+                $worksheet->write_number($row_offset + 1,
+                                         2,
+                                         $totalaverage,
+                                         $xls_formats->default);
+
+                $worksheet->write_string($row_offset,
+                                         3,
+                                         get_string('selfassessment', 'individualfeedback'),
+                                         $xls_formats->head2);
+
+                $worksheet->write_number($row_offset + 1,
+                                         3,
+                                         $totalselfaverage,
+                                         $xls_formats->default);
+
+                $row_offset += 2;
             }
         }
 

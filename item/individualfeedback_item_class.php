@@ -334,12 +334,16 @@ abstract class individualfeedback_item_base {
 
         $chart = new \core\chart_bar();
         $chart->set_horizontal(true);
-        $series = new \core\chart_series(format_string(get_string('average', 'individualfeedback')), $graphdata['series1']);
-        $series->set_labels($graphdata['series_labels1']);
-        $chart->add_series($series);
-        $series = new \core\chart_series(format_string(get_string('selfassessment', 'individualfeedback')), $graphdata['series2']);
-        $series->set_labels($graphdata['series_labels2']);
-        $chart->add_series($series);
+        if ($overviewdata['average']) {
+            $series = new \core\chart_series(format_string(get_string('average', 'individualfeedback')), $graphdata['series1']);
+            $series->set_labels($graphdata['series_labels1']);
+            $chart->add_series($series);
+        }
+        if ($overviewdata['selfassessment']) {
+            $series = new \core\chart_series(format_string(get_string('selfassessment', 'individualfeedback')), $graphdata['series2']);
+            $series->set_labels($graphdata['series_labels2']);
+            $chart->add_series($series);
+        }
 
         $answers = array();
         for ($i = 1; $i <= $data['answers']; $i++) {
@@ -402,14 +406,14 @@ abstract class individualfeedback_item_base {
     }
 
 
-    private function check_and_get_self_assessment_data($item) {
+    public function check_and_get_self_assessment_data($item) {
         global $DB, $PAGE;
 
         $data = array();
         if (!has_capability('mod/individualfeedback:selfassessment', $PAGE->context)) {
             return $data;
         }
-        $data = individualfeedback_get_group_values($item, false, false, $this->ignoreempty($item), true);
+        $data = individualfeedback_get_group_values($item, false, false, false, true);
         return reset($data);
     }
 
@@ -547,6 +551,13 @@ class individualfeedback_item_questiongroupend extends individualfeedback_item_b
         return $this->excelprint_item($worksheet, $row_offset, $xls_formats, $item, $groupid, $courseid);
     }
 
+    public function excelprint_overview_groups(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false) {
+
+        return $this->excelprint_item($worksheet, $row_offset, $xls_formats, $item, $groupid, $courseid);
+    }
+
     public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
         echo html_writer::tag('div', get_string('end_of_questiongroup', 'individualfeedback'));
         echo html_writer::end_tag('div');
@@ -557,6 +568,10 @@ class individualfeedback_item_questiongroupend extends individualfeedback_item_b
     }
 
     public function print_overview_questions($item, $itemnr = '', $groupid = false, $courseid = false) {
+        echo $this->print_analysed($item, $itemnr);
+    }
+
+    public function print_overview_groups($item, $itemnr = '', $groupid = false, $courseid = false) {
         echo $this->print_analysed($item, $itemnr);
     }
 
