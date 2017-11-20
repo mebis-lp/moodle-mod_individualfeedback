@@ -51,7 +51,7 @@ class moodle1_mod_individualfeedback_handler extends moodle1_mod_handler {
     public function get_paths() {
         return array(
             new convert_path(
-                'individualfeedback', '/MOODLE_BACKUP/COURSE/MODULES/MOD/individualfeedback',
+                'individualfeedback', '/MOODLE_BACKUP/COURSE/MODULES/MOD/INDIVIDUALFEEDBACK',
                 array(
                     'renamefields' => array(
                         'summary' => 'intro',
@@ -67,7 +67,7 @@ class moodle1_mod_individualfeedback_handler extends moodle1_mod_handler {
                 )
             ),
             new convert_path(
-                'individualfeedback_item', '/MOODLE_BACKUP/COURSE/MODULES/MOD/individualfeedback/ITEMS/ITEM',
+                'individualfeedback_item', '/MOODLE_BACKUP/COURSE/MODULES/MOD/INDIVIDUALFEEDBACK/ITEMS/ITEM',
                 array (
                     'newfields' => array(
                         'label' => '',
@@ -81,7 +81,7 @@ class moodle1_mod_individualfeedback_handler extends moodle1_mod_handler {
     }
 
     /**
-     * This is executed every time we have one /MOODLE_BACKUP/COURSE/MODULES/MOD/individualfeedback
+     * This is executed every time we have one /MOODLE_BACKUP/COURSE/MODULES/MOD/INDIVIDUALFEEDBACK
      * data available
      */
     public function process_individualfeedback($data) {
@@ -125,7 +125,7 @@ class moodle1_mod_individualfeedback_handler extends moodle1_mod_handler {
     }
 
     /**
-     * This is executed every time we have one /MOODLE_BACKUP/COURSE/MODULES/MOD/individualfeedback/ITEMS/ITEM
+     * This is executed every time we have one /MOODLE_BACKUP/COURSE/MODULES/MOD/INDIVIDUALFEEDBACK/ITEMS/ITEM
      * data available
      */
     public function process_individualfeedback_item($data) {

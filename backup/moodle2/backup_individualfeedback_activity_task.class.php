@@ -61,19 +61,19 @@ class backup_individualfeedback_activity_task extends backup_activity_task {
 
         // Link to the list of individualfeedbacks
         $search="/(".$base."\/mod\/individualfeedback\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@individualfeedbackINDEX*$2@$', $content);
+        $content= preg_replace($search, '$@INDIVIDUALFEEDBACKINDEX*$2@$', $content);
 
         // Link to individualfeedback view by moduleid
         $search="/(".$base."\/mod\/individualfeedback\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@individualfeedbackVIEWBYID*$2@$', $content);
+        $content= preg_replace($search, '$@INDIVIDUALFEEDBACKVIEWBYID*$2@$', $content);
 
         // Link to individualfeedback analyis by moduleid
         $search="/(".$base."\/mod\/individualfeedback\/analysis.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@individualfeedbackANALYSISBYID*$2@$', $content);
+        $content= preg_replace($search, '$@INDIVIDUALFEEDBACKANALYSISBYID*$2@$', $content);
 
         // Link to individualfeedback entries by moduleid
         $search="/(".$base."\/mod\/individualfeedback\/show_entries.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@individualfeedbackSHOWENTRIESBYID*$2@$', $content);
+        $content= preg_replace($search, '$@INDIVIDUALFEEDBACKSHOWENTRIESBYID*$2@$', $content);
 
         return $content;
     }
