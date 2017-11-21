@@ -160,20 +160,27 @@ if ($do_show == 'templates') {
 }
 
 if ($do_show == 'edit') {
-    // Print the Item-Edit-section.
+    // Check if it is a linked individual feedback activity.
+    if ($linkedid = individualfeedback_get_linkedid($individualfeedback->id)) {
+        echo html_writer::tag('p', get_string('individualfeedback_is_linked', 'individualfeedback'), array('class' => 'error'));
 
-    $select = new single_select(new moodle_url('/mod/individualfeedback/edit_item.php',
-            array('cmid' => $id, 'position' => $lastposition, 'sesskey' => sesskey())),
-        'typ', individualfeedback_load_individualfeedback_items_options());
-    $select->label = get_string('add_item', 'mod_individualfeedback');
-    echo $OUTPUT->render($select);
+        $form = new mod_individualfeedback_complete_form(mod_individualfeedback_complete_form::MODE_PRINT,
+                $individualfeedbackstructure, 'individualfeedback_edit_form');
+        $form->display();
+    } else {
+        // Print the Item-Edit-section.
+        $select = new single_select(new moodle_url('/mod/individualfeedback/edit_item.php',
+                array('cmid' => $id, 'position' => $lastposition, 'sesskey' => sesskey())),
+            'typ', individualfeedback_load_individualfeedback_items_options());
+        $select->label = get_string('add_item', 'mod_individualfeedback');
+        echo $OUTPUT->render($select);
 
-
-    $form = new mod_individualfeedback_complete_form(mod_individualfeedback_complete_form::MODE_EDIT,
-            $individualfeedbackstructure, 'individualfeedback_edit_form');
-    echo '<div id="individualfeedback_dragarea">'; // The container for the dragging area.
-    $form->display();
-    echo '</div>';
+        $form = new mod_individualfeedback_complete_form(mod_individualfeedback_complete_form::MODE_EDIT,
+                $individualfeedbackstructure, 'individualfeedback_edit_form');
+        echo '<div id="individualfeedback_dragarea">'; // The container for the dragging area.
+        $form->display();
+        echo '</div>';
+    }
 }
 
 echo $OUTPUT->footer();

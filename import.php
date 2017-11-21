@@ -106,15 +106,20 @@ require('tabs.php');
 ///////////////////////////////////////////////////////////////////////////
 echo $OUTPUT->heading(get_string('import_questions', 'individualfeedback'), 3);
 
-if (isset($importerror->msg) AND is_array($importerror->msg)) {
-    echo $OUTPUT->box_start('generalbox errorboxcontent boxaligncenter');
-    foreach ($importerror->msg as $msg) {
-        echo $msg.'<br />';
+// Check if it is a linked individual feedback activity.
+if ($linkedid = individualfeedback_get_linkedid($individualfeedback->id)) {
+    echo html_writer::tag('p', get_string('individualfeedback_is_linked', 'individualfeedback'), array('class' => 'error'));
+} else {
+    if (isset($importerror->msg) AND is_array($importerror->msg)) {
+        echo $OUTPUT->box_start('generalbox errorboxcontent boxaligncenter');
+        foreach ($importerror->msg as $msg) {
+            echo $msg.'<br />';
+        }
+        echo $OUTPUT->box_end();
     }
-    echo $OUTPUT->box_end();
-}
 
-$mform->display();
+    $mform->display();
+}
 
 echo $OUTPUT->footer();
 

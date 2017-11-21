@@ -347,3 +347,7 @@ $string['error_calculating_averages'] = 'There are questions with varying number
 $string['analysis_questiongroup'] = 'Question group with {$a} questions.';
 $string['selfassessment'] = 'Self assessment';
 $string['average_given_answer'] = 'Average given answer';
+$string['duplicate_and_link'] = 'Duplicate and link activity';
+$string['error_duplicating'] = 'Something went wrong duplicating the activity. Try again or contact your system administrator.';
+$string['individualfeedback_cloned_and_linked'] = 'Individual feedback activity is duplicated and linked.';
+$string['individualfeedback_is_linked'] = 'This individual feedback activity is linked to other activities and can therefore not be edited.';

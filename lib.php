@@ -3621,3 +3621,41 @@ function individualfeedback_hash_userid($userid) {
 function individualfeedback_get_statistic_question_types() {
     return array('multichoice', 'fourlevelapproval', 'fourlevelfrequency', 'fivelevelapproval');
 }
+
+function individualfeedback_get_linkedid($individualfeedbackid) {
+    global $DB;
+
+    return $DB->get_field('individualfeedback_linked', '	linkedid', array('individualfeedbackid' => $individualfeedbackid));
+}
+
+function individualfeedback_create_linked_record($oldid, $newid) {
+    global $DB;
+
+    $linkedid = individualfeedback_get_linkedid($oldid);
+
+    // No linked instances yet.
+    if (!$linkedid) {
+        $sql = "SELECT MAX(linkedid) FROM {individualfeedback_linked}";
+        if (!$highestid = $DB->get_field_sql($sql)) {
+            $highestid = 0;
+        }
+
+        // Raise the highestid.
+        $highestid++;
+
+        $record = new stdClass();
+        $record->linkedid = $highestid;
+        $record->individualfeedbackid = $oldid;
+        $DB->insert_record('individualfeedback_linked', $record);
+
+        $record = new stdClass();
+        $record->linkedid = $highestid;
+        $record->individualfeedbackid = $newid;
+        $DB->insert_record('individualfeedback_linked', $record);
+    } else {
+        $record = new stdClass();
+        $record->linkedid = $linkedid;
+        $record->individualfeedbackid = $newid;
+        $DB->insert_record('individualfeedback_linked', $record);
+    }
+}
