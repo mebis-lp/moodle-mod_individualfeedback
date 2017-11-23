@@ -449,7 +449,7 @@ class mod_individualfeedback_completion extends mod_individualfeedback_structure
         }
         $record->timemodified = time();
         $record->anonymous_response = $this->individualfeedback->anonymous;
-        
+
         // Check if it's a self assessment.
         $selfassessment = 0;
         $context = context_module::instance($this->cm->id);

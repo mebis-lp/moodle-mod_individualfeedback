@@ -25,7 +25,7 @@ function($, ajax, str, notification) {
     var manager = {
         deleteItem: function(e) {
             e.preventDefault();
-            
+
             stringkey = 'confirmdeleteitem';
             if ($(this).hasClass('questiongroup')) {
                 stringkey = 'confirmdeleteitem_questiongroup';

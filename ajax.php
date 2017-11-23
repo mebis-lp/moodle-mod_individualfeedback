@@ -35,8 +35,8 @@ $sesskey = optional_param('sesskey', false, PARAM_TEXT);
 $itemorder = optional_param('itemorder', false, PARAM_SEQUENCE);
 
 $cm = get_coursemodule_from_id('individualfeedback', $id, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
-$individualfeedback = $DB->get_record('individualfeedback', array('id'=>$cm->instance), '*', MUST_EXIST);
+$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+$individualfeedback = $DB->get_record('individualfeedback', array('id' => $cm->instance), '*', MUST_EXIST);
 
 require_sesskey();
 

@@ -323,7 +323,7 @@ class mod_individualfeedback_structure {
      */
     public function count_completed_responses() {
         global $DB;
-        
+
         if ($this->courseid) {
             $query = "SELECT COUNT(fbc.id)
                         FROM {individualfeedback_completed} fbc
@@ -331,7 +331,7 @@ class mod_individualfeedback_structure {
                             AND fbc.courseid = :courseid
                             AND fbc.selfassessment = 0";
         } else {
-            $query = "SELECT COUNT(fbc.id) FROM {individualfeedback_completed} fbc 
+            $query = "SELECT COUNT(fbc.id) FROM {individualfeedback_completed} fbc
                         WHERE fbc.individualfeedback = :individualfeedback AND fbc.selfassessment = 0";
         }
         $params = ['individualfeedback' => $this->individualfeedback->id, 'courseid' => $this->courseid];

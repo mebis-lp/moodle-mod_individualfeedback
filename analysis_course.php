@@ -27,12 +27,12 @@ require_once("lib.php");
 
 $current_tab = 'analysis';
 
-$id = required_param('id', PARAM_INT);  //the POST dominated the GET
+$id = required_param('id', PARAM_INT);
 $courseitemfilter = optional_param('courseitemfilter', '0', PARAM_INT);
 $courseitemfiltertyp = optional_param('courseitemfiltertyp', '0', PARAM_ALPHANUM);
 $courseid = optional_param('courseid', false, PARAM_INT);
 
-$url = new moodle_url('/mod/individualfeedback/analysis_course.php', array('id'=>$id));
+$url = new moodle_url('/mod/individualfeedback/analysis_course.php', array('id' => $id));
 navigation_node::override_active_url($url);
 if ($courseid !== false) {
     $url->param('courseid', $courseid);
@@ -64,7 +64,7 @@ if ($data = $courseselectform->get_data()) {
     redirect(new moodle_url($url, ['courseid' => $data->courseid]));
 }
 
-/// Print the page header
+// Print the page header.
 $strindividualfeedbacks = get_string("modulenameplural", "individualfeedback");
 $strindividualfeedback  = get_string("modulename", "individualfeedback");
 
@@ -73,7 +73,7 @@ $PAGE->set_title($individualfeedback->name);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(format_string($individualfeedback->name));
 
-/// print the tabs
+// Print the tabs.
 require('tabs.php');
 
 //get the groupid

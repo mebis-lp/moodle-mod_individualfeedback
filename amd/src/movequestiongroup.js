@@ -12,7 +12,7 @@ define(['jquery', 'jqueryui'], function($, jqui) {
                     var counter = 0;
                     $('div.individualfeedback_itemlist').each(function() {
                         var elementid = $(this).attr('id');
-                        var startpos = elementid.indexOf('_item_')+6;
+                        var startpos = elementid.indexOf('_item_') + 6;
                         var itemid = elementid.substr(startpos);
                         itemorder[counter] = itemid;
                         counter++;

@@ -45,17 +45,17 @@ if (!$individualfeedbackstructure->can_view_analysis()) {
     print_error('error');
 }
 
-/// Print the page header
+// Print the page header.
 
 $PAGE->set_heading($course->fullname);
 $PAGE->set_title($individualfeedback->name);
 echo $OUTPUT->header();
 echo $OUTPUT->heading(format_string($individualfeedback->name));
 
-/// print the tabs
+// Print the tabs.
 require('tabs.php');
 
-/// print the sub tabs
+// Print the sub tabs.
 echo html_writer::start_tag('div', array('class' => 'subtabs_placeholder'));
 require('tabs_evaluations.php');
 echo html_writer::end_tag('div');
