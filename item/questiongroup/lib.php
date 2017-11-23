@@ -296,8 +296,15 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     return '';
                 }
 
-                $totalaverage = ($totalofaverages /  count($averages));
-                $totalselfaverage = ($totalselfaverages /  count($selfaverages));
+                $totalaverage = 0;
+                if ($totalofaverages) {
+                    $totalaverage = ($totalofaverages /  count($averages));
+                }
+
+                $totalselfaverage = 0;
+                if ($totalselfaverages) {
+                    $totalselfaverage = ($totalselfaverages /  count($selfaverages));
+                }
 
                 // Print the combined statistics graph.
                 $itemname = get_string('analysis_questiongroup', 'individualfeedback', count($questions));
@@ -329,14 +336,143 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     $chart->add_series($series);
                 }
 
-                $answers = array();
+                $answers = array(0 => '');
                 for ($i = 1; $i <= $data['answers']; $i++) {
                     $answers[] = get_string('answer') . " " . $i;
                 }
 
                 $xaxis = $chart->get_xaxis(0, true);
                 $xaxis->set_stepsize(1);
-                $xaxis->set_min(1);
+                $xaxis->set_min(0);
+                $xaxis->set_max(($i));
+                $xaxis->set_labels($answers);
+                $chart->set_xaxis($xaxis);
+
+                echo $OUTPUT->render($chart);
+            }
+        }
+    }
+
+    public function print_comparison_questions($item, $allfeedbacks, $itemnr = '', $groupid = false, $courseid = false) {
+        echo $this->print_analysed($item, $itemnr);
+    }
+
+    /**
+     * Prints the comparison groups data
+     *
+     * @param stdClass $item            the item (question) information
+     * @param array    $allfeedbacks    Array with all the linked activities
+     * @param int      $groupid         the group id to filter data (optional)
+     * @param int      $courseid        the course id (optional)
+     */
+    public function print_comparison_groups($item, $allfeedbacks, $itemnr = '', $groupid = false, $courseid = false) {
+        global $OUTPUT, $DB;
+
+        echo $this->print_analysed($item, $itemnr);
+
+        // Get the questions within this group for this instance.
+        if (!$questions = $this->get_question_in_group($item)) {
+            echo html_writer::tag('p', get_string('no_questions_in_group', 'individualfeedback'));
+        } else {
+            // Get the data for each question of this instance.
+            $alldata = array();
+            foreach ($allfeedbacks as $feedback) {
+                $alldata[$feedback->id] = array();
+                if ($item->individualfeedback != $feedback->id) {
+                    $params = array('individualfeedback' => $feedback->id, 'position' => $item->position);
+                    $otheritem = $DB->get_record('individualfeedback_item', $params);
+                    $questions = $this->get_question_in_group($otheritem);
+                }
+
+                foreach ($questions as $question) {
+                    $questionobj = individualfeedback_get_item_class($question->typ);
+                    $data = $questionobj->get_answer_data($question);
+
+                    if (!$data['totalvalues']) {
+                        $average = 0;
+                    } else {
+                        $totalvalue = 0;
+                        foreach ($data['values'] as $key => $value) {
+                            $totalvalue += ($key * $value);
+                        }
+                        $average = $totalvalue / $data['totalvalues'];
+                    }
+                    $data['average'] = $average;
+
+                    $alldata[$feedback->id][$question->id] = $data;
+                }
+            }
+
+            // There is already a check on individualfeedback_check_linked_questions in the call of this page.
+            // So just make sure the items within 1 instance are correct, that is sufficient for checking.
+            $checkdata = reset($alldata);
+            // Check if the number of answers are equal of this instance.
+            $canprint = true;
+            $first = true;
+            foreach ($checkdata as $data) {
+                if ($first) {
+                    $numberofanswers = $data['answers'];
+                }
+                $first = false;
+
+                if ($numberofanswers != $data['answers']) {
+                    $canprint = false;
+                    break;
+                }
+            }
+
+            if (!$canprint) {
+                echo html_writer::tag('p', get_string('error_calculating_averages', 'individualfeedback'));
+            } else {
+                $overviewdata = array();
+                foreach ($alldata as $feedbackid => $datas) {
+                    $feedbacktotal = 0;
+                    foreach ($datas as $data) {
+                        $feedbacktotal += $data['average'];
+                    }
+                    $overviewdata[$feedbackid] = $feedbacktotal / count($datas);
+                }
+
+                $canprint = false;
+                foreach ($overviewdata as $value) {
+                    if ($value) {
+                        $canprint = true;
+                        break;
+                    }
+                }
+
+                if (!$canprint) {
+                    return '';
+                }
+
+                $itemname = get_string('analysis_questiongroup', 'individualfeedback', count($questions));
+                echo "<table class=\"analysis itemtype_{$item->typ}\">";
+                echo '<tr><th colspan="2" align="left">';
+                echo $itemnr . ' ';
+                if (strval($item->label) !== '') {
+                    echo '('. format_string($item->label).') ';
+                }
+                echo format_string($itemname);
+                echo '</th></tr>';
+                echo "</table>";
+
+                $chart = new \core\chart_bar();
+                $chart->set_horizontal(true);
+                foreach ($overviewdata as $key => $value) {
+                    $feedbackname = format_string($allfeedbacks[$key]->name);
+                    $series = new \core\chart_series($feedbackname, array($value));
+                    $series->set_labels(array($value));
+                    $chart->add_series($series);
+                }
+
+                $answers = array(0 => '');
+                for ($i = 1; $i <= $data['answers']; $i++) {
+                    $answers[] = get_string('answer') . " " . $i;
+                }
+
+                $xaxis = $chart->get_xaxis(0, true);
+                $xaxis->set_stepsize(1);
+                $xaxis->set_min(0);
                 $xaxis->set_max(($i));
                 $xaxis->set_labels($answers);
                 $chart->set_xaxis($xaxis);
@@ -434,7 +570,6 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                 $itemname = get_string('analysis_questiongroup', 'individualfeedback', count($questions));
                 $worksheet->write_string($row_offset, 0, $item->label, $xls_formats->head2);
                 $worksheet->write_string($row_offset, 1, $itemname, $xls_formats->head2);
-                $row_offset++;
 
                 $column = 2;
                 foreach ($printdata as $val) {
@@ -453,7 +588,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
 
                     $worksheet->write_number($row_offset + 2,
                                              $column,
-                                             $quotient,
+                                             $val->quotient,
                                              $xls_formats->procent);
 
                     $column++;
@@ -544,14 +679,20 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     return $row_offset;
                 }
 
-                $totalaverage = ($totalofaverages /  count($averages));
-                $totalselfaverage = ($totalselfaverages /  count($selfaverages));
+                $totalaverage = 0;
+                if ($totalofaverages) {
+                    $totalaverage = ($totalofaverages /  count($averages));
+                }
+
+                $totalselfaverage = 0;
+                if ($totalselfaverages) {
+                    $totalselfaverage = ($totalselfaverages /  count($selfaverages));
+                }
 
                 // Print the combined statistics graph.
                 $itemname = get_string('analysis_questiongroup', 'individualfeedback', count($questions));
                 $worksheet->write_string($row_offset, 0, $item->label, $xls_formats->head2);
                 $worksheet->write_string($row_offset, 1, $itemname, $xls_formats->head2);
-                $row_offset++;
 
                 $worksheet->write_string($row_offset,
                                          2,
@@ -572,6 +713,117 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                                          3,
                                          $totalselfaverage,
                                          $xls_formats->default);
+
+                $row_offset += 2;
+            }
+        }
+
+        return $row_offset;
+    }
+
+    public function excelprint_comparison_questions(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false, $allfeedbacks = array()) {
+
+        return $this->excelprint_item($worksheet, $row_offset, $xls_formats, $item, $groupid, $courseid);
+    }
+
+    public function excelprint_comparison_groups(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false, $allfeedbacks = array()) {
+        global $DB;
+
+        $worksheet->write_string($row_offset, 0, $item->name, $xls_formats->head2);
+        $row_offset++;
+
+        // Get the questions within this group for this instance.
+        if (!$questions = $this->get_question_in_group($item)) {
+            $worksheet->write_string($row_offset, 0, get_string('no_questions_in_group', 'individualfeedback'), $xls_formats->default);
+            $row_offset++;
+        } else {
+            // Get the data for each question of this instance.
+            $alldata = array();
+            foreach ($allfeedbacks as $feedback) {
+                $alldata[$feedback->id] = array();
+                if ($item->individualfeedback != $feedback->id) {
+                    $params = array('individualfeedback' => $feedback->id, 'position' => $item->position);
+                    $otheritem = $DB->get_record('individualfeedback_item', $params);
+                    $questions = $this->get_question_in_group($otheritem);
+                }
+
+                foreach ($questions as $question) {
+                    $questionobj = individualfeedback_get_item_class($question->typ);
+                    $data = $questionobj->get_answer_data($question);
+
+                    if (!$data['totalvalues']) {
+                        $average = 0;
+                    } else {
+                        $totalvalue = 0;
+                        foreach ($data['values'] as $key => $value) {
+                            $totalvalue += ($key * $value);
+                        }
+                        $average = $totalvalue / $data['totalvalues'];
+                    }
+                    $data['average'] = $average;
+
+                    $alldata[$feedback->id][$question->id] = $data;
+                }
+            }
+
+            // There is already a check on individualfeedback_check_linked_questions in the call of this page.
+            // So just make sure the items within 1 instance are correct, that is sufficient for checking.
+            $checkdata = reset($alldata);
+            // Check if the number of answers are equal of this instance.
+            $canprint = true;
+            $first = true;
+            foreach ($checkdata as $data) {
+                if ($first) {
+                    $numberofanswers = $data['answers'];
+                }
+                $first = false;
+
+                if ($numberofanswers != $data['answers']) {
+                    $canprint = false;
+                    break;
+                }
+            }
+
+            if (!$canprint) {
+                $worksheet->write_string($row_offset, 0, get_string('error_calculating_averages', 'individualfeedback'), $xls_formats->default);
+                $row_offset++;
+            } else {
+                $overviewdata = array();
+                foreach ($alldata as $feedbackid => $datas) {
+                    $feedbacktotal = 0;
+                    foreach ($datas as $data) {
+                        $feedbacktotal += $data['average'];
+                    }
+                    $overviewdata[$feedbackid] = $feedbacktotal / count($datas);
+                }
+
+                $canprint = false;
+                foreach ($overviewdata as $value) {
+                    if ($value) {
+                        $canprint = true;
+                        break;
+                    }
+                }
+
+                if (!$canprint) {
+                    return $row_offset;
+                }
+
+                $itemname = get_string('analysis_questiongroup', 'individualfeedback', count($questions));
+                $worksheet->write_string($row_offset, 0, $item->label, $xls_formats->head2);
+                $worksheet->write_string($row_offset, 1, $itemname, $xls_formats->head2);
+
+                $column = 2;
+                foreach ($overviewdata as $key => $value) {
+                    $feedbackname = format_string($allfeedbacks[$key]->name);
+                    $worksheet->write_string($row_offset, $column, $feedbackname, $xls_formats->head2);
+                    $worksheet->write_number($row_offset + 1, $column, $value, $xls_formats->default);
+                    $column++;
+                }
 
                 $row_offset += 2;
             }

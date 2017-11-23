@@ -38,7 +38,7 @@ if (isset($cmid) AND intval($cmid) AND $cmid > 0) {
 $context = context_module::instance($usedid);
 
 $courseid = optional_param('courseid', false, PARAM_INT);
-// $current_tab = $SESSION->individualfeedback->current_tab;
+
 if (!isset($currentsubtab)) {
     $currentsubtab = '';
 }
@@ -49,8 +49,13 @@ if ($individualfeedback->course == SITEID && $courseid) {
 }
 
 if (has_capability('mod/individualfeedback:viewreports', $context)) {
-    $subtabs = array('detail_questions', 'detail_groups', 'overview_questions',
-                        'overview_groups', 'comparison_questions', 'comparison_groups');
+    $subtabs = array('detail_questions', 'detail_groups', 'overview_questions', 'overview_groups');
+
+    // Check if the individual feedback activity is linked to other activities.
+    if (individualfeedback_get_linkedid($individualfeedback->id)) {
+        $subtabs[] = 'comparison_questions';
+        $subtabs[] = 'comparison_groups';
+    }
 
     foreach ($subtabs as $subtab) {
         $additionalparams = array('subtab' => $subtab);

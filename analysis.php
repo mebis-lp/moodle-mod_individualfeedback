@@ -57,7 +57,7 @@ require('tabs.php');
 
 /// print the sub tabs
 echo html_writer::start_tag('div', array('class' => 'subtabs_placeholder'));
-require('evaluations_tabs.php');
+require('tabs_evaluations.php');
 echo html_writer::end_tag('div');
 
 // Get the file based on the selected subtab.

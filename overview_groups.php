@@ -56,7 +56,7 @@ if (count($groups)) {
     echo html_writer::end_tag('form');
 }
 
-echo '<div>';
+echo html_writer::start_tag('div', array('class' => 'clear'));
 // Print the items in an analysed form.
 foreach ($items as $item) {
     $itemobj = individualfeedback_get_item_class($item->typ);
@@ -65,4 +65,4 @@ foreach ($items as $item) {
         $itemobj->print_overview_groups($item, $printnr);
     }
 }
-echo '</div>';
+echo html_writer::end_tag('div');

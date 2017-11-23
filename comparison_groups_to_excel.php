@@ -29,7 +29,7 @@ require_once("$CFG->libdir/excellib.class.php");
 $id = required_param('id', PARAM_INT); // Course module id.
 $courseid = optional_param('courseid', '0', PARAM_INT);
 
-$url = new moodle_url('/mod/individualfeedback/overview_questions_to_excel.php', array('id' => $id));
+$url = new moodle_url('/mod/individualfeedback/comparison_groups_to_excel.php', array('id' => $id));
 if ($courseid) {
     $url->param('courseid', $courseid);
 }
@@ -48,14 +48,16 @@ ob_end_clean();
 
 // Get the questions (item-names).
 $individualfeedbackstructure = new mod_individualfeedback_structure($individualfeedback, $cm, $course->id);
-if (!$items = $individualfeedbackstructure->get_items()) {
+if (!$items = $individualfeedbackstructure->get_groups_and_items()) {
     print_error('no_items_available_yet', 'individualfeedback', $cm->url);
 }
+
+$allfeedbacks = individualfeedback_get_linked_individualfeedbacks($individualfeedback->id);
 
 $mygroupid = groups_get_activity_group($cm);
 
 // Creating a workbook.
-$subtabname = get_string('overview_questions', 'individualfeedback');
+$subtabname = get_string('comparison_groups', 'individualfeedback');
 $filename = "individualfeedback_" . clean_filename($cm->get_formatted_name()) . " " . $subtabname . ".xls";
 $workbook = new MoodleExcelWorkbook($filename);
 
@@ -106,13 +108,14 @@ $rowoffset1++;
 foreach ($items as $item) {
     // Get the class of item-typ.
     $itemobj = individualfeedback_get_item_class($item->typ);
-    if (method_exists($itemobj, 'excelprint_overview_questions')) {
-        $rowoffset1 = $itemobj->excelprint_overview_questions($worksheet1,
+    if (method_exists($itemobj, 'excelprint_comparison_groups')) {
+        $rowoffset1 = $itemobj->excelprint_comparison_groups($worksheet1,
             $rowoffset1,
             $xlsformats,
             $item,
             $mygroupid,
-            $courseid);
+            $courseid,
+            $allfeedbacks);
     }
 }
 

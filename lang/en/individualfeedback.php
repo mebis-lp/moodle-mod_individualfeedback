@@ -351,3 +351,5 @@ $string['duplicate_and_link'] = 'Duplicate and link activity';
 $string['error_duplicating'] = 'Something went wrong duplicating the activity. Try again or contact your system administrator.';
 $string['individualfeedback_cloned_and_linked'] = 'Individual feedback activity is duplicated and linked.';
 $string['individualfeedback_is_linked'] = 'This individual feedback activity is linked to other activities and can therefore not be edited.';
+$string['individualfeedback_not_linked'] = 'This individual feedback is not linked to other activities.';
+$string['individualfeedback_questions_not_equal'] = 'The questions of the linked individual feedback activities are not equal and can therefore not be compared.';

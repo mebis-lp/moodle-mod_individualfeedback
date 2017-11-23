@@ -286,6 +286,13 @@ abstract class individualfeedback_item_base {
      */
     abstract public function get_analysed_for_external($item, $groupid = false, $courseid = false);
 
+    /**
+     * Prints the overview questions data
+     *
+     * @param stdClass $item     the item (question) information
+     * @param int      $groupid  the group id to filter data (optional)
+     * @param int      $courseid the course id (optional)
+     */
     public function print_overview_questions($item, $itemnr = '', $groupid = false, $courseid = false) {
         global $OUTPUT;
 
@@ -345,14 +352,108 @@ abstract class individualfeedback_item_base {
             $chart->add_series($series);
         }
 
-        $answers = array();
+        $answers = array(0 => '');
         for ($i = 1; $i <= $data['answers']; $i++) {
             $answers[] = get_string('answer') . " " . $i;
         }
 
         $xaxis = $chart->get_xaxis(0, true);
         $xaxis->set_stepsize(1);
-        $xaxis->set_min(1);
+        $xaxis->set_min(0);
+        $xaxis->set_max(($i));
+        $xaxis->set_labels($answers);
+        $chart->set_xaxis($xaxis);
+
+        echo $OUTPUT->render($chart);
+    }
+
+    /**
+     * Prints the comparison questions data
+     *
+     * @param stdClass $item            the item (question) information
+     * @param array    $allfeedbacks    Array with all the linked activities
+     * @param int      $groupid         the group id to filter data (optional)
+     * @param int      $courseid        the course id (optional)
+     */
+    public function print_comparison_questions($item, $allfeedbacks, $itemnr = '', $groupid = false, $courseid = false) {
+        global $OUTPUT, $DB;
+
+        $availableitems = individualfeedback_get_statistic_question_types();
+        if (!in_array($item->typ, $availableitems)) {
+            return;
+        }
+
+        $feedbackids = array();
+        if (count($allfeedbacks)) {
+            foreach($allfeedbacks as $feedback) {
+                if ($feedback->id != $item->individualfeedback) {
+                    $feedbackids[] = $feedback->id;
+                }
+            }
+        }
+
+        $allitems = array($item->individualfeedback => $item);
+        foreach ($feedbackids as $id) {
+            $params = array('individualfeedback' => $id, 'position' => $item->position);
+            $otheritem = $DB->get_record('individualfeedback_item', $params);
+            $allitems[$id] = $otheritem;
+        }
+
+        $overviewdata = array();
+        foreach ($allitems as $currentitem) {
+            if ($data = $this->get_answer_data($currentitem, $groupid, $courseid)) {
+                if (!$data['totalvalues']) {
+                    $overviewdata[$currentitem->individualfeedback] = 0;
+                } else {
+                    $totalvalue = 0;
+                    foreach ($data['values'] as $key => $value) {
+                        $totalvalue += ($key * $value);
+                    }
+                    $average = $totalvalue / $data['totalvalues'];
+                    $overviewdata[$currentitem->individualfeedback] = $average;
+                }
+            }
+        }
+
+        $canprint = false;
+        foreach ($overviewdata as $value) {
+            if ($value) {
+                $canprint = true;
+                break;
+            }
+        }
+
+        if (!$canprint) {
+            return '';
+        }
+
+        echo "<table class=\"analysis itemtype_{$item->typ}\">";
+        echo '<tr><th colspan="2" align="left">';
+        echo $itemnr . ' ';
+        if (strval($item->label) !== '') {
+            echo '('. format_string($item->label).') ';
+        }
+        echo format_string($item->name);
+        echo '</th></tr>';
+        echo "</table>";
+
+        $chart = new \core\chart_bar();
+        $chart->set_horizontal(true);
+        foreach ($overviewdata as $key => $value) {
+            $feedbackname = format_string($allfeedbacks[$key]->name);
+            $series = new \core\chart_series($feedbackname, array($value));
+            $series->set_labels(array($value));
+            $chart->add_series($series);
+        }
+
+        $answers = array(0 => '');
+        for ($i = 1; $i <= $data['answers']; $i++) {
+            $answers[] = get_string('answer') . " " . $i;
+        }
+
+        $xaxis = $chart->get_xaxis(0, true);
+        $xaxis->set_stepsize(1);
+        $xaxis->set_min(0);
         $xaxis->set_max(($i));
         $xaxis->set_labels($answers);
         $chart->set_xaxis($xaxis);
@@ -398,6 +499,76 @@ abstract class individualfeedback_item_base {
         $worksheet->write_number($row_offset + 1, 2, $overviewdata['average'], $xls_formats->default);
         $worksheet->write_string($row_offset, 3, get_string('selfassessment', 'individualfeedback'), $xls_formats->head2);
         $worksheet->write_number($row_offset + 1, 3, $overviewdata['selfassessment'], $xls_formats->default);
+
+        $row_offset += 2;
+
+        return $row_offset;
+    }
+
+    public function excelprint_comparison_questions(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false, $allfeedbacks = array()) {
+        global $DB;
+
+        $availableitems = individualfeedback_get_statistic_question_types();
+        if (!in_array($item->typ, $availableitems)) {
+            return $row_offset;
+        }
+
+        $feedbackids = array();
+        if (count($allfeedbacks)) {
+            foreach($allfeedbacks as $feedback) {
+                if ($feedback->id != $item->individualfeedback) {
+                    $feedbackids[] = $feedback->id;
+                }
+            }
+        }
+
+        $allitems = array($item->individualfeedback => $item);
+        foreach ($feedbackids as $id) {
+            $params = array('individualfeedback' => $id, 'position' => $item->position);
+            $otheritem = $DB->get_record('individualfeedback_item', $params);
+            $allitems[$id] = $otheritem;
+        }
+
+        $overviewdata = array();
+        foreach ($allitems as $currentitem) {
+            if ($data = $this->get_answer_data($currentitem, $groupid, $courseid)) {
+                if (!$data['totalvalues']) {
+                    $overviewdata[$currentitem->individualfeedback] = 0;
+                } else {
+                    $totalvalue = 0;
+                    foreach ($data['values'] as $key => $value) {
+                        $totalvalue += ($key * $value);
+                    }
+                    $average = $totalvalue / $data['totalvalues'];
+                    $overviewdata[$currentitem->individualfeedback] = $average;
+                }
+            }
+        }
+
+        $canprint = false;
+        foreach ($overviewdata as $value) {
+            if ($value) {
+                $canprint = true;
+                break;
+            }
+        }
+
+        if (!$canprint) {
+            return $row_offset;
+        }
+
+        $worksheet->write_string($row_offset, 0, $item->label, $xls_formats->head2);
+        $worksheet->write_string($row_offset, 1, format_string($item->name), $xls_formats->head2);
+
+        $column = 2;
+        foreach ($overviewdata as $key => $value) {
+            $feedbackname = format_string($allfeedbacks[$key]->name);
+            $worksheet->write_string($row_offset, $column, $feedbackname, $xls_formats->head2);
+            $worksheet->write_number($row_offset + 1, $column, $value, $xls_formats->default);
+            $column++;
+        }
 
         $row_offset += 2;
 
@@ -614,6 +785,20 @@ class individualfeedback_item_questiongroupend extends individualfeedback_item_b
         return $this->excelprint_item($worksheet, $row_offset, $xls_formats, $item, $groupid, $courseid);
     }
 
+    public function excelprint_comparison_questions(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false, $allfeedbacks = array()) {
+
+        return $this->excelprint_item($worksheet, $row_offset, $xls_formats, $item, $groupid, $courseid);
+    }
+
+    public function excelprint_comparison_groups(&$worksheet, $row_offset,
+                             $xls_formats, $item,
+                             $groupid, $courseid = false, $allfeedbacks = array()) {
+
+        return $this->excelprint_item($worksheet, $row_offset, $xls_formats, $item, $groupid, $courseid);
+    }
+
     public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
         echo html_writer::tag('div', get_string('end_of_questiongroup', 'individualfeedback'));
         echo html_writer::end_tag('div');
@@ -628,6 +813,14 @@ class individualfeedback_item_questiongroupend extends individualfeedback_item_b
     }
 
     public function print_overview_groups($item, $itemnr = '', $groupid = false, $courseid = false) {
+        echo $this->print_analysed($item, $itemnr);
+    }
+
+    public function print_comparison_questions($item, $allfeedbacks, $itemnr = '', $groupid = false, $courseid = false) {
+        echo $this->print_analysed($item, $itemnr);
+    }
+
+    public function print_comparison_groups($item, $allfeedbacks, $itemnr = '', $groupid = false, $courseid = false) {
         echo $this->print_analysed($item, $itemnr);
     }
 

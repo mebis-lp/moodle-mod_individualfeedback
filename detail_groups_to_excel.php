@@ -55,7 +55,8 @@ if (!$items = $individualfeedbackstructure->get_groups_and_items()) {
 $mygroupid = groups_get_activity_group($cm);
 
 // Creating a workbook.
-$filename = "individualfeedback_" . clean_filename($cm->get_formatted_name()) . ".xls";
+$subtabname = get_string('detail_groups', 'individualfeedback');
+$filename = "individualfeedback_" . clean_filename($cm->get_formatted_name()) . " " . $subtabname . ".xls";
 $workbook = new MoodleExcelWorkbook($filename);
 
 // Creating the worksheet.

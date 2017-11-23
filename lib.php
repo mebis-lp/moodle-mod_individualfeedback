@@ -318,6 +318,15 @@ function individualfeedback_delete_instance($id) {
     //deleting the unfinished completeds
     $DB->delete_records("indfeedback_completedtmp", array("individualfeedback"=>$id));
 
+    // Delete the activity from the linked table.
+    if ($linkedid = individualfeedback_get_linkedid($id)) {
+        $DB->delete_records('individualfeedback_linked', array('individualfeedbackid' => $id));
+        // If there is only 1 record left, delete that record as well.
+        if ($DB->count_records('individualfeedback_linked', array('linkedid' => $linkedid)) < 2) {
+            $DB->delete_records('individualfeedback_linked',  array('linkedid' => $linkedid));
+        }
+    }
+
     //deleting old events
     $DB->delete_records('event', array('modulename'=>'individualfeedback', 'instance'=>$id));
     return $DB->delete_records("individualfeedback", array("id"=>$id));
@@ -3625,7 +3634,7 @@ function individualfeedback_get_statistic_question_types() {
 function individualfeedback_get_linkedid($individualfeedbackid) {
     global $DB;
 
-    return $DB->get_field('individualfeedback_linked', '	linkedid', array('individualfeedbackid' => $individualfeedbackid));
+    return $DB->get_field('individualfeedback_linked', 'linkedid', array('individualfeedbackid' => $individualfeedbackid));
 }
 
 function individualfeedback_create_linked_record($oldid, $newid) {
@@ -3658,4 +3667,71 @@ function individualfeedback_create_linked_record($oldid, $newid) {
         $record->individualfeedbackid = $newid;
         $DB->insert_record('individualfeedback_linked', $record);
     }
+}
+
+function individualfeedback_check_linked_questions($individualfeedbackid) {
+    global $DB;
+
+    $allfeedbacks = individualfeedback_get_linked_individualfeedbacks($individualfeedbackid);
+    if (count($allfeedbacks) < 2) {
+        return false;
+    }
+
+    $countitems = 0;
+    $firsttime = true;
+    foreach ($allfeedbacks as $feedback) {
+        $items = $DB->get_records('individualfeedback_item', array('individualfeedback' => $feedback->id));
+        $allfeedbacks[$feedback->id]->items = $items;
+        if (!$firsttime) {
+            if ($countitems != count($items)) {
+                return false;
+            }
+        }
+
+        $firsttime = false;
+        $countitems = count($items);
+    }
+
+    $base = reset($allfeedbacks);
+    $baseitemkeys = array_keys($base->items);
+
+    $firsttime = true;
+    $checkfields = array('name', 'label', 'typ', 'position');
+    foreach ($allfeedbacks as $feedback) {
+        // Skip the first run, because you don't need to compare with itself.
+        if ($firsttime) {
+            $firsttime = false;
+            continue;
+        }
+
+        $counter = 0;
+        foreach ($feedback->items as $key => $item) {
+            $checkitemkey = $baseitemkeys[$counter];
+            $checkitem = $base->items[$checkitemkey];
+            foreach ($checkfields as $field) {
+                if ($item->$field != $checkitem->$field) {
+                    return false;
+                }
+            }
+
+            $counter++;
+        }
+    }
+
+    return true;
+}
+
+function individualfeedback_get_linked_individualfeedbacks($individualfeedbackid) {
+    global $DB;
+
+    if (!$linkedid = individualfeedback_get_linkedid($individualfeedbackid)) {
+        return array();
+    }
+
+    $sql = "SELECT ifb.*
+    FROM {individualfeedback} ifb
+    JOIN {individualfeedback_linked} ifbl ON ifb.id = ifbl.individualfeedbackid
+    WHERE ifbl.linkedid = :linkedid ";
+
+    return $DB->get_records_sql($sql, array('linkedid' => $linkedid));
 }
