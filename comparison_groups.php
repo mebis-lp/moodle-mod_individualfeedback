@@ -37,7 +37,6 @@ if (!individualfeedback_check_linked_questions($individualfeedback->id)) {
 // Button "Export to excel".
 if (has_capability('mod/individualfeedback:viewreports', $context) && $individualfeedbackstructure->get_items()) {
     echo $OUTPUT->container_start('form-buttons');
-    // Fixme - create the excel export...
     $aurl = new moodle_url('/mod/individualfeedback/comparison_groups_to_excel.php', ['sesskey' => sesskey(), 'id' => $id]);
     echo $OUTPUT->single_button($aurl, get_string('export_to_excel', 'individualfeedback'));
     echo $OUTPUT->container_end();
