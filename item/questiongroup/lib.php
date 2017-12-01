@@ -65,9 +65,16 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         }
         $item = $this->item;
 
+        // SFSUBM-20 - create the group after this group.
+        $params = array('individualfeedback' => $item->individualfeedback);
         if (isset($item->clone_item) AND $item->clone_item) {
             $item->id = ''; //to clone this item
-            $item->position++;
+            // SFSUBM-20 - create the group after this group.
+            $sql = "SELECT MAX(position) 
+            FROM {individualfeedback_item}
+            WHERE individualfeedback = :individualfeedback ";
+            $endgroupposition = $DB->get_field_sql($sql, $params);
+            $item->position = $endgroupposition + 1;
         }
 
         $item->hasvalue = $this->get_hasvalue();
@@ -77,25 +84,28 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
             $DB->update_record('individualfeedback_item', $item);
         }
 
-        $newitem = $DB->get_record('individualfeedback_item', array('id'=>$item->id));
-
+        $newitem = $DB->get_record('individualfeedback_item', array('id' => $item->id));
+        
+        // SFSUBM-20 - only create a end group if there isn't one yet.
+        $params = array('individualfeedback' => $newitem->individualfeedback, 'typ' => 'questiongroupend',
+                            'dependitem' => $newitem->id);
         // Also create a end of the group so you can actually determine what the group is.
-
-        $enditem = new stdClass();
-        $enditem->individualfeedback = $item->individualfeedback;
-        $enditem->template = 0;
-        $enditem->name = '';
-        $enditem->label = '';
-        $enditem->presentation = '';
-        $enditem->typ = 'questiongroupend';
-        $enditem->hasvalue = 0;
-        $enditem->position = $newitem->position + 1;
-        $enditem->required = 0;
-        $enditem->dependitem = $newitem->id;
-        $enditem->dependvalue = '';
-        $enditem->options = '';
-
-        $enditem->id = $DB->insert_record('individualfeedback_item', $enditem);
+        if (!$DB->record_exists('individualfeedback_item', $params)) {
+            $enditem = new stdClass();
+            $enditem->individualfeedback = $item->individualfeedback;
+            $enditem->template = 0;
+            $enditem->name = '';
+            $enditem->label = '';
+            $enditem->presentation = '';
+            $enditem->typ = 'questiongroupend';
+            $enditem->hasvalue = 0;
+            $enditem->position = $newitem->position + 1;
+            $enditem->required = 0;
+            $enditem->dependitem = $newitem->id;
+            $enditem->dependvalue = '';
+            $enditem->options = '';
+            $enditem->id = $DB->insert_record('individualfeedback_item', $enditem);
+        }
 
         return $newitem;
     }
