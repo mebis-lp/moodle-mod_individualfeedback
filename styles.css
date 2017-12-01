@@ -150,3 +150,7 @@ select.questiongroup_select {
 .clear {
     clear: both;
 }
+
+.chart-table-data {
+    display: none;
+}
