@@ -114,6 +114,10 @@ $PAGE->set_title($individualfeedback->name);
 //Adding the javascript module for the items dragdrop.
 if (count($individualfeedbackitems) > 1) {
     if ($do_show == 'edit') {
+        // SFSUBM-21 - move the question out of the questiongroup div if it's outside the actual question group.
+        $PAGE->requires->jquery();
+        $PAGE->requires->js('/mod/individualfeedback/edit_movequestion.js');
+        
         $PAGE->requires->strings_for_js(array(
                'pluginname',
                'move_item',

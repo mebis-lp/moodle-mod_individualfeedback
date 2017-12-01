@@ -184,6 +184,9 @@ YUI.add('moodle-mod_individualfeedback-dragdrop', function(Y) {
                 }, this);
                 var spinner = M.util.add_spinner(Y, dragnode);
                 this.save_item_order(this.cmid, elements.toString(), spinner);
+                
+                // SFSUBM-21 - Check if the item is in the question group or not.
+                checkstartendgroupitem();
            }
         },
 
