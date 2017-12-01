@@ -50,7 +50,6 @@ Feature: Mapping courses in a individualfeedback
     And I add a "Multiple choice" question to the individualfeedback with:
       | Question               | this is a simple multiple choice    |
       | Label                  | multichoicesimple                   |
-      | Multiple choice type   | Multiple choice - single answer allowed (dropdownlist) |
       | Multiple choice values | option d\noption e\noption f                           |
     And I log out
     And I log in as "teacher"

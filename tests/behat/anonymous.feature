@@ -33,10 +33,9 @@ Feature: Anonymous individualfeedback
     And I add a "Multiple choice" question to the individualfeedback with:
       | Question                       | Do you like our site?              |
       | Label                          | multichoice2                       |
-      | Multiple choice type           | Multiple choice - single answer    |
-      | Hide the "Not selected" option | Yes                                |
       | Multiple choice values         | Yes\nNo\nI don't know              |
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
 
   Scenario: Guests can see anonymous individualfeedback on front page but can not complete
     When I follow "Site individualfeedback"
@@ -62,12 +61,7 @@ Feature: Anonymous individualfeedback
 
   @javascript
   Scenario: Complete anonymous individualfeedback and view analysis on the front page as an authenticated user
-    And I log in as "admin"
-    And I set the following system permissions of "Authenticated user on frontpage" role:
-      | capability                   | permission |
-      | mod/individualfeedback:viewanalysepage | Allow      |
-    And I log out
-    And I log in as "user1"
+    When I log in as "user1"
     And I am on site homepage
     When I follow "Site individualfeedback"
     And I follow "Preview"
@@ -78,7 +72,8 @@ Feature: Anonymous individualfeedback
     And I set the following fields to these values:
       | Yes | 1 |
     And I press "Submit your answers"
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     And I log in as "user2"
     And I am on site homepage
     And I follow "Site individualfeedback"
@@ -97,7 +92,8 @@ Feature: Anonymous individualfeedback
     And I should see "Do you like our site?"
     And I should see "1 (50.00 %)" in the "Yes" "table_row"
     And I should see "1 (50.00 %)" in the "No" "table_row"
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     And I log in as "manager"
     And I am on site homepage
     And I follow "Site individualfeedback"
@@ -107,13 +103,15 @@ Feature: Anonymous individualfeedback
     And I follow "Response number: 1"
     And I should not see "Username"
     And I should see "Response number: 1 (Anonymous)"
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
 
   Scenario: Complete fully anonymous individualfeedback on the front page as a guest
     And I log in as "admin"
     And I set the following administration settings values:
       | individualfeedback_allowfullanonymous | 1 |
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     When I follow "Site individualfeedback"
     And I follow "Preview"
     And I should see "Do you like our site?"
@@ -134,7 +132,8 @@ Feature: Anonymous individualfeedback
     And I set the following system permissions of "Guest" role:
       | capability                   | permission |
       | mod/individualfeedback:viewanalysepage | Allow      |
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     When I follow "Site individualfeedback"
     And I follow "Preview"
     And I should see "Do you like our site?"
@@ -170,7 +169,8 @@ Feature: Anonymous individualfeedback
     And I should see "Anonymous entries (2)"
     And I follow "Response number: 1"
     And I should see "Response number: 1 (Anonymous)"
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
 
   @javascript
   Scenario: Anonymous individualfeedback in a course
@@ -182,10 +182,10 @@ Feature: Anonymous individualfeedback
     And I add a "Multiple choice" question to the individualfeedback with:
       | Question                       | Do you like this course?           |
       | Label                          | multichoice1                       |
-      | Multiple choice type           | Multiple choice - single answer    |
       | Hide the "Not selected" option | Yes                                |
       | Multiple choice values         | Yes\nNo\nI don't know              |
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     And I log in as "user1"
     And I am on "Course 1" course homepage
     And I follow "Course individualfeedback"
@@ -197,7 +197,8 @@ Feature: Anonymous individualfeedback
     And I set the following fields to these values:
       | Yes | 1 |
     And I press "Submit your answers"
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     And I log in as "user2"
     And I am on "Course 1" course homepage
     And I follow "Course individualfeedback"
@@ -217,7 +218,8 @@ Feature: Anonymous individualfeedback
     And I should see "Do you like this course?"
     And I should see "1 (50.00 %)" in the "Yes" "table_row"
     And I should see "1 (50.00 %)" in the "No" "table_row"
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     And I log in as "teacher"
     And I am on "Course 1" course homepage
     And I follow "Course individualfeedback"
@@ -243,7 +245,8 @@ Feature: Anonymous individualfeedback
     And I should see "Anonymous entries (1)"
     And I should not see "Response number: 1"
     And I should see "Response number: 2"
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
 
   Scenario: Collecting new non-anonymous individualfeedback from a previously anonymous individualfeedback activity
     When I log in as "teacher"
@@ -258,7 +261,8 @@ Feature: Anonymous individualfeedback
       | Question               | this is a short text answer |
       | Label                  | shorttext                   |
       | Maximum characters accepted | 200                    |
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     When I log in as "user1"
     And I follow "Course 1"
     And I follow "Course individualfeedback"
@@ -266,7 +270,8 @@ Feature: Anonymous individualfeedback
     And I set the following fields to these values:
       | this is a short text answer  | anontext |
     And I press "Submit your answers"
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     # Switch to non-anon responses.
     And I log in as "teacher"
     And I follow "Course 1"
@@ -275,7 +280,8 @@ Feature: Anonymous individualfeedback
     And I set the following fields to these values:
         | Record user names | User's name will be logged and shown with answers |
     And I press "Save and display"
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     # Now leave a non-anon individualfeedback as user1
     When I log in as "user1"
     And I follow "Course 1"
@@ -284,7 +290,8 @@ Feature: Anonymous individualfeedback
     And I set the following fields to these values:
       | this is a short text answer  | usertext |
     And I press "Submit your answers"
-    And I log out
+    And I follow "Logout"
+    And I press "Continue"
     # Now check the responses are correct.
     When I log in as "teacher"
     And I follow "Course 1"
