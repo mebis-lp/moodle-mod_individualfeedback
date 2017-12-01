@@ -58,11 +58,15 @@ if ($courseid) {
     $continueurl->param('courseid', $courseid);
 }
 
+echo html_writer::start_tag('div', array('id' => 'main-content-wrapper', 'class' => 'individualfeedbackprint'));
+
 $form = new mod_individualfeedback_complete_form(mod_individualfeedback_complete_form::MODE_PRINT,
         $individualfeedbackstructure, 'individualfeedback_print_form');
 echo $OUTPUT->continue_button($continueurl);
 $form->display();
 echo $OUTPUT->continue_button($continueurl);
+
+echo html_writer::end_tag('div');
 
 // Finish the page.
 echo $OUTPUT->footer();

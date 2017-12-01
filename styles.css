@@ -154,3 +154,11 @@ select.questiongroup_select {
 .chart-table-data {
     display: none;
 }
+
+.individualfeedbackprint {
+    padding-top: 20px !important;
+}
+
+.individualfeedbackprint .continuebutton:first-child {
+    margin-bottom: 20px;
+}
