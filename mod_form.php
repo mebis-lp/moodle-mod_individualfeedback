@@ -114,6 +114,11 @@ class mod_individualfeedback_mod_form extends moodleform_mod {
         //-------------------------------------------------------------------------------
         $this->standard_coursemodule_elements();
         //-------------------------------------------------------------------------------
+
+        // SFSUBM-17 - don't show the activity completion.
+        $style = html_writer::tag('style', '#id_activitycompletionheader { display: none; }');
+        $mform->addElement('html', $style);
+
         // buttons
         $this->add_action_buttons();
     }
@@ -144,6 +149,8 @@ class mod_individualfeedback_mod_form extends moodleform_mod {
             $default_values['page_after_submit_editor']['itemid'] = $draftitemid;
         }
 
+        // SFSUBM-17 - standard no activity completion.
+        $default_values['completion'] = COMPLETION_TRACKING_NONE;
     }
 
     /**
