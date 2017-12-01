@@ -163,14 +163,15 @@ $string['messageprovider:message'] = 'Individual feedback reminder';
 $string['messageprovider:submission'] = 'Individual feedback notifications';
 $string['mode'] = 'Mode';
 $string['modulename'] = 'Individual feedback';
-$string['modulename_help'] = 'The individual feedback activity module enables a teacher to create a custom survey for collecting individual feedback from participants using a variety of question types including multiple choice, yes/no or text input.
+$string['modulename_help'] = 'The individual feedback activity module is a cloned and customized version of the feedback activity.
 
-Individual feedback responses may be anonymous if desired, and results may be shown to all participants or restricted to teachers only. Any individual feedback activities on the site front page may also be completed by non-logged-in users.
+The individual feedback activity module enables a teacher to create a custom survey for collecting individual feedback from participants using a variety of question types including multiple choice, yes/no or text input.
+
+Individual feedback responses is always anonymous, and results may be shown to all participants or restricted to teachers only. Any individual feedback activities on the site front page may also be completed by non-logged-in users.
 
 Individual feedback activities may be used
 
 * For course evaluations, helping improve the content for later participants
-* To enable participants to sign up for course modules, events etc.
 * For guest surveys of course choices, school policies etc.
 * For anti-bullying surveys in which students can report incidents anonymously';
 $string['modulename_link'] = 'mod/individualfeedback/view';
