@@ -90,19 +90,6 @@ class mod_individualfeedback_complete_form extends moodleform {
         $mform->addElement('hidden', 'lastitempos');
         $mform->setType('lastitempos', PARAM_INT);
 
-        if (isloggedin() && !isguestuser() && $this->mode != self::MODE_EDIT && $this->mode != self::MODE_VIEW_TEMPLATE &&
-                    $this->mode != self::MODE_VIEW_RESPONSE) {
-            // Output information about the current mode (anonymous or not) in some modes.
-            if ($this->structure->is_anonymous()) {
-                $anonymousmodeinfo = get_string('anonymous', 'individualfeedback');
-            } else {
-                $anonymousmodeinfo = get_string('non_anonymous', 'individualfeedback');
-            }
-            $element = $mform->addElement('static', 'anonymousmode', '',
-                    get_string('mode', 'individualfeedback') . ': ' . $anonymousmodeinfo);
-            $element->setAttributes($element->getAttributes() + ['class' => 'individualfeedback_mode']);
-        }
-
         // Add buttons to go to previous/next pages and submit the individualfeedback.
         if ($this->mode == self::MODE_COMPLETE) {
             $buttonarray = array();
