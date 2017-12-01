@@ -262,5 +262,20 @@ function xmldb_individualfeedback_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2017112000, 'individualfeedback');
     }
 
+    if ($oldversion < 2017120102) {
+        
+        // SFSUBM-25 - add additional capabilities.
+        list($where, $params) = $DB->get_in_or_equal(array('editingteacher', 'teacher'));
+        if ($roles = $DB->get_records_select('role', 'shortname ' . $where, $params)) {
+            foreach ($roles as $role) {
+                // Assign capabilities in roles Teacher and Editing Teacher.
+                assign_capability('mod/individualfeedback:complete', CAP_ALLOW, $role->id, context_system::instance()->id);
+            }
+        }
+
+        // Individualfeedback savepoint reached.
+        upgrade_mod_savepoint(true, 2017120102, 'individualfeedback');
+    }
+
     return true;
 }
