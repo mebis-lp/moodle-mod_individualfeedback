@@ -1694,7 +1694,10 @@ function individualfeedback_update_item($item) {
 function individualfeedback_delete_item($itemid, $renumber = true, $template = false) {
     global $DB;
 
-    $item = $DB->get_record('individualfeedback_item', array('id'=>$itemid));
+    // SFSUBM-27 - Make sure it isn't deleted by individualfeedback_delete_group_items yet.
+    if (!$item = $DB->get_record('individualfeedback_item', array('id' => $itemid))) {
+        return;
+    }
 
     // If we remove a group, make sure all group questions get deleted as well.
     if ($item->typ == 'questiongroup') {
@@ -1764,8 +1767,11 @@ function individualfeedback_delete_group_items($groupitem) {
         return false;
     }
 
-    $where = 'position > :startposition AND position <= :endposition';
-    $params = array('startposition' => $groupitem->position, 'endposition' => $endgroupitem->position);
+    $where = 'individualfeedback = :individualfeedback AND template = :template
+                AND position > :startposition AND position <= :endposition';
+    $params = array('individualfeedback' => $groupitem->individualfeedback, 'template' => $groupitem->template,
+                        'startposition' => $groupitem->position, 'endposition' => $endgroupitem->position);
+
     if ($groupitems = $DB->get_records_select('individualfeedback_item', $where, $params)) {
         foreach ($groupitems as $item) {
             individualfeedback_delete_item($item->id);
