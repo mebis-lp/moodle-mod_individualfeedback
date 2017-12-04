@@ -2561,7 +2561,7 @@ function individualfeedback_get_group_values($item,
                                    $ignore_empty = false,
                                    $selfassessment = false) {
 
-    global $CFG, $DB;
+    global $CFG, $DB, $USER;
 
     // Get the values except for the self assessment values.
     $params = array('selfassessment' => (int) $selfassessment);
@@ -2585,6 +2585,13 @@ function individualfeedback_get_group_values($item,
     JOIN {individualfeedback_completed} ic ON iv.completed = ic.id
     WHERE {$select}
     AND ic.selfassessment = :selfassessment";
+
+    // SFSUBM-26 - only show own users selfassessment.
+    if ($selfassessment) {
+        $sql .= "AND userid = :userid ";
+        $params['userid'] = individualfeedback_hash_userid($USER->id);
+    }
+
     $values = $DB->get_records_sql($sql, $params);
 
     $params = array('id' => $item->individualfeedback);

@@ -70,7 +70,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         if (isset($item->clone_item) AND $item->clone_item) {
             $item->id = ''; //to clone this item
             // SFSUBM-20 - create the group after this group.
-            $sql = "SELECT MAX(position) 
+            $sql = "SELECT MAX(position)
             FROM {individualfeedback_item}
             WHERE individualfeedback = :individualfeedback ";
             $endgroupposition = $DB->get_field_sql($sql, $params);
@@ -85,7 +85,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         }
 
         $newitem = $DB->get_record('individualfeedback_item', array('id' => $item->id));
-        
+
         // SFSUBM-20 - only create a end group if there isn't one yet.
         $params = array('individualfeedback' => $newitem->individualfeedback, 'typ' => 'questiongroupend',
                             'dependitem' => $newitem->id);
@@ -522,10 +522,14 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         } else {
             // Get the data for each question.
             $alldata = array();
+            $selfassessment = array();
             foreach ($questions as $question) {
                 $questionobj = individualfeedback_get_item_class($question->typ);
                 $data = $questionobj->get_answer_data($question);
                 $alldata[$question->id] = $data;
+                if ($selfdata = $this->check_and_get_self_assessment_data($question)) {
+                    $selfassessment[$question->id] = $selfdata;
+                }
             }
 
             // Check if the number of answers are equal.
@@ -603,7 +607,39 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
 
                     $column++;
                 }
+
                 $row_offset += 3;
+
+                // Also print the self asessment answers if they are available.
+                if ($numberofselfanswers = count($selfassessment)) {
+                    $selfasessmentdata = array();
+                    for ($i = 1; $i <= $numberofanswers; $i++) {
+                        $selfassessmentdata[$i] = 0;
+                    }
+                    foreach ($selfassessment as $record) {
+                        $selfassessmentdata[$record->value] += 1;
+                    }
+
+                    $worksheet->write_string($row_offset,
+                                             1,
+                                             get_string('selfassessment', 'individualfeedback'),
+                                             $xls_formats->head2);
+                    $column = 2;
+                    foreach ($selfassessmentdata as $totalanswers) {
+                        $worksheet->write_number($row_offset,
+                                                 $column,
+                                                 $totalanswers,
+                                                 $xls_formats->default);
+
+                        $worksheet->write_number($row_offset + 1,
+                                                 $column,
+                                                 $totalanswers / $numberofselfanswers,
+                                                 $xls_formats->procent);
+                        $column++;
+                    }
+
+                    $row_offset += 2;
+                }
             }
         }
 
