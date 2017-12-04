@@ -989,6 +989,21 @@ function individualfeedback_check_is_switchrole() {
 }
 
 /**
+ *  Returns true if the current users is logged in as someone else.
+ *
+ * @global object
+ * @return boolean
+ */
+function individualfeedback_check_is_loggedinas() {
+    global $USER;
+    if (isset($USER->realuser) && $USER->realuser != $USER->id) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
  * count users which have not completed the individualfeedback
  *
  * @global object
