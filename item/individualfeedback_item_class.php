@@ -311,7 +311,7 @@ abstract class individualfeedback_item_base {
                     $totalvalue += ($key * $value);
                 }
                 $average = $totalvalue / $data['totalvalues'];
-                $overviewdata['average'] = $average;
+                $overviewdata['average'] = format_float($average, 2);
             }
         }
 
@@ -386,16 +386,18 @@ abstract class individualfeedback_item_base {
         $feedbackids = array();
         if (count($allfeedbacks)) {
             foreach($allfeedbacks as $feedback) {
-                if ($feedback->id != $item->individualfeedback) {
-                    $feedbackids[] = $feedback->id;
-                }
+                $feedbackids[] = $feedback->id;
             }
         }
 
-        $allitems = array($item->individualfeedback => $item);
+        $allitems = array();
         foreach ($feedbackids as $id) {
-            $params = array('individualfeedback' => $id, 'position' => $item->position);
-            $otheritem = $DB->get_record('individualfeedback_item', $params);
+            if ($id != $item->individualfeedback) {
+                $params = array('individualfeedback' => $id, 'position' => $item->position);
+                $otheritem = $DB->get_record('individualfeedback_item', $params);
+            } else {
+                $otheritem = $item;
+            }
             $allitems[$id] = $otheritem;
         }
 
@@ -410,7 +412,7 @@ abstract class individualfeedback_item_base {
                         $totalvalue += ($key * $value);
                     }
                     $average = $totalvalue / $data['totalvalues'];
-                    $overviewdata[$currentitem->individualfeedback] = $average;
+                    $overviewdata[$currentitem->individualfeedback] = format_float($average, 2);
                 }
             }
         }
@@ -480,7 +482,7 @@ abstract class individualfeedback_item_base {
                     $totalvalue += ($key * $value);
                 }
                 $average = $totalvalue / $data['totalvalues'];
-                $overviewdata['average'] = $average;
+                $overviewdata['average'] = format_float($average, 2);
             }
         }
 
@@ -542,7 +544,7 @@ abstract class individualfeedback_item_base {
                         $totalvalue += ($key * $value);
                     }
                     $average = $totalvalue / $data['totalvalues'];
-                    $overviewdata[$currentitem->individualfeedback] = $average;
+                    $overviewdata[$currentitem->individualfeedback] = format_float($average, 2);
                 }
             }
         }

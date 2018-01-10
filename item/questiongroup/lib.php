@@ -308,12 +308,12 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
 
                 $totalaverage = 0;
                 if ($totalofaverages) {
-                    $totalaverage = ($totalofaverages /  count($averages));
+                    $totalaverage = format_float(($totalofaverages /  count($averages)), 2);
                 }
 
                 $totalselfaverage = 0;
                 if ($totalselfaverages) {
-                    $totalselfaverage = ($totalselfaverages /  count($selfaverages));
+                    $totalselfaverage = format_float(($totalselfaverages /  count($selfaverages)), 2);
                 }
 
                 // Print the combined statistics graph.
@@ -407,7 +407,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                         }
                         $average = $totalvalue / $data['totalvalues'];
                     }
-                    $data['average'] = $average;
+                    $data['average'] = format_float($average, 2);
 
                     $alldata[$feedback->id][$question->id] = $data;
                 }
@@ -727,12 +727,12 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
 
                 $totalaverage = 0;
                 if ($totalofaverages) {
-                    $totalaverage = ($totalofaverages /  count($averages));
+                    $totalaverage = format_float(($totalofaverages /  count($averages)), 2);
                 }
 
                 $totalselfaverage = 0;
                 if ($totalselfaverages) {
-                    $totalselfaverage = ($totalselfaverages /  count($selfaverages));
+                    $totalselfaverage = format_float(($totalselfaverages /  count($selfaverages)), 2);
                 }
 
                 // Print the combined statistics graph.
@@ -844,7 +844,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     foreach ($datas as $data) {
                         $feedbacktotal += $data['average'];
                     }
-                    $overviewdata[$feedbackid] = $feedbacktotal / count($datas);
+                    $overviewdata[$feedbackid] = format_float(($feedbacktotal / count($datas)), 2);
                 }
 
                 $canprint = false;
