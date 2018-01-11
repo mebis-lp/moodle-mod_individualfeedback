@@ -38,14 +38,14 @@ $string['autonumbering'] = 'Automatische Nummerierung';
 $string['autonumbering_help'] = 'Diese Option aktiviert die automatische Nummerierung aller Fragen';
 $string['average'] = 'Mittelwert';
 $string['bold'] = 'Fett';
-$string['calendarend'] = 'Individuelles Feedback {$a} endet';
-$string['calendarstart'] = 'Individuelles Feedback {$a} beginnt';
+$string['calendarend'] = 'Schüler-Feedback {$a} endet';
+$string['calendarstart'] = 'Schüler-Feedback {$a} beginnt';
 $string['cannotaccess'] = 'Sie können auf dieses Feedback nur aus einem Kurs zugreifen';
 $string['cannotsavetempl'] = 'Vorlagen speichern ist nicht gestattet';
 $string['captcha'] = 'Captcha';
 $string['captchanotset'] = 'Captcha wurde nicht gewählt.';
 $string['closebeforeopen'] = 'Sie haben das Enddatum früher als das Anfangsdatum angegeben.';
-$string['completed_individualfeedbacks'] = 'Ausgefülltes individuelles Feedback';
+$string['completed_individualfeedbacks'] = 'Ausgefülltes Schüler-Feedback';
 $string['complete_the_form'] = 'Formular ausfüllen...';
 $string['completed'] = 'Abgeschlossen';
 $string['completedon'] = 'Abgeschlossen am {$a}';
@@ -161,14 +161,20 @@ $string['maximal'] = 'maximal';
 $string['messageprovider:message'] = 'Erinnerung zum Feedback';
 $string['messageprovider:submission'] = 'Mitteilung bei Feedback';
 $string['mode'] = 'Modus';
-$string['modulename'] = 'feedback';
-$string['modulename_help'] = 'Mit dem Feedback-Modul können Sie eigene Umfragen oder Evaluationsformulare anlegen, wofür Ihnen eine Reihe von Fragetypen zur Verfügung stehen.
+$string['modulename'] = 'Schüler-Feedback';
+$string['modulename_help'] = 'The individual feedback activity module is a cloned and customized version of the feedback activity.
 
-Die Antworten können Personen zugeordnet oder anonym erfolgen. Zeigen Sie den Teilnehmer/innen die Ergebnisse und/oder exportieren Sie die Daten später.
+The individual feedback activity module enables a teacher to create a custom survey for collecting individual feedback from participants using a variety of question types including multiple choice, yes/no or text input.
 
-Legen Sie Feedback-Fragebögen zentral an und setzen Sie sie in ausgewählten Kursen ein.';
+Individual feedback responses is always anonymous, and results may be shown to all participants or restricted to teachers only. Any individual feedback activities on the site front page may also be completed by non-logged-in users.
+
+Individual feedback activities may be used
+
+* For course evaluations, helping improve the content for later participants
+* For guest surveys of course choices, school policies etc.
+* For anti-bullying surveys in which students can report incidents anonymously';
 $string['modulename_link'] = 'mod/individualfeedback/view';
-$string['modulenameplural'] = 'Individuelles Feedback';
+$string['modulenameplural'] = 'Schüler-Feedback';
 $string['move_item'] = 'Element verschieben';
 $string['multichoice'] = 'Multiple choice';
 $string['multichoicerated'] = 'Multiple choice (skaliert)';
@@ -203,8 +209,8 @@ $string['page'] = 'Seite';
 $string['page-mod-individualfeedback-x'] = 'Jede Feedback Seite ';
 $string['page_after_submit'] = 'Abschluss Nachricht';
 $string['pagebreak'] = 'Seitenumbruch';
-$string['pluginadministration'] = 'Feedback administration';
-$string['pluginname'] = 'Individuelles Feedback';
+$string['pluginadministration'] = 'Schüler-Feedback administration';
+$string['pluginname'] = 'Schüler-Feedback';
 $string['position'] = 'Position';
 $string['previous_page'] = 'vorherige Seite';
 $string['public'] = 'öffentlich';
@@ -343,7 +349,7 @@ $string['selfassessment'] = 'Selbsteinschätzung';
 $string['average_given_answer'] = 'Durchschnitt der gegeben Antworten';
 $string['duplicate_and_link'] = 'Aktivität duplizieren und verknüpfen';
 $string['error_duplicating'] = 'Beim Duplizieren der Aktivität ist es zu einem Fehler gekommen. Versuchen Sie es erneut oder wenden Sie sich an Ihren Systemadministrator.';
-$string['individualfeedback_cloned_and_linked'] = 'Die Aktivität Individuelles Feedback wurde dupliziert und verknüpft.';
-$string['individualfeedback_is_linked'] = 'Diese Aktivität Individuelles Feedback ist mit anderen Aktivitäten verknüpft und kann daher nicht bearbeitet werden.';
-$string['individualfeedback_not_linked'] = 'Diese Aktivität Individuelles Feedback ist nicht mit anderen Aktivitäten verknüpft.';
-$string['individualfeedback_questions_not_equal'] = 'Die Fragen der verknüpften Aktivität Individuelles Feedback sind nicht gleich und können daher nicht verglichen werden.';
+$string['individualfeedback_cloned_and_linked'] = 'Die Aktivität Schüler-Feedback wurde dupliziert und verknüpft.';
+$string['individualfeedback_is_linked'] = 'Diese Aktivität Schüler-Feedback ist mit anderen Aktivitäten verknüpft und kann daher nicht bearbeitet werden.';
+$string['individualfeedback_not_linked'] = 'Diese Aktivität Schüler-Feedback ist nicht mit anderen Aktivitäten verknüpft.';
+$string['individualfeedback_questions_not_equal'] = 'Die Fragen der verknüpften Aktivität Schüler-Feedback sind nicht gleich und können daher nicht verglichen werden.';
