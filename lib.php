@@ -3759,7 +3759,8 @@ function individualfeedback_get_linked_individualfeedbacks($individualfeedbackid
     $sql = "SELECT ifb.*
     FROM {individualfeedback} ifb
     JOIN {individualfeedback_linked} ifbl ON ifb.id = ifbl.individualfeedbackid
-    WHERE ifbl.linkedid = :linkedid ";
+    WHERE ifbl.linkedid = :linkedid 
+    ORDER BY ifb.timemodified DESC";
 
     return $DB->get_records_sql($sql, array('linkedid' => $linkedid));
 }

@@ -266,7 +266,15 @@ class mod_individualfeedback_responses_table extends table_sql {
         $tablecolumns = array_keys($this->columns);
         $tableheaders = $this->headers;
 
-        $items = $this->individualfeedbackstructure->get_items(true);
+        $items = $this->individualfeedbackstructure->get_items();
+
+        $nodisplaytypes = array('info', 'label', 'pagebreak');
+        foreach ($items as $item) {
+            if (in_array($item->typ, $nodisplaytypes)) {
+                unset($items[$item->id]);
+            }
+        }
+
         if (!$this->is_downloading()) {
             // In preview mode do not show all columns or the page becomes unreadable.
             // The information message will be displayed to the teacher that the rest of the data can be viewed when downloading.

@@ -72,7 +72,7 @@ class mod_individualfeedback_responses_anon_table extends mod_individualfeedback
             'anon' => INDIVIDUALFEEDBACK_ANONYMOUS_YES,
             'courseid' => $this->individualfeedbackstructure->get_courseid()];
 
-        $fields = 'c.id, c.random_response, c.courseid';
+        $fields = 'c.id, c.random_response, c.courseid, c.selfassessment';
         $from = '{individualfeedback_completed} c';
         $where = 'c.anonymous_response = :anon AND c.individualfeedback = :instance';
         if ($this->individualfeedbackstructure->get_courseid()) {
@@ -104,11 +104,16 @@ class mod_individualfeedback_responses_anon_table extends mod_individualfeedback
      * @return string
      */
     public function col_random_response($row) {
+        $addrow = '';
+        if (!empty($row->selfassessment)) {
+            $addrow = " " . html_writer::tag('span', '*', array('title' => get_string('selfassessment', 'mod_individualfeedback')));
+        }
+
         if ($this->is_downloading()) {
-            return $row->random_response;
+            return $row->random_response . strip_tags($addrow);
         } else {
             return html_writer::link($this->get_link_single_entry($row),
-                    get_string('response_nr', 'individualfeedback').': '. $row->random_response);
+                    get_string('response_nr', 'individualfeedback').': '. $row->random_response . $addrow);
         }
     }
 
