@@ -284,7 +284,7 @@ $string['moveup_item'] = 'Frage nach oben verschieben.';
 $string['notavailable'] = 'Dieses individuelle Feedback ist nicht verfügbar.';
 $string['saving_failed_because_missing_or_false_values'] = 'Speichern fehlgeschlagen wegen fehlender oder falscher Werte';
 $string['cannotunmap'] = 'Datenbankproblem, kann die Zuordnung nicht aufheben';
-$string['viewcompleted'] = 'Abgeschlossene feedbacks';
+$string['viewcompleted'] = 'Abgeschlossene Schüler-Feedbacks';
 $string['viewcompleted_help'] = 'Sie können ausgefüllte individuelle Feedback-Formulare einsehen, nach Kurs und / oder nach Frage suchen.
 Individuelle Rückmeldungen können nach Excel exportiert werden.';
 $string['parameters_missing'] = 'Parameter fehlen von';
