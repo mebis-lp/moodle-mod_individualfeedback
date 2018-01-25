@@ -239,7 +239,7 @@ class individualfeedback_item_fourlevelfrequency extends individualfeedback_item
             $count = 0;
             $data = [];
             foreach ($analysed_vals as $val) {
-                $quotient = format_float($val->quotient * 100, 2);
+                $quotient = round($val->quotient * 100, 2);
                 $strquotient = '';
                 if ($val->quotient > 0) {
                     $strquotient = ' ('. $quotient . ' %)';

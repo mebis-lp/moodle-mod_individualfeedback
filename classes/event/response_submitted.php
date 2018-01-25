@@ -65,8 +65,8 @@ class response_submitted extends \core\event\base {
      * @return self
      */
     public static function create_from_record($completed, $cm) {
-        $event = self::create(array(
-            'relateduserid' => $completed->userid,
+        $eventdata = array(
+            'relateduserid' => 0,
             'objectid' => $completed->id,
             'context' => \context_module::instance($cm->id),
             'anonymous' => ($completed->anonymous_response == INDIVIDUALFEEDBACK_ANONYMOUS_YES),
@@ -75,7 +75,13 @@ class response_submitted extends \core\event\base {
                 'instanceid' => $completed->individualfeedback,
                 'anonymous' => $completed->anonymous_response // Deprecated.
             )
-        ));
+        );
+
+        if (!$completed->anonymous_response) {
+            $eventdata['relateduserid'] = $completed->userid;
+        }
+
+        $event = self::create($eventdata);
         $event->add_record_snapshot('individualfeedback_completed', $completed);
         return $event;
     }

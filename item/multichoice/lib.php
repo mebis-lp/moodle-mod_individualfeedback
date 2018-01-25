@@ -232,7 +232,7 @@ class individualfeedback_item_multichoice extends individualfeedback_item_base {
             $count = 0;
             $data = [];
             foreach ($analysed_vals as $val) {
-                $quotient = format_float($val->quotient * 100, 2);
+                $quotient = round($val->quotient * 100, 2);
                 $strquotient = '';
                 if ($val->quotient > 0) {
                     $strquotient = ' ('. $quotient . ' %)';

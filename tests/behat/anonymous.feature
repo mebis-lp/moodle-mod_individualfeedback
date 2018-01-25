@@ -26,151 +26,6 @@ Feature: Anonymous individualfeedback
       | activity   | name            | course               | idnumber  | anonymous | publish_stats | section |
       | individualfeedback   | Site individualfeedback   | Acceptance test site | individualfeedback0 | 1         | 1             | 1       |
       | individualfeedback   | Course individualfeedback | C1                   | individualfeedback1 | 1         | 1             | 0       |
-    When I log in as "manager"
-    And I am on site homepage
-    And I follow "Site individualfeedback"
-    And I click on "Edit questions" "link" in the "[role=main]" "css_element"
-    And I add a "Multiple choice" question to the individualfeedback with:
-      | Question                       | Do you like our site?              |
-      | Label                          | multichoice2                       |
-      | Multiple choice values         | Yes\nNo\nI don't know              |
-    And I follow "Logout"
-    And I press "Continue"
-
-  Scenario: Guests can see anonymous individualfeedback on front page but can not complete
-    When I follow "Site individualfeedback"
-    Then I should not see "Answer the questions..."
-    And I follow "Preview"
-    And I should see "Do you like our site?"
-    And I press "Continue"
-
-  Scenario: Complete anonymous individualfeedback on the front page as an authenticated user
-    And I log in as "user1"
-    And I am on site homepage
-    When I follow "Site individualfeedback"
-    And I follow "Preview"
-    And I should see "Do you like our site?"
-    And I press "Continue"
-    And I follow "Answer the questions..."
-    And I should see "Do you like our site?"
-    And I set the following fields to these values:
-      | Yes | 1 |
-    And I press "Submit your answers"
-    And I should not see "Submitted answers"
-    And I press "Continue"
-
-  @javascript
-  Scenario: Complete anonymous individualfeedback and view analysis on the front page as an authenticated user
-    When I log in as "user1"
-    And I am on site homepage
-    When I follow "Site individualfeedback"
-    And I follow "Preview"
-    And I should see "Do you like our site?"
-    And I press "Continue"
-    And I follow "Answer the questions..."
-    And I should see "Do you like our site?"
-    And I set the following fields to these values:
-      | Yes | 1 |
-    And I press "Submit your answers"
-    And I follow "Logout"
-    And I press "Continue"
-    And I log in as "user2"
-    And I am on site homepage
-    And I follow "Site individualfeedback"
-    And I follow "Preview"
-    And I should see "Do you like our site?"
-    And I press "Continue"
-    And I follow "Answer the questions..."
-    And I set the following fields to these values:
-      | No | 1 |
-    And I press "Submit your answers"
-    And I follow "Submitted answers"
-    And I should see "Submitted answers: 2"
-    And I should see "Questions: 1"
-    # And I should not see "multichoice2" # TODO MDL-29303 do not show labels to users who can not edit individualfeedback
-    And I show chart data for the "multichoice2" individualfeedback
-    And I should see "Do you like our site?"
-    And I should see "1 (50.00 %)" in the "Yes" "table_row"
-    And I should see "1 (50.00 %)" in the "No" "table_row"
-    And I follow "Logout"
-    And I press "Continue"
-    And I log in as "manager"
-    And I am on site homepage
-    And I follow "Site individualfeedback"
-    And I navigate to "Show responses" in current page administration
-    And I should not see "Username"
-    And I should see "Anonymous entries (2)"
-    And I follow "Response number: 1"
-    And I should not see "Username"
-    And I should see "Response number: 1 (Anonymous)"
-    And I follow "Logout"
-    And I press "Continue"
-
-  Scenario: Complete fully anonymous individualfeedback on the front page as a guest
-    And I log in as "admin"
-    And I set the following administration settings values:
-      | individualfeedback_allowfullanonymous | 1 |
-    And I follow "Logout"
-    And I press "Continue"
-    When I follow "Site individualfeedback"
-    And I follow "Preview"
-    And I should see "Do you like our site?"
-    And I press "Continue"
-    And I follow "Answer the questions..."
-    And I should see "Do you like our site?"
-    And I set the following fields to these values:
-      | Yes | 1 |
-    And I press "Submit your answers"
-    And I should not see "Submitted answers"
-    And I press "Continue"
-
-  @javascript
-  Scenario: Complete fully anonymous individualfeedback and view analyze on the front page as a guest
-    And I log in as "admin"
-    And I set the following administration settings values:
-      | individualfeedback_allowfullanonymous | 1 |
-    And I set the following system permissions of "Guest" role:
-      | capability                   | permission |
-      | mod/individualfeedback:viewanalysepage | Allow      |
-    And I follow "Logout"
-    And I press "Continue"
-    When I follow "Site individualfeedback"
-    And I follow "Preview"
-    And I should see "Do you like our site?"
-    And I press "Continue"
-    And I follow "Answer the questions..."
-    And I should see "Do you like our site?"
-    And I set the following fields to these values:
-      | Yes | 1 |
-    And I press "Submit your answers"
-    And I press "Continue"
-    # Starting new individualfeedback
-    When I follow "Site individualfeedback"
-    And I follow "Preview"
-    And I should see "Do you like our site?"
-    And I press "Continue"
-    And I follow "Answer the questions..."
-    And I should see "Do you like our site?"
-    And I set the following fields to these values:
-      | No | 1 |
-    And I press "Submit your answers"
-    And I follow "Submitted answers"
-    And I should see "Submitted answers: 2"
-    And I should see "Questions: 1"
-    # And I should not see "multichoice2" # TODO MDL-29303
-    And I show chart data for the "multichoice2" individualfeedback
-    And I should see "Do you like our site?"
-    And I should see "1 (50.00 %)" in the "Yes" "table_row"
-    And I should see "1 (50.00 %)" in the "No" "table_row"
-    And I log in as "manager"
-    And I am on site homepage
-    And I follow "Site individualfeedback"
-    And I navigate to "Show responses" in current page administration
-    And I should see "Anonymous entries (2)"
-    And I follow "Response number: 1"
-    And I should see "Response number: 1 (Anonymous)"
-    And I follow "Logout"
-    And I press "Continue"
 
   @javascript
   Scenario: Anonymous individualfeedback in a course
@@ -178,15 +33,14 @@ Feature: Anonymous individualfeedback
     When I log in as "teacher"
     And I am on "Course 1" course homepage
     And I follow "Course individualfeedback"
-    And I click on "Edit questions" "link" in the "[role=main]" "css_element"
-    And I add a "Multiple choice" question to the individualfeedback with:
+    And I click on "Edit questions" "link" in the ".nav-tabs" "css_element"
+    And I add a "4 level approval" question to the individualfeedback with:
       | Question                       | Do you like this course?           |
-      | Label                          | multichoice1                       |
-      | Hide the "Not selected" option | Yes                                |
-      | Multiple choice values         | Yes\nNo\nI don't know              |
+      | Label                          | 4levelapproval                     |
     And I follow "Logout"
     And I press "Continue"
-    And I log in as "user1"
+    
+    When I log in as "user1"
     And I am on "Course 1" course homepage
     And I follow "Course individualfeedback"
     And I follow "Preview"
@@ -195,114 +49,49 @@ Feature: Anonymous individualfeedback
     And I follow "Answer the questions..."
     And I should see "Do you like this course?"
     And I set the following fields to these values:
-      | Yes | 1 |
+      | Strongly disagree | 1 |
     And I press "Submit your answers"
+    And I press "Continue"
     And I follow "Logout"
     And I press "Continue"
-    And I log in as "user2"
+    
+    When I log in as "user2"
     And I am on "Course 1" course homepage
     And I follow "Course individualfeedback"
     And I follow "Preview"
-    And I should see "Do you like this course?"
+    Then I should see "Do you like this course?"
     And I press "Continue"
     And I follow "Answer the questions..."
-    And I should see "Do you like this course?"
-    And I set the following fields to these values:
-      | No | 1 |
+    Then I should see "Do you like this course?"
+    When I set the following fields to these values:
+      | Strongly agree | 1 |
     And I press "Submit your answers"
     And I follow "Submitted answers"
-    And I should see "Submitted answers: 2"
+    Then I should see "Submitted answers: 2"
     And I should see "Questions: 1"
-    # And I should not see "multichoice2" # TODO MDL-29303
-    And I show chart data for the "multichoice1" individualfeedback
-    And I should see "Do you like this course?"
-    And I should see "1 (50.00 %)" in the "Yes" "table_row"
-    And I should see "1 (50.00 %)" in the "No" "table_row"
+    When I change window size to "large"
+    And I wait "2" seconds
+    And I show chart data for the "4levelapproval" individualfeedback
+    Then I should see "Do you like this course?"
+    And I should see "1 (50.00 %)" in the "Strongly disagree" "table_row"
+    And I should see "1 (50.00 %)" in the "Strongly agree" "table_row"
     And I follow "Logout"
     And I press "Continue"
-    And I log in as "teacher"
+    
+    When I log in as "teacher"
     And I am on "Course 1" course homepage
     And I follow "Course individualfeedback"
     And I follow "Preview"
-    And I should see "Do you like this course?"
+    Then I should see "Do you like this course?"
     And I press "Continue"
-    And I should not see "Answer the questions..."
-    And I navigate to "Show responses" in current page administration
-    And I should not see "Username"
+    And I click on "Show responses" "link" in the ".nav-tabs" "css_element"
+    Then I should not see "Username"
     And I should see "Anonymous entries (2)"
-    And I follow "Response number: 1"
-    And I should not see "Username"
+    When I follow "Response number: 1"
+    Then I should not see "Username"
     And I should see "Response number: 1 (Anonymous)"
     And I should not see "Prev"
-    And I follow "Next"
-    And I should see "Response number: 2 (Anonymous)"
+    When I follow "Next"
+    Then I should see "Response number: 2 (Anonymous)"
     And I should see "Prev"
     And I should not see "Next"
-    And I click on "Back" "link" in the "[role=main]" "css_element"
-    # Delete anonymous response
-    And I click on "Delete entry" "link" in the "Response number: 1" "table_row"
-    And I press "Yes"
-    And I should see "Anonymous entries (1)"
-    And I should not see "Response number: 1"
-    And I should see "Response number: 2"
-    And I follow "Logout"
-    And I press "Continue"
-
-  Scenario: Collecting new non-anonymous individualfeedback from a previously anonymous individualfeedback activity
-    When I log in as "teacher"
-    And I follow "Course 1"
-    And I follow "Course individualfeedback"
-    And I navigate to "Edit settings" in current page administration
-    And I set the following fields to these values:
-      | Allow multiple submissions | Yes |
-    And I press "Save and display"
-    And I follow "Edit questions"
-    And I add a "Short text answer" question to the individualfeedback with:
-      | Question               | this is a short text answer |
-      | Label                  | shorttext                   |
-      | Maximum characters accepted | 200                    |
-    And I follow "Logout"
-    And I press "Continue"
-    When I log in as "user1"
-    And I follow "Course 1"
-    And I follow "Course individualfeedback"
-    And I follow "Answer the questions..."
-    And I set the following fields to these values:
-      | this is a short text answer  | anontext |
-    And I press "Submit your answers"
-    And I follow "Logout"
-    And I press "Continue"
-    # Switch to non-anon responses.
-    And I log in as "teacher"
-    And I follow "Course 1"
-    And I follow "Course individualfeedback"
-    And I navigate to "Edit settings" in current page administration
-    And I set the following fields to these values:
-        | Record user names | User's name will be logged and shown with answers |
-    And I press "Save and display"
-    And I follow "Logout"
-    And I press "Continue"
-    # Now leave a non-anon individualfeedback as user1
-    When I log in as "user1"
-    And I follow "Course 1"
-    And I follow "Course individualfeedback"
-    And I follow "Answer the questions..."
-    And I set the following fields to these values:
-      | this is a short text answer  | usertext |
-    And I press "Submit your answers"
-    And I follow "Logout"
-    And I press "Continue"
-    # Now check the responses are correct.
-    When I log in as "teacher"
-    And I follow "Course 1"
-    And I follow "Course individualfeedback"
-    And I follow "Show responses"
-    And I should see "Anonymous entries (1)"
-    And I should see "Non anonymous entries (1)"
-    And I click on "," "link" in the "Username 1" "table_row"
-    And I should see "(Username 1)"
-    And I should see "usertext"
-    And I follow "Back"
-    And I follow "Response number: 1"
-    And I should see "Response number: 1 (Anonymous)"
-    Then I should see "anontext"

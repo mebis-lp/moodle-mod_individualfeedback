@@ -63,8 +63,8 @@ class response_deleted extends \core\event\base {
      * @return self
      */
     public static function create_from_record($completed, $cm, $individualfeedback) {
-        $event = self::create(array(
-            'relateduserid' => $completed->userid,
+        $eventdata = array(
+            'relateduserid' => 0,
             'objectid' => $completed->id,
             'courseid' => $cm->course,
             'context' => \context_module::instance($cm->id),
@@ -73,7 +73,13 @@ class response_deleted extends \core\event\base {
                 'cmid' => $cm->id,
                 'instanceid' => $individualfeedback->id,
                 'anonymous' => $completed->anonymous_response) // Deprecated.
-        ));
+        );
+
+        if (!$completed->anonymous_response) {
+            $eventdata['relateduserid'] = $completed->userid;
+        }
+
+        $event = self::create($eventdata);
 
         $event->add_record_snapshot('individualfeedback_completed', $completed);
         $event->add_record_snapshot('individualfeedback', $individualfeedback);

@@ -311,7 +311,7 @@ abstract class individualfeedback_item_base {
                     $totalvalue += ($key * $value);
                 }
                 $average = $totalvalue / $data['totalvalues'];
-                $overviewdata['average'] = format_float($average, 2);
+                $overviewdata['average'] = round($average, 2);
             }
         }
 
@@ -412,7 +412,7 @@ abstract class individualfeedback_item_base {
                         $totalvalue += ($key * $value);
                     }
                     $average = $totalvalue / $data['totalvalues'];
-                    $overviewdata[$currentitem->individualfeedback] = format_float($average, 2);
+                    $overviewdata[$currentitem->individualfeedback] = round($average, 2);
                 }
             }
         }
@@ -482,7 +482,7 @@ abstract class individualfeedback_item_base {
                     $totalvalue += ($key * $value);
                 }
                 $average = $totalvalue / $data['totalvalues'];
-                $overviewdata['average'] = format_float($average, 2);
+                $overviewdata['average'] = round($average, 2);
             }
         }
 
@@ -544,7 +544,7 @@ abstract class individualfeedback_item_base {
                         $totalvalue += ($key * $value);
                     }
                     $average = $totalvalue / $data['totalvalues'];
-                    $overviewdata[$currentitem->individualfeedback] = format_float($average, 2);
+                    $overviewdata[$currentitem->individualfeedback] = round($average, 2);
                 }
             }
         }
