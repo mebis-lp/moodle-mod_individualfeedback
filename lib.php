@@ -974,18 +974,11 @@ function individualfeedback_get_context($cmid) {
 /**
  *  returns true if the current role is faked by switching role feature
  *
- * @global object
+ * @param int courseid - the id of the course
  * @return boolean
  */
-function individualfeedback_check_is_switchrole() {
-    global $USER;
-    if (isset($USER->switchrole) AND
-            is_array($USER->switchrole) AND
-            count($USER->switchrole) > 0) {
-
-        return true;
-    }
-    return false;
+function individualfeedback_check_is_switchrole($courseid) {
+    return is_role_switched($courseid);
 }
 
 /**

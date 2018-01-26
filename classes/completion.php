@@ -548,7 +548,7 @@ class mod_individualfeedback_completion extends mod_individualfeedback_structure
         $individualfeedbackcompleted = $this->find_last_completed();
         $individualfeedbackcompletedtmp = $this->get_current_completed_tmp();
 
-        if (individualfeedback_check_is_switchrole() || individualfeedback_check_is_loggedinas()) {
+        if (individualfeedback_check_is_switchrole($this->individualfeedback->course) || individualfeedback_check_is_loggedinas()) {
             // We do not actually save anything if the role is switched, just delete temporary values.
             $this->delete_completedtmp();
             return;

@@ -262,7 +262,7 @@ class mod_individualfeedback_structure {
     public function is_already_submitted($anycourseid = false) {
         global $USER, $DB;
 
-        if (!isloggedin() || isguestuser()) {
+        if (!isloggedin() || isguestuser() || individualfeedback_check_is_switchrole($this->individualfeedback->course)) {
             return false;
         }
 
