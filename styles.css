@@ -163,43 +163,63 @@ select.questiongroup_select {
     margin-bottom: 20px;
 }
 
+#page-mod-individualfeedback-print .fitemtitle *,
 #page-mod-individualfeedback-complete .fitemtitle *,
-#page-mod-individualfeedback-view .fitemtitle * {
+#page-mod-individualfeedback-edit .fitemtitle *,
+#page-mod-individualfeedback-use_templ .fitemtitle * {
   font-weight: 550;
 }
+#page-mod-individualfeedback-print .felement.fgroup label,
 #page-mod-individualfeedback-complete .felement.fgroup label,
-#page-mod-individualfeedback-view .felement.fgroup label {
+#page-mod-individualfeedback-edit .felement.fgroup label,
+#page-mod-individualfeedback-use_templ .felement.fgroup label {
   font-weight: normal;
 }
+#page-mod-individualfeedback-print .itemhandle,
 #page-mod-individualfeedback-complete .itemhandle,
-#page-mod-individualfeedback-view .itemhandle {
+#page-mod-individualfeedback-edit .itemhandle,
+#page-mod-individualfeedback-use_templ .itemhandle {
   padding-left: 24px;
 }
+#page-mod-individualfeedback-print .mform .fitem div.fitemtitle,
 #page-mod-individualfeedback-complete .mform .fitem div.fitemtitle,
-#page-mod-individualfeedback-view .mform .fitem div.fitemtitle {
+#page-mod-individualfeedback-edit .mform .fitem div.fitemtitle,
+#page-mod-individualfeedback-use_templ .mform .fitem div.fitemtitle {
   width: 100%;
 }
+#page-mod-individualfeedback-print .mform .fitem div.fitemtitle > *,
 #page-mod-individualfeedback-complete .mform .fitem div.fitemtitle > *,
-#page-mod-individualfeedback-view .mform .fitem div.fitemtitle > * {
+#page-mod-individualfeedback-edit .mform .fitem div.fitemtitle > *,
+#page-mod-individualfeedback-use_templ .mform .fitem div.fitemtitle > * {
   float: left;
 }
+#page-mod-individualfeedback-print .mform .fitem div.fitemtitle,
 #page-mod-individualfeedback-complete .mform .fitem div.fitemtitle,
-#page-mod-individualfeedback-view .mform .fitem div.fitemtitle {
+#page-mod-individualfeedback-edit .mform .fitem div.fitemtitle,
+#page-mod-individualfeedback-use_templ .mform .fitem div.fitemtitle {
   text-align: left;
 }
+#page-mod-individualfeedback-print .mform .fitem div.felement,
+#page-mod-individualfeedback-print .mform .fitem fieldset.felement,
 #page-mod-individualfeedback-complete .mform .fitem div.felement,
 #page-mod-individualfeedback-complete .mform .fitem fieldset.felement,
-#page-mod-individualfeedback-view .mform .fitem div.felement,
-#page-mod-individualfeedback-view .mform .fitem fieldset.felement {
+#page-mod-individualfeedback-edit .mform .fitem div.felement,
+#page-mod-individualfeedback-edit .mform .fitem fieldset.felement,
+#page-mod-individualfeedback-use_templ .mform .fitem div.felement,
+#page-mod-individualfeedback-use_templ .mform .fitem fieldset.felement {
   padding-left: 60px;
   width: 100%;
 }
+#page-mod-individualfeedback-print .mform .fitem fieldset.felement.fgroup > span,
 #page-mod-individualfeedback-complete .mform .fitem fieldset.felement.fgroup > span,
-#page-mod-individualfeedback-view .mform .fitem fieldset.felement.fgroup > span {
+#page-mod-individualfeedback-edit .mform .fitem fieldset.felement.fgroup > span,
+#page-mod-individualfeedback-use_templ .mform .fitem fieldset.felement.fgroup > span {
   padding-right: 15px;
 }
+#page-mod-individualfeedback-print .h3.individualfeedback_questiongroup,
 #page-mod-individualfeedback-complete .h3.individualfeedback_questiongroup,
-#page-mod-individualfeedback-view .h3.individualfeedback_questiongroup {
+#page-mod-individualfeedback-edit .h3.individualfeedback_questiongroup,
+#page-mod-individualfeedback-use_templ .h3.individualfeedback_questiongroup {
   border-bottom: 2px solid #ff6600;
   line-height: 2;
 }
