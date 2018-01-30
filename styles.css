@@ -162,3 +162,30 @@ select.questiongroup_select {
 .individualfeedbackprint .continuebutton:first-child {
     margin-bottom: 20px;
 }
+
+.path-mod-individualfeedback .fitemtitle * {
+  font-weight: 550;
+}
+.path-mod-individualfeedback .felement.fgroup label {
+  font-weight: normal;
+}
+.path-mod-individualfeedback .itemhandle {
+  padding-left: 24px;
+}
+.path-mod-individualfeedback .mform .fitem div.fitemtitle {
+  width: 100%;
+}
+.path-mod-individualfeedback .mform .fitem div.fitemtitle > * {
+  float: left;
+}
+.path-mod-individualfeedback .mform .fitem div.fitemtitle {
+  text-align: left;
+}
+.path-mod-individualfeedback .mform .fitem div.felement,
+.path-mod-individualfeedback .mform .fitem fieldset.felement {
+  padding-left: 60px;
+  width: 100%;
+}
+.path-mod-individualfeedback .mform .fitem fieldset.felement.fgroup > span {
+  padding-right: 15px;
+}

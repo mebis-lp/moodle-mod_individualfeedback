@@ -908,7 +908,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
             ['static',
                 $item->typ.'_'.$item->id,
                 '',
-                html_writer::tag('span', $name, ['class' => 'individualfeedback_questiongroup', 'id' => 'individualfeedback_item_' . $item->id])
+                html_writer::tag('span', $name, ['class' => 'h3 individualfeedback_questiongroup', 'id' => 'individualfeedback_item_' . $item->id])
             ]);
     }
 
