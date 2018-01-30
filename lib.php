@@ -94,7 +94,7 @@ function individualfeedback_add_instance($individualfeedback) {
     $individualfeedback->id = '';
 
     if (empty($individualfeedback->site_after_submit)) {
-        $individualfeedback->site_after_submit = '';
+        $individualfeedback->site_after_submit = '1';
     }
 
     //saving the individualfeedback in db

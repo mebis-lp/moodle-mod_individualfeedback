@@ -26,8 +26,14 @@ require_once($CFG->dirroot . '/mod/individualfeedback/lib.php');
 
 $id = required_param('id', PARAM_INT);
 $courseid = optional_param('courseid', false, PARAM_INT);
+$forceview = optional_param('forceview', false, PARAM_INT);
+
+if ($forceview == 1) { 
+    redirect("$CFG->wwwroot/mod/individualfeedback/edit.php?id=$id&do_show=templates");
+}
 
 $current_tab = 'view';
+
 
 list($course, $cm) = get_course_and_cm_from_cmid($id, 'individualfeedback');
 require_course_login($course, true, $cm);
