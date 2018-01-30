@@ -163,33 +163,43 @@ select.questiongroup_select {
     margin-bottom: 20px;
 }
 
-.path-mod-individualfeedback .fitemtitle * {
+#page-mod-individualfeedback-complete .fitemtitle *,
+#page-mod-individualfeedback-view .fitemtitle * {
   font-weight: 550;
 }
-.path-mod-individualfeedback .felement.fgroup label {
+#page-mod-individualfeedback-complete .felement.fgroup label,
+#page-mod-individualfeedback-view .felement.fgroup label {
   font-weight: normal;
 }
-.path-mod-individualfeedback .itemhandle {
+#page-mod-individualfeedback-complete .itemhandle,
+#page-mod-individualfeedback-view .itemhandle {
   padding-left: 24px;
 }
-.path-mod-individualfeedback .mform .fitem div.fitemtitle {
+#page-mod-individualfeedback-complete .mform .fitem div.fitemtitle,
+#page-mod-individualfeedback-view .mform .fitem div.fitemtitle {
   width: 100%;
 }
-.path-mod-individualfeedback .mform .fitem div.fitemtitle > * {
+#page-mod-individualfeedback-complete .mform .fitem div.fitemtitle > *,
+#page-mod-individualfeedback-view .mform .fitem div.fitemtitle > * {
   float: left;
 }
-.path-mod-individualfeedback .mform .fitem div.fitemtitle {
+#page-mod-individualfeedback-complete .mform .fitem div.fitemtitle,
+#page-mod-individualfeedback-view .mform .fitem div.fitemtitle {
   text-align: left;
 }
-.path-mod-individualfeedback .mform .fitem div.felement,
-.path-mod-individualfeedback .mform .fitem fieldset.felement {
+#page-mod-individualfeedback-complete .mform .fitem div.felement,
+#page-mod-individualfeedback-complete .mform .fitem fieldset.felement,
+#page-mod-individualfeedback-view .mform .fitem div.felement,
+#page-mod-individualfeedback-view .mform .fitem fieldset.felement {
   padding-left: 60px;
   width: 100%;
 }
-.path-mod-individualfeedback .mform .fitem fieldset.felement.fgroup > span {
+#page-mod-individualfeedback-complete .mform .fitem fieldset.felement.fgroup > span,
+#page-mod-individualfeedback-view .mform .fitem fieldset.felement.fgroup > span {
   padding-right: 15px;
 }
-.path-mod-individualfeedback .h3.individualfeedback_questiongroup {
+#page-mod-individualfeedback-complete .h3.individualfeedback_questiongroup,
+#page-mod-individualfeedback-view .h3.individualfeedback_questiongroup {
   border-bottom: 2px solid #ff6600;
   line-height: 2;
 }
