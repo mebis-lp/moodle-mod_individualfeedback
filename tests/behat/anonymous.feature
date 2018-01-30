@@ -1,7 +1,7 @@
 @mod @mod_individualfeedback
 Feature: Anonymous individualfeedback
   In order to collect individualfeedbacks
-  As an admin
+  As an teacher
   I need to be able to allow anonymous individualfeedbacks
 
   Background:
@@ -73,8 +73,8 @@ Feature: Anonymous individualfeedback
     And I wait "2" seconds
     And I show chart data for the "4levelapproval" individualfeedback
     Then I should see "Do you like this course?"
-    And I should see "1 (50.00 %)" in the "Strongly disagree" "table_row"
-    And I should see "1 (50.00 %)" in the "Strongly agree" "table_row"
+    And I should see "1 (50 %)" in the "Strongly disagree" "table_row"
+    And I should see "1 (50 %)" in the "Strongly agree" "table_row"
     And I follow "Logout"
     And I press "Continue"
     
