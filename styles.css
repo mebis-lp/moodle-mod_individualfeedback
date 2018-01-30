@@ -189,3 +189,7 @@ select.questiongroup_select {
 .path-mod-individualfeedback .mform .fitem fieldset.felement.fgroup > span {
   padding-right: 15px;
 }
+.path-mod-individualfeedback .h3.individualfeedback_questiongroup {
+  border-bottom: 2px solid #ff6600;
+  line-height: 2;
+}
