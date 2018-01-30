@@ -64,6 +64,18 @@ if (!has_capability('mod/individualfeedback:edititems', $context) &&
     exit;
 }
 
+//jump right to completing the form if completing would be the only choice
+if (!has_capability('mod/individualfeedback:edititems', $context) &&
+    !has_capability('mod/individualfeedback:viewreports', $context) &&
+    !$individualfeedbackcompletion->can_view_analysis() &&
+    !has_capability('mod/individualfeedback:mapcourse', $context) &&  
+    $individualfeedbackcompletion->can_complete() && 
+    $individualfeedbackcompletion->is_open() && 
+    $individualfeedbackcompletion->can_submit()) {
+
+    redirect("$CFG->wwwroot/mod/individualfeedback/complete.php?id=$id&courseid=$courseid");
+}
+
 // Trigger module viewed event.
 //$individualfeedbackcompletion->trigger_module_viewed();
 
