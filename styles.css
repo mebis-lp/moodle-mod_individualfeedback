@@ -163,6 +163,7 @@ select.questiongroup_select {
     margin-bottom: 20px;
 }
 
+
 #page-mod-individualfeedback-print .fitemtitle *,
 #page-mod-individualfeedback-complete .fitemtitle *,
 #page-mod-individualfeedback-edit .fitemtitle *,
@@ -227,3 +228,18 @@ select.questiongroup_select {
 #page-mod-individualfeedback-analysis th {
     font-weight: normal;
 }
+
+/*changes for boost template*/
+#page-mod-individualfeedback-print div.col-md-3,
+#page-mod-individualfeedback-complete div.col-md-3,
+#page-mod-individualfeedback-edit div.col-md-3,
+#page-mod-individualfeedback-use_templ div.col-md-3,
+#page-mod-individualfeedback-analysis div.col-md-3 {
+    width: 100%;
+}
+
+#page-mod-individualfeedback-edit div.action-menu,
+#page-mod-individualfeedback-analysis div.action-menu {
+    text-align: right;
+}
+
