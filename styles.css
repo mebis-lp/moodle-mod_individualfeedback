@@ -219,7 +219,11 @@ select.questiongroup_select {
 #page-mod-individualfeedback-print .h3.individualfeedback_questiongroup,
 #page-mod-individualfeedback-complete .h3.individualfeedback_questiongroup,
 #page-mod-individualfeedback-edit .h3.individualfeedback_questiongroup,
-#page-mod-individualfeedback-use_templ .h3.individualfeedback_questiongroup {
+#page-mod-individualfeedback-use_templ .h3.individualfeedback_questiongroup,
+#page-mod-individualfeedback-analysis .h3 {
   border-bottom: 2px solid #ff6600;
   line-height: 2;
+}
+#page-mod-individualfeedback-analysis th {
+    font-weight: normal;
 }

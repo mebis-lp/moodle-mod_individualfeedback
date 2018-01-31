@@ -120,7 +120,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
 
     public function print_analysed($item, $itemnr = '', $groupid = false, $courseid = false) {
         echo html_writer::start_tag('div', array('class' => 'questiongroup_analysed', 'id' => 'questiongroup_' . $item->id));
-        echo html_writer::tag('div', $item->name);
+        echo html_writer::tag('span', $item->name, array('class' => 'h3'));
     }
 
     public function print_detail_groups($item, $itemnr = '', $groupid = false, $courseid = false) {
