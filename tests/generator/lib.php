@@ -193,6 +193,7 @@ class mod_individualfeedback_generator extends testing_module_generator {
             'subtype' => 'r',
             'horizontal' => 0,
             'hidenoselect' => 1,
+            'negativeformulated' => 0,
             'ignoreempty' => 0,
             'values' => "a\nb\nc\nd\ne"
         );
@@ -240,6 +241,7 @@ class mod_individualfeedback_generator extends testing_module_generator {
             'subtype' => 'r',
             'horizontal' => 0,
             'hidenoselect' => 1,
+            'negativeformulated' => 0,
             'ignoreempty' => 0,
             'values' => "0/a\n1/b\n2/c\n3/d\n4/e"
         );

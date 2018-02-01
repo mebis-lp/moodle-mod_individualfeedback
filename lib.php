@@ -2572,6 +2572,7 @@ function individualfeedback_update_values($completed, $tmp = false) {
 function individualfeedback_get_group_values($item,
                                    $groupid = false,
                                    $courseid = false,
+                                   $negative_formulated = false,
                                    $ignore_empty = false,
                                    $selfassessment = false) {
 

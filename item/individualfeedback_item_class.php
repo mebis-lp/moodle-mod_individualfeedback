@@ -584,7 +584,7 @@ abstract class individualfeedback_item_base {
         if (!has_capability('mod/individualfeedback:selfassessment', $PAGE->context)) {
             return $data;
         }
-        $data = individualfeedback_get_group_values($item, false, false, false, true);
+        $data = individualfeedback_get_group_values($item, false, false, false, false, true);
         return reset($data);
     }
 
@@ -615,7 +615,7 @@ abstract class individualfeedback_item_base {
         $analysed_item['values'] = array();
 
         //get the values
-        $values = individualfeedback_get_group_values($item, $groupid, $courseid, $this->ignoreempty($item));
+        $values = individualfeedback_get_group_values($item, $groupid, $courseid, $this->negativeformulated($item), $this->ignoreempty($item));
         if (!$values) {
             $analysed_item['totalvalues'] = 0;
             return $analysed_item;

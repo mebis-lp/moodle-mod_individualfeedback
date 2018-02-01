@@ -28,7 +28,7 @@ class individualfeedback_fivelevelapproval_form extends individualfeedback_item_
         $mform =& $this->_form;
 
         $mform->addElement('header', 'general', get_string($this->type, 'individualfeedback'));
-
+   
         //$mform->addElement('advcheckbox', 'required', get_string('required', 'individualfeedback'), '' , null , array(0, 1));
         $mform->addElement('hidden', 'required', 0);
         $mform->setType('required', PARAM_INT);
@@ -45,7 +45,13 @@ class individualfeedback_fivelevelapproval_form extends individualfeedback_item_
                             array('size' => INDIVIDUALFEEDBACK_ITEM_LABEL_TEXTBOX_SIZE,
                                   'maxlength' => 255));
 
-/*
+        //check whether the question is negatively formulated
+        $mform->addElement('selectyesno',
+                   'negativeformulated',
+                   get_string('negative_formulated', 'individualfeedback'));
+        $mform->addHelpButton('negativeformulated', 'negative_formulated', 'individualfeedback');
+        
+        /*
         $mform->addElement('select',
                             'subtype',
                             get_string('fivelevelapprovaltype', 'individualfeedback').'&nbsp;',
@@ -112,6 +118,10 @@ class individualfeedback_fivelevelapproval_form extends individualfeedback_item_
             $item->ignoreempty = 0;
         }
 
+        if (!isset($item->negativeformulated)) {
+            $item->negativeformulated = 0;
+        }
+        
         $item->presentation = $subtype.INDIVIDUALFEEDBACK_FIVELEVELAPPROVAL_TYPE_SEP.$presentation;
         return $item;
     }

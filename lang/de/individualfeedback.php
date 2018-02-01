@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ $string['captcha'] = 'Captcha';
 $string['captchanotset'] = 'Captcha wurde nicht gewählt.';
 $string['closebeforeopen'] = 'Sie haben das Enddatum früher als das Anfangsdatum angegeben.';
 $string['completed_individualfeedbacks'] = 'Ausgefülltes Schüler-Feedback';
-$string['complete_the_form'] = 'Feedback starten';
+$string['complete_the_form'] = 'Selbsteinschätzung abgeben';
 $string['completed'] = 'Abgeschlossen';
 $string['completedon'] = 'Abgeschlossen am {$a}';
 $string['completionsubmit'] = 'Als abgeschlossen ansehen, wenn das Feedback abgegeben wurde.';
@@ -103,7 +103,7 @@ Sie können es hier einsehen:
 {$a->url}';
 $string['emailteachermailhtml'] = '<p>{$a->username} hat das individuelle Feedback: <i>\'{$a->individualfeedback}\'</i> abgeschlossen.</p>
 <p>Das Feedback ist <a href="{$a->url}">auf der Website</a> verfügbar.</p>';
-$string['entries_saved'] = 'Einträge wurden gespeichert.';
+$string['entries_saved'] = 'Vielen Dank für die Teilnahme am Feedback!';
 $string['export_questions'] = 'Fragen exportieren';
 $string['export_to_excel'] = 'Nach Excel exportieren';
 $string['eventresponsedeleted'] = 'Antwort gelöscht';
@@ -347,9 +347,11 @@ $string['error_calculating_averages'] = 'In dieser Gruppe gibt es Fragen mit unt
 $string['analysis_questiongroup'] = 'Fragengruppe mit {$a} Fragen.';
 $string['selfassessment'] = 'Selbsteinschätzung';
 $string['average_given_answer'] = 'Durchschnittswert der gegebenen Antworten';
-$string['duplicate_and_link'] = 'Aktivität duplizieren und verknüpfen';
+$string['duplicate_and_link'] = 'Duplizieren und verknüpfen';
 $string['error_duplicating'] = 'Beim Duplizieren der Aktivität ist es zu einem Fehler gekommen. Versuchen Sie es erneut oder wenden Sie sich an Ihren Systemadministrator.';
 $string['individualfeedback_cloned_and_linked'] = 'Die Aktivität Schüler-Feedback wurde dupliziert und verknüpft.';
 $string['individualfeedback_is_linked'] = 'Diese Aktivität ist mit anderen Aktivitäten verknüpft. Der Fragebogen kann daher nicht bearbeitet werden.';
 $string['individualfeedback_not_linked'] = 'Diese Aktivität ist nicht mit anderen Aktivitäten verknüpft.';
 $string['individualfeedback_questions_not_equal'] = 'Die Fragen der verknüpften Aktivitäten sind nicht gleich. Diese können daher nicht verglichen werden.';
+$string['negative_formulated'] = 'Kontrollfrage';
+$string['negative_formulated_help'] = 'Kontrollfragen sind semantisch gedrehte Fragen, d. h. negativ formuliert. Sie werden in Fragebögen eingebaut, um dem Verfälschen von Ergebnissen durch eine Ja-Sage-Tendenz entgegenzuwirken. <br> Werden Kontrollfragen in Fragengruppen integriert, werden die Antwortwerte bei der Mittelwertberechnung invertiert, damit postive oder negative Tendenzen korrekt dargestellt werden.';

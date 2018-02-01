@@ -21,6 +21,7 @@ define('INDIVIDUALFEEDBACK_MULTICHOICE_TYPE_SEP', '>>>>>');
 define('INDIVIDUALFEEDBACK_MULTICHOICE_LINE_SEP', '|');
 define('INDIVIDUALFEEDBACK_MULTICHOICE_ADJUST_SEP', '<<<<<');
 define('INDIVIDUALFEEDBACK_MULTICHOICE_IGNOREEMPTY', 'i');
+define('INDIVIDUALFEEDBACK_FIVELEVELAPPROVAL_NEGATIVEFORMULATED', 'n');
 define('INDIVIDUALFEEDBACK_MULTICHOICE_HIDENOSELECT', 'h');
 
 class individualfeedback_item_multichoice extends individualfeedback_item_base {
@@ -47,6 +48,7 @@ class individualfeedback_item_multichoice extends individualfeedback_item_base {
         $item->presentation = empty($item->presentation) ? '' : $item->presentation;
         $info = $this->get_info($item);
 
+        $item->negativeformulated = $this->negativeformulated($item);
         $item->ignoreempty = $this->ignoreempty($item);
         $item->hidenoselect = $this->hidenoselect($item);
 
@@ -82,6 +84,7 @@ class individualfeedback_item_multichoice extends individualfeedback_item_base {
         }
 
         $this->set_ignoreempty($item, $item->ignoreempty);
+        $this->set_negativeformulated($item, $item->negativeformulated);
         $this->set_hidenoselect($item, $item->hidenoselect);
 
         $item->hasvalue = $this->get_hasvalue();
@@ -132,7 +135,7 @@ class individualfeedback_item_multichoice extends individualfeedback_item_base {
         }
 
         //get the values
-        $values = individualfeedback_get_group_values($item, $groupid, $courseid, $this->ignoreempty($item));
+        $values = individualfeedback_get_group_values($item, $groupid, $courseid, $this->negativeformulated($item), $this->ignoreempty($item));
         if (!$values) {
             return null;
         }
@@ -466,6 +469,20 @@ class individualfeedback_item_multichoice extends individualfeedback_item_base {
 
     public function ignoreempty($item) {
         if (strstr($item->options, INDIVIDUALFEEDBACK_MULTICHOICE_IGNOREEMPTY)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function set_negativeformulated($item, $negativeformulated=true) {
+        $item->options = str_replace(INDIVIDUALFEEDBACK_FIVELEVELAPPROVAL_NEGATIVEFORMULATED, '', $item->options);
+        if ($negativeformulated) {
+            $item->options .= INDIVIDUALFEEDBACK_FIVELEVELAPPROVAL_NEGATIVEFORMULATED;
+        }
+    }
+
+    public function negativeformulated($item) {
+        if (strstr($item->options, INDIVIDUALFEEDBACK_FIVELEVELAPPROVAL_NEGATIVEFORMULATED)) {
             return true;
         }
         return false;

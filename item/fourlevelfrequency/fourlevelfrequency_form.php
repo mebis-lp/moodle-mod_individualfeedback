@@ -45,6 +45,12 @@ class individualfeedback_fourlevelfrequency_form extends individualfeedback_item
                             array('size' => INDIVIDUALFEEDBACK_ITEM_LABEL_TEXTBOX_SIZE,
                                   'maxlength' => 255));
 
+        //check whether the question is negatively formulated
+        $mform->addElement('selectyesno',
+                   'negativeformulated',
+                   get_string('negative_formulated', 'individualfeedback'));
+        $mform->addHelpButton('negativeformulated', 'negative_formulated', 'individualfeedback');
+        
 /*
         $mform->addElement('select',
                             'subtype',
@@ -112,6 +118,10 @@ class individualfeedback_fourlevelfrequency_form extends individualfeedback_item
             $item->ignoreempty = 0;
         }
 
+        if (!isset($item->negativeformulated)) {
+            $item->negativeformulated = 0;
+        }
+        
         $item->presentation = $subtype.INDIVIDUALFEEDBACK_FOURLEVELFREQUENCY_TYPE_SEP.$presentation;
         return $item;
     }

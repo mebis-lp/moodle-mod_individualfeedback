@@ -245,10 +245,25 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
             $selfassessment = array();
             foreach ($questions as $question) {
                 $questionobj = individualfeedback_get_item_class($question->typ);
-                $data = $questionobj->get_answer_data($question);
+                $data = $questionobj->get_answer_data($question);         
                 $alldata[$question->id] = $data;
+                
+                if (strpos($question->options, 'n') !== FALSE) {
+                    $alldata[$question->id]['values'] = array_reverse($alldata[$question->id]['values']);
+                    
+                    $indizes = array();
+                    foreach ($alldata[$question->id]['values'] as $key => $v) {
+                        $indizes[$key+1] = $v;
+                    }
+                    
+                    $alldata[$question->id]['values'] = $indizes;
+                }
+                                
                 if ($selfdata = $this->check_and_get_self_assessment_data($question)) {
                     $selfassessment[$question->id] = $selfdata;
+                    if (strpos($question->options, 'n') !== FALSE) {
+                        $selfassessment[$question->id]->value = $alldata[$question->id]['answers']+1-$selfassessment[$question->id]->value;
+                    }
                 }
             }
 
@@ -379,7 +394,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
         global $OUTPUT, $DB;
 
         echo $this->print_analysed($item, $itemnr);
-
+        
         // Get the questions within this group for this instance.
         if (!$questions = $this->get_question_in_group($item)) {
             echo html_writer::tag('p', get_string('no_questions_in_group', 'individualfeedback'));
@@ -388,28 +403,41 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
             $alldata = array();
             foreach ($allfeedbacks as $feedback) {
                 $alldata[$feedback->id] = array();
-                if ($item->individualfeedback != $feedback->id) {
+                
+                // TG/MO: Bug getting the questions of the correct feedback fixed
+                //if ($item->individualfeedback != $feedback->id) {
                     $params = array('individualfeedback' => $feedback->id, 'position' => $item->position);
                     $otheritem = $DB->get_record('individualfeedback_item', $params);
                     $questions = $this->get_question_in_group($otheritem);
-                }
+                //}
 
                 foreach ($questions as $question) {
                     $questionobj = individualfeedback_get_item_class($question->typ);
                     $data = $questionobj->get_answer_data($question);
+                    $alldata[$feedback->id][$question->id] = $data;
 
+                    if (strpos($question->options, 'n') !== FALSE) {
+                        $alldata[$feedback->id][$question->id]['values'] = array_reverse($alldata[$feedback->id][$question->id]['values']);
+                    
+                        $indizes = array();
+                        foreach ($alldata[$feedback->id][$question->id]['values'] as $key => $v) {
+                            $indizes[$key+1] = $v;
+                        }
+                    
+                        $alldata[$feedback->id][$question->id]['values'] = $indizes;
+                    }   
+                    
                     if (!$data['totalvalues']) {
                         $average = 0;
                     } else {
                         $totalvalue = 0;
-                        foreach ($data['values'] as $key => $value) {
+                        foreach ($alldata[$feedback->id][$question->id]['values'] as $key => $value) {
                             $totalvalue += ($key * $value);
                         }
                         $average = $totalvalue / $data['totalvalues'];
                     }
-                    $data['average'] = round($average, 2);
-
-                    $alldata[$feedback->id][$question->id] = $data;
+                    $data['average'] = $average;
+                    $alldata[$feedback->id][$question->id]['average'] = $data['average'];
                 }
             }
 
@@ -440,7 +468,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     foreach ($datas as $data) {
                         $feedbacktotal += $data['average'];
                     }
-                    $overviewdata[$feedbackid] = $feedbacktotal / count($datas);
+                    $overviewdata[$feedbackid] = round($feedbacktotal / count($datas), 2);
                 }
 
                 $canprint = false;
@@ -665,8 +693,23 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                 $questionobj = individualfeedback_get_item_class($question->typ);
                 $data = $questionobj->get_answer_data($question);
                 $alldata[$question->id] = $data;
+
+                if (strpos($question->options, 'n') !== FALSE) {
+                    $alldata[$question->id]['values'] = array_reverse($alldata[$question->id]['values']);
+                    
+                    $indizes = array();
+                    foreach ($alldata[$question->id]['values'] as $key => $v) {
+                        $indizes[$key+1] = $v;
+                    }
+                    
+                    $alldata[$question->id]['values'] = $indizes;
+                }
+                                
                 if ($selfdata = $this->check_and_get_self_assessment_data($question)) {
                     $selfassessment[$question->id] = $selfdata;
+                    if (strpos($question->options, 'n') !== FALSE) {
+                        $selfassessment[$question->id]->value = $alldata[$question->id]['answers']+1-$selfassessment[$question->id]->value;
+                    }
                 }
             }
 
@@ -791,28 +834,41 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
             $alldata = array();
             foreach ($allfeedbacks as $feedback) {
                 $alldata[$feedback->id] = array();
-                if ($item->individualfeedback != $feedback->id) {
+                
+                // TG/MO: Bug getting the questions of the correct feedback fixed
+                //if ($item->individualfeedback != $feedback->id) {
                     $params = array('individualfeedback' => $feedback->id, 'position' => $item->position);
                     $otheritem = $DB->get_record('individualfeedback_item', $params);
                     $questions = $this->get_question_in_group($otheritem);
-                }
+                //}
 
                 foreach ($questions as $question) {
                     $questionobj = individualfeedback_get_item_class($question->typ);
                     $data = $questionobj->get_answer_data($question);
+                    $alldata[$feedback->id][$question->id] = $data;
 
+                    if (strpos($question->options, 'n') !== FALSE) {
+                        $alldata[$feedback->id][$question->id]['values'] = array_reverse($alldata[$feedback->id][$question->id]['values']);
+                    
+                        $indizes = array();
+                        foreach ($alldata[$feedback->id][$question->id]['values'] as $key => $v) {
+                            $indizes[$key+1] = $v;
+                        }
+                    
+                        $alldata[$feedback->id][$question->id]['values'] = $indizes;
+                    }   
+                    
                     if (!$data['totalvalues']) {
                         $average = 0;
                     } else {
                         $totalvalue = 0;
-                        foreach ($data['values'] as $key => $value) {
+                        foreach ($alldata[$feedback->id][$question->id]['values'] as $key => $value) {
                             $totalvalue += ($key * $value);
                         }
                         $average = $totalvalue / $data['totalvalues'];
                     }
                     $data['average'] = $average;
-
-                    $alldata[$feedback->id][$question->id] = $data;
+                    $alldata[$feedback->id][$question->id]['average'] = $data['average'];
                 }
             }
 
@@ -844,7 +900,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     foreach ($datas as $data) {
                         $feedbacktotal += $data['average'];
                     }
-                    $overviewdata[$feedbackid] = round(($feedbacktotal / count($datas)), 2);
+                    $overviewdata[$feedbackid] = round($feedbacktotal / count($datas), 2);
                 }
 
                 $canprint = false;
