@@ -33,7 +33,7 @@ $string['anonymous_edit'] = 'Anonym ausfüllen';
 $string['anonymous_entries'] = 'Anonyme Einträge ({$a})';
 $string['anonymous_user'] = 'Anonymer Nutzer';
 $string['answerquestions'] = 'Frage beantworten';
-$string['append_new_items'] = 'Neue Elemente hinzufügen';
+$string['append_new_items'] = 'An bestehende Elemente anhängen';
 $string['autonumbering'] = 'Automatische Nummerierung';
 $string['autonumbering_help'] = 'Diese Option aktiviert die automatische Nummerierung aller Fragen';
 $string['average'] = 'Mittelwert';
@@ -45,7 +45,7 @@ $string['cannotsavetempl'] = 'Vorlagen speichern ist nicht gestattet';
 $string['captcha'] = 'Captcha';
 $string['captchanotset'] = 'Captcha wurde nicht gewählt.';
 $string['closebeforeopen'] = 'Sie haben das Enddatum früher als das Anfangsdatum angegeben.';
-$string['completed_individualfeedbacks'] = 'Ausgefülltes Schüler-Feedback';
+$string['completed_individualfeedbacks'] = 'Ausgefüllte Fragebögen';
 $string['complete_the_form'] = 'Selbsteinschätzung abgeben';
 $string['completed'] = 'Abgeschlossen';
 $string['completedon'] = 'Abgeschlossen am {$a}';
@@ -61,7 +61,7 @@ $string['courseid'] = 'Kurs-ID';
 $string['creating_templates'] = 'Diesen Fragebogen als neue Vorlage speichern';
 $string['delete_entry'] = 'Eintrag löschen';
 $string['delete_item'] = 'Element löschen';
-$string['delete_old_items'] = 'Alte Elemente löschen';
+$string['delete_old_items'] = 'Bestehende Elemente überschreiben';
 $string['delete_pagebreak'] = 'Seitenumbruch löschen';
 $string['delete_template'] = 'Vorlage löschen';
 $string['delete_templates'] = 'Vorlagen löschen...';
@@ -162,17 +162,19 @@ $string['messageprovider:message'] = 'Erinnerung zum Feedback';
 $string['messageprovider:submission'] = 'Mitteilung bei Feedback';
 $string['mode'] = 'Modus';
 $string['modulename'] = 'Schüler-Feedback';
-$string['modulename_help'] = 'The individual feedback activity module is a cloned and customized version of the feedback activity.
+$string['modulename_help'] = 'Die Aktivität Schüler-Feedback ist eine weiterentwickelte Version der Feedback-Aktivität. 
 
-The individual feedback activity module enables a teacher to create a custom survey for collecting individual feedback from participants using a variety of question types including multiple choice, yes/no or text input.
+Sie erlaubt es Lehrkräften, Individualfeedback von Schülern einzuholen und die Ergebnisse mit einer Selbsteinschätzung zu vergleichen. Befragungen können wiederholt und ihre Ergebnisse verglichen werden, um eine zeitliche Entwicklung darstellen zu können.
+Dazu kann die Lehrkraft aus wissenschaftlich erarbeiteten Fragebogen-Vorlagen zum Therma Unterrichtsfeedback auswählen, diese - wenn gewünscht - auf die eigenen Bedürfnisse anpassen oder eigene neue Fragebögen erstellen.
 
-Individual feedback responses is always anonymous, and results may be shown to all participants or restricted to teachers only. Any individual feedback activities on the site front page may also be completed by non-logged-in users.
+Die Teilnahme an einem Schüler-Feedback ist stets anonym, die Ergebnisse stehen nur Nutzern in der Lehrerolle des jeweiligen Kurses zur Verfügung.
 
-Individual feedback activities may be used
+Die Schüler-Feedback-Aktivität kann genutzt werden für:
 
-* For course evaluations, helping improve the content for later participants
-* For guest surveys of course choices, school policies etc.
-* For anti-bullying surveys in which students can report incidents anonymously';
+* Unterrichtsfeedback (vor allem in Form der Fragebogen-Vorlagen)
+* Feedback zu den Kursinhalten, wenn die Befragung wiederholt werden soll
+* Feedback, bei denen verschiedene Themen verglichen werden sollen
+* Befragungen, bei denen Anonymität sicherzustellen ist';
 $string['modulename_link'] = 'mod/individualfeedback/view';
 $string['modulenameplural'] = 'Schüler-Feedback';
 $string['move_item'] = 'Element verschieben';
