@@ -20,6 +20,8 @@
  * @package   mod_individualfeedback
  * @copyright 2016 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @group     mod_individualfeedback
+ * @group     mebis
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -27,13 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/individualfeedback/db/upgradelib.php');
 
-/**
- * Tests for functions in db/upgradelib.php
- *
- * @package    mod_individualfeedback
- * @copyright  2016 Marina Glancy
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class mod_individualfeedback_upgradelib_testcase extends advanced_testcase {
 
     /** @var string  */

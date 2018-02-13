@@ -19,17 +19,14 @@
  * @package    mod_individualfeedback
  * @copyright  2016 Stephen Bourget
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @group      mod_individualfeedback
+ * @group      mebis
  */
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/mod/individualfeedback/lib.php');
 
-/**
- * Unit tests for (some of) mod/individualfeedback/lib.php.
- *
- * @copyright  2016 Stephen Bourget
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class mod_individualfeedback_lib_testcase extends advanced_testcase {
 
     public function test_individualfeedback_initialise() {

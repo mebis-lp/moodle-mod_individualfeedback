@@ -20,6 +20,8 @@
  * @package    mod_individualfeedback
  * @copyright  2013 Ankit Agarwal
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
+ * @group      mod_individualfeedback
+ * @group      mebis
  */
 
 global $CFG;

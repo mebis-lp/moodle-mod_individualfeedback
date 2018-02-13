@@ -22,6 +22,8 @@
  * @copyright  2017 Juan Leyva <juan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.3
+ * @group      mod_individualfeedback
+ * @group      mebis
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -33,15 +35,6 @@ require_once($CFG->dirroot . '/mod/individualfeedback/lib.php');
 
 use mod_individualfeedback\external\individualfeedback_summary_exporter;
 
-/**
- * individualfeedback module external functions tests
- *
- * @package    mod_individualfeedback
- * @category   external
- * @copyright  2017 Juan Leyva <juan@moodle.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @since      Moodle 3.3
- */
 class mod_individualfeedback_external_testcase extends externallib_advanced_testcase {
 
     /**
@@ -82,14 +75,12 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
 
         // Create at least one page.
         $itemscreated[] = $individualfeedbackgenerator->create_item_label($individualfeedback);
-        $itemscreated[] = $individualfeedbackgenerator->create_item_info($individualfeedback);
         $itemscreated[] = $individualfeedbackgenerator->create_item_numeric($individualfeedback);
 
         // Check if we want more pages.
         for ($i = 1; $i < $pagescount; $i++) {
             $itemscreated[] = $individualfeedbackgenerator->create_item_pagebreak($individualfeedback);
             $itemscreated[] = $individualfeedbackgenerator->create_item_multichoice($individualfeedback);
-            $itemscreated[] = $individualfeedbackgenerator->create_item_multichoicerated($individualfeedback);
             $itemscreated[] = $individualfeedbackgenerator->create_item_textarea($individualfeedback);
             $itemscreated[] = $individualfeedbackgenerator->create_item_textfield($individualfeedback);
             $itemscreated[] = $individualfeedbackgenerator->create_item_numeric($individualfeedback);

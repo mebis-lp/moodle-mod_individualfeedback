@@ -20,17 +20,12 @@
  * @package    mod_individualfeedback
  * @copyright  2013 Ankit Agarwal
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @group      mod_individualfeedback
+ * @group      mebis
  */
 
 global $CFG;
 
-/**
- * Genarator tests class.
- *
- * @package    mod_individualfeedback
- * @copyright  2013 Ankit Agarwal
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class mod_individualfeedback_generator_testcase extends advanced_testcase {
 
     public function test_create_instance() {
@@ -51,25 +46,6 @@ class mod_individualfeedback_generator_testcase extends advanced_testcase {
         $this->assertEquals(2, $DB->count_records('individualfeedback', array('course' => $course->id)));
         $this->assertEquals('One more individualfeedback', $DB->get_field_select('individualfeedback', 'name', 'id = :id',
                 array('id' => $individualfeedback->id)));
-    }
-
-    public function test_create_item_info() {
-        global $DB;
-        $this->resetAfterTest();
-        $this->setAdminUser();
-
-        $course = $this->getDataGenerator()->create_course();
-        $individualfeedback = $this->getDataGenerator()->create_module('individualfeedback', array('course' => $course));
-        $individualfeedbackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_individualfeedback');
-
-        $item1 = $individualfeedbackgenerator->create_item_info($individualfeedback);
-        $item2 = $individualfeedbackgenerator->create_item_info($individualfeedback, array('name' => 'Custom name'));
-        $records = $DB->get_records('individualfeedback_item', array('individualfeedback' => $individualfeedback->id), 'id');
-        $this->assertCount(2, $records);
-        $this->assertEquals($item1->id, $records[$item1->id]->id);
-        $this->assertEquals($item2->id, $records[$item2->id]->id);
-        $this->assertEquals('Custom name', $records[$item2->id]->name);
-        $this->assertEquals('info', $records[$item1->id]->typ);
     }
 
     public function test_create_item_label() {
@@ -115,27 +91,6 @@ class mod_individualfeedback_generator_testcase extends advanced_testcase {
         $this->assertEquals('r>>>>>a|b|c|d|e', $records[$item1->id]->presentation);
         $this->assertEquals('r>>>>>1|2|3|4|5<<<<<1', $records[$item2->id]->presentation);
         $this->assertEquals('multichoice', $records[$item1->id]->typ);
-    }
-
-    public function test_create_item_multichoicerated() {
-        global $DB;
-        $this->resetAfterTest();
-        $this->setAdminUser();
-
-        $course = $this->getDataGenerator()->create_course();
-        $individualfeedback = $this->getDataGenerator()->create_module('individualfeedback', array('course' => $course));
-        $individualfeedbackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_individualfeedback');
-
-        $item1 = $individualfeedbackgenerator->create_item_multichoicerated($individualfeedback);
-        $item2 = $individualfeedbackgenerator->create_item_multichoicerated($individualfeedback, array(
-                    'values' => "0/1\n1/2\n2/3\n3/4\n4/5", 'horizontal' => 1));
-        $records = $DB->get_records('individualfeedback_item', array('individualfeedback' => $individualfeedback->id), 'id');
-        $this->assertCount(2, $records);
-        $this->assertEquals($item1->id, $records[$item1->id]->id);
-        $this->assertEquals($item2->id, $records[$item2->id]->id);
-        $this->assertEquals('r>>>>>0####a|1####b|2####c|3####d|4####e', $records[$item1->id]->presentation);
-        $this->assertEquals('r>>>>>0####1|1####2|2####3|3####4|4####5<<<<<1', $records[$item2->id]->presentation);
-        $this->assertEquals('multichoicerated', $records[$item1->id]->typ);
     }
 
     public function test_create_item_numeric() {
