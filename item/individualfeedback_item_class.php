@@ -352,15 +352,15 @@ abstract class individualfeedback_item_base {
             $chart->add_series($series);
         }
 
-        $answers = array(0 => '');
+        $answers = array();
         for ($i = 1; $i <= $data['answers']; $i++) {
-            $answers[] = get_string('answer') . " " . $i;
+            $answers[] = get_string('value', 'individualfeedback') . " " . $i;
         }
 
         $xaxis = $chart->get_xaxis(0, true);
         $xaxis->set_stepsize(1);
-        $xaxis->set_min(0);
-        $xaxis->set_max(($i));
+        $xaxis->set_min(1);
+        $xaxis->set_max(($i-1));
         $xaxis->set_labels($answers);
         $chart->set_xaxis($xaxis);
 
@@ -448,15 +448,15 @@ abstract class individualfeedback_item_base {
             $chart->add_series($series);
         }
 
-        $answers = array(0 => '');
+        $answers = array();
         for ($i = 1; $i <= $data['answers']; $i++) {
-            $answers[] = get_string('answer') . " " . $i;
+            $answers[] = get_string('value', 'individualfeedback') . " " . $i;
         }
 
         $xaxis = $chart->get_xaxis(0, true);
         $xaxis->set_stepsize(1);
-        $xaxis->set_min(0);
-        $xaxis->set_max(($i));
+        $xaxis->set_min(1);
+        $xaxis->set_max(($i-1));
         $xaxis->set_labels($answers);
         $chart->set_xaxis($xaxis);
 
