@@ -255,7 +255,7 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
      */
     public function test_view_individualfeedback_invalid_id() {
         // Test invalid instance id.
-        $this->setExpectedException('moodle_exception');
+        $this->expectException('moodle_exception');
         mod_individualfeedback_external::view_individualfeedback(0);
     }
     /**
@@ -264,7 +264,7 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
     public function test_view_individualfeedback_not_enrolled_user() {
         $usernotenrolled = self::getDataGenerator()->create_user();
         $this->setUser($usernotenrolled);
-        $this->setExpectedException('moodle_exception');
+        $this->expectException('moodle_exception');
         mod_individualfeedback_external::view_individualfeedback(0);
     }
     /**
@@ -275,7 +275,7 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         // We need a explicit prohibit since this capability is allowed for students by default.
         assign_capability('mod/individualfeedback:view', CAP_PROHIBIT, $this->studentrole->id, $this->context->id);
         accesslib_clear_all_caches_for_unit_testing();
-        $this->setExpectedException('moodle_exception');
+        $this->expectException('moodle_exception');
         mod_individualfeedback_external::view_individualfeedback(0);
     }
     /**
@@ -662,7 +662,7 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
      */
     public function test_get_non_respondents_no_permissions() {
         $this->setUser($this->student);
-        $this->setExpectedException('moodle_exception');
+        $this->expectException('moodle_exception');
         mod_individualfeedback_external::get_non_respondents($this->individualfeedback->id);
     }
 
