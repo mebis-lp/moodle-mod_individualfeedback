@@ -182,7 +182,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                 $printdata = array();
                 foreach ($combineddata['values'] as $key => $value) {
                     $printdata[$key] = new stdClass();
-                    $printdata[$key]->answertext = get_string('value', 'individualfeedback') . " " . $key;
+                    $printdata[$key]->answertext = get_string('answer') . " " . $key;
                     $printdata[$key]->answercount = $value;
                     $printdata[$key]->quotient = $value / $combineddata['totalvalues'];
                 }
@@ -361,15 +361,15 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     $chart->add_series($series);
                 }
 
-                $answers = array();
+                $answers = array(0 => '');
                 for ($i = 1; $i <= $data['answers']; $i++) {
-                    $answers[] = get_string('value', 'individualfeedback') . " " . $i;
+                    $answers[] = get_string('answer') . " " . $i;
                 }
 
                 $xaxis = $chart->get_xaxis(0, true);
                 $xaxis->set_stepsize(1);
-                $xaxis->set_min(1);
-                $xaxis->set_max(($i-1));
+                $xaxis->set_min(0);
+                $xaxis->set_max(($i));
                 $xaxis->set_labels($answers);
                 $chart->set_xaxis($xaxis);
 
@@ -503,15 +503,15 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                     $chart->add_series($series);
                 }
 
-                $answers = array();
+                $answers = array(0 => '');
                 for ($i = 1; $i <= $data['answers']; $i++) {
-                    $answers[] = get_string('value', 'individualfeedback') . " " . $i;
+                    $answers[] = get_string('answer') . " " . $i;
                 }
 
                 $xaxis = $chart->get_xaxis(0, true);
                 $xaxis->set_stepsize(1);
-                $xaxis->set_min(1);
-                $xaxis->set_max(($i-1));
+                $xaxis->set_min(0);
+                $xaxis->set_max(($i));
                 $xaxis->set_labels($answers);
                 $chart->set_xaxis($xaxis);
 
@@ -603,7 +603,7 @@ class individualfeedback_item_questiongroup extends individualfeedback_item_base
                 $printdata = array();
                 foreach ($combineddata['values'] as $key => $value) {
                     $printdata[$key] = new stdClass();
-                    $printdata[$key]->answertext = get_string('value', 'individualfeedback') . " " . $key;
+                    $printdata[$key]->answertext = get_string('answer') . " " . $key;
                     $printdata[$key]->answercount = $value;
                     $printdata[$key]->quotient = $value / $combineddata['totalvalues'];
                 }

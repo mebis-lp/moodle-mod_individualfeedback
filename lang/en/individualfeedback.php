@@ -356,4 +356,3 @@ $string['individualfeedback_not_linked'] = 'This individual feedback is not link
 $string['individualfeedback_questions_not_equal'] = 'The questions of the linked individual feedback activities are not equal and can therefore not be compared.';
 $string['negative_formulated'] = 'Control question';
 $string['negative_formulated_help'] = 'Control questions are semantically inverted question, i. e. negatively formulated. In the calculation of averages (in case of question groups) the answer values are inverted.';
-$string['value'] = 'Value';
