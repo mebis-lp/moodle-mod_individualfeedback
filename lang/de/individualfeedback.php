@@ -333,7 +333,7 @@ $string['end_of_questiongroup'] = 'Ende der Fragengruppe';
 $string['confirmdeleteitem_questiongroup'] = 'Sind Sie sicher, dass Sie die Fragengruppe löschen wollen?
 Bitte beachten: Alle Fragen in dieser Gruppe werden gelöscht.';
 $string['move_questiongroup'] = 'Fragengruppe verschieben';
-$string['evaluations'] = 'Bewertungen';
+$string['evaluations'] = 'Auswertungen';
 $string['detail_questions'] = 'Details (Fragen)';
 $string['detail_groups'] = 'Details (Gruppen)';
 $string['overview_questions'] = 'Überblick (Fragen)';
