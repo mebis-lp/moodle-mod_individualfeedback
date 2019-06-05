@@ -21,7 +21,7 @@ define('INDIVIDUALFEEDBACK_FOURLEVELAPPROVAL_TYPE_SEP', '>>>>>');
 define('INDIVIDUALFEEDBACK_FOURLEVELAPPROVAL_LINE_SEP', '|');
 define('INDIVIDUALFEEDBACK_FOURLEVELAPPROVAL_ADJUST_SEP', '<<<<<');
 define('INDIVIDUALFEEDBACK_FOURLEVELAPPROVAL_IGNOREEMPTY', 'i');
-define('INDIVIDUALFEEDBACK_FIVELEVELAPPROVAL_NEGATIVEFORMULATED', 'n');
+define('INDIVIDUALFEEDBACK_FOURLEVELAPPROVAL_NEGATIVEFORMULATED', 'n');
 define('INDIVIDUALFEEDBACK_FOURLEVELAPPROVAL_HIDENOSELECT', 'h');
 
 class individualfeedback_item_fourlevelapproval extends individualfeedback_item_base {
@@ -482,14 +482,14 @@ class individualfeedback_item_fourlevelapproval extends individualfeedback_item_
     }
 
     public function set_negativeformulated($item, $negativeformulated=true) {
-        $item->options = str_replace(INDIVIDUALFEEDBACK_FIVELEVELAPPROVAL_NEGATIVEFORMULATED, '', $item->options);
+        $item->options = str_replace(INDIVIDUALFEEDBACK_FOURLEVELAPPROVAL_NEGATIVEFORMULATED, '', $item->options);
         if ($negativeformulated) {
-            $item->options .= INDIVIDUALFEEDBACK_FIVELEVELAPPROVAL_NEGATIVEFORMULATED;
+            $item->options .= INDIVIDUALFEEDBACK_FOURLEVELAPPROVAL_NEGATIVEFORMULATED;
         }
     }
 
     public function negativeformulated($item) {
-        if (strstr($item->options, INDIVIDUALFEEDBACK_FIVELEVELAPPROVAL_NEGATIVEFORMULATED)) {
+        if (strstr($item->options, INDIVIDUALFEEDBACK_FOURLEVELAPPROVAL_NEGATIVEFORMULATED)) {
             return true;
         }
         return false;
