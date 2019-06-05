@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -162,7 +162,7 @@ $string['messageprovider:message'] = 'Erinnerung zum Feedback';
 $string['messageprovider:submission'] = 'Mitteilung bei Feedback';
 $string['mode'] = 'Modus';
 $string['modulename'] = 'Schüler-Feedback';
-$string['modulename_help'] = 'Die Aktivität Schüler-Feedback ist eine weiterentwickelte Version der Feedback-Aktivität. 
+$string['modulename_help'] = 'Die Aktivität Schüler-Feedback ist eine weiterentwickelte Version der Feedback-Aktivität.
 
 Sie erlaubt es Lehrkräften, Individualfeedback von Schülern einzuholen und die Ergebnisse mit einer Selbsteinschätzung zu vergleichen. Befragungen können wiederholt und ihre Ergebnisse verglichen werden, um eine zeitliche Entwicklung darstellen zu können.
 Dazu kann die Lehrkraft aus wissenschaftlich erarbeiteten Fragebogen-Vorlagen zum Therma Unterrichtsfeedback auswählen, diese - wenn gewünscht - auf die eigenen Bedürfnisse anpassen oder eigene neue Fragebögen erstellen.
