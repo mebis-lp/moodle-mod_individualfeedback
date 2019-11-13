@@ -165,7 +165,7 @@ $string['modulename'] = 'Schüler-Feedback';
 $string['modulename_help'] = 'Die Aktivität Schüler-Feedback ist eine weiterentwickelte Version der Feedback-Aktivität.
 
 Sie erlaubt es Lehrkräften, Individualfeedback von Schülern einzuholen und die Ergebnisse mit einer Selbsteinschätzung zu vergleichen. Befragungen können wiederholt und ihre Ergebnisse verglichen werden, um eine zeitliche Entwicklung darstellen zu können.
-Dazu kann die Lehrkraft aus wissenschaftlich erarbeiteten Fragebogen-Vorlagen zum Therma Unterrichtsfeedback auswählen, diese - wenn gewünscht - auf die eigenen Bedürfnisse anpassen oder eigene neue Fragebögen erstellen.
+Dazu kann die Lehrkraft aus wissenschaftlich erarbeiteten Fragebogen-Vorlagen zum Thema Unterrichtsfeedback auswählen, diese - wenn gewünscht - auf die eigenen Bedürfnisse anpassen oder eigene neue Fragebögen erstellen.
 
 Die Teilnahme an einem Schüler-Feedback ist stets anonym, die Ergebnisse stehen nur Nutzern in der Lehrerolle des jeweiligen Kurses zur Verfügung.
 
