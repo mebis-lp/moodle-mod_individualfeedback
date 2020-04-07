@@ -114,7 +114,8 @@ class backup_individualfeedback_activity_structure_step extends backup_activity_
 
         // Define id annotations
 
-        $completed->annotate_ids('user', 'userid');
+        // We do not want to annotate userids, because of anonymous userid-hashes in {individualfeedback_completion}
+        // $completed->annotate_ids('user', 'userid');
 
         // Define file annotations
 
