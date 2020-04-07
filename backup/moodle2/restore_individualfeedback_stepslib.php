@@ -37,7 +37,9 @@ class restore_individualfeedback_activity_structure_step extends restore_activit
 
         $paths[] = new restore_path_element('individualfeedback', '/activity/individualfeedback');
         $paths[] = new restore_path_element('individualfeedback_item', '/activity/individualfeedback/items/item');
-        if ($userinfo) {
+
+        // Restore of userinfo for this module is only supported on the same site.
+        if ($userinfo && $this->task->is_samesite()) {
             $paths[] = new restore_path_element('individualfeedback_completed', '/activity/individualfeedback/completeds/completed');
             $paths[] = new restore_path_element('individualfeedback_value', '/activity/individualfeedback/completeds/completed/values/value');
         }
@@ -83,7 +85,8 @@ class restore_individualfeedback_activity_structure_step extends restore_activit
         $data = (object)$data;
         $oldid = $data->id;
         $data->individualfeedback = $this->get_new_parentid('individualfeedback');
-        $data->userid = $this->get_mappingid('user', $data->userid);
+        // We are not able to map userids here, because we haven't annotated them during backup.
+        // $data->userid = $this->get_mappingid('user', $data->userid);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
         if ($this->task->is_samesite() && !empty($data->courseid)) {
             $data->courseid = $data->courseid;
