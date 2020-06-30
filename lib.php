@@ -824,7 +824,8 @@ function individualfeedback_set_events($individualfeedback) {
         $event->eventtype    = INDIVIDUALFEEDBACK_EVENT_TYPE_OPEN;
         $event->type         = empty($individualfeedback->timeclose) ? CALENDAR_EVENT_TYPE_ACTION : CALENDAR_EVENT_TYPE_STANDARD;
         $event->name         = get_string('calendarstart', 'individualfeedback', $individualfeedback->name);
-        $event->description  = format_module_intro('individualfeedback', $individualfeedback, $individualfeedback->coursemodule);
+        $event->description  = format_module_intro('individualfeedback', $individualfeedback, $individualfeedback->coursemodule, false);
+        $event->format       = FORMAT_HTML;
         $event->timestart    = $individualfeedback->timeopen;
         $event->timesort     = $individualfeedback->timeopen;
         $event->visible      = instance_is_visible('individualfeedback', $individualfeedback);
@@ -859,7 +860,8 @@ function individualfeedback_set_events($individualfeedback) {
         $event->type         = CALENDAR_EVENT_TYPE_ACTION;
         $event->eventtype    = INDIVIDUALFEEDBACK_EVENT_TYPE_CLOSE;
         $event->name         = get_string('calendarend', 'individualfeedback', $individualfeedback->name);
-        $event->description  = format_module_intro('individualfeedback', $individualfeedback, $individualfeedback->coursemodule);
+        $event->description  = format_module_intro('individualfeedback', $individualfeedback, $individualfeedback->coursemodule, false);
+        $event->format       = FORMAT_HTML;
         $event->timestart    = $individualfeedback->timeclose;
         $event->timesort     = $individualfeedback->timeclose;
         $event->visible      = instance_is_visible('individualfeedback', $individualfeedback);
@@ -3630,10 +3632,9 @@ function mod_individualfeedback_get_completion_active_rule_descriptions($cm) {
     foreach ($cm->customdata['customcompletionrules'] as $key => $val) {
         switch ($key) {
             case 'completionsubmit':
-                if (empty($val)) {
-                    continue;
+                if (!empty($val)) {
+                    $descriptions[] = get_string('completionsubmit', 'individualfeedback');
                 }
-                $descriptions[] = get_string('completionsubmit', 'individualfeedback');
                 break;
             default:
                 break;
@@ -3751,7 +3752,7 @@ function individualfeedback_get_linked_individualfeedbacks($individualfeedbackid
     $sql = "SELECT ifb.*
     FROM {individualfeedback} ifb
     JOIN {individualfeedback_linked} ifbl ON ifb.id = ifbl.individualfeedbackid
-    WHERE ifbl.linkedid = :linkedid 
+    WHERE ifbl.linkedid = :linkedid
     ORDER BY ifb.timemodified DESC";
 
     return $DB->get_records_sql($sql, array('linkedid' => $linkedid));
