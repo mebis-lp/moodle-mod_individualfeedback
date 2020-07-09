@@ -357,3 +357,5 @@ $string['individualfeedback_not_linked'] = 'Diese Aktivität ist nicht mit ander
 $string['individualfeedback_questions_not_equal'] = 'Die Fragen der verknüpften Aktivitäten sind nicht gleich. Diese können daher nicht verglichen werden.';
 $string['negative_formulated'] = 'Kontrollfrage';
 $string['negative_formulated_help'] = 'Kontrollfragen sind semantisch gedrehte Fragen, d. h. negativ formuliert. Sie werden in Fragebögen eingebaut, um dem Verfälschen von Ergebnissen durch eine Ja-Sage-Tendenz entgegenzuwirken. <br> Werden Kontrollfragen in Fragengruppen integriert, werden die Antwortwerte bei der Mittelwertberechnung invertiert, damit postive oder negative Tendenzen korrekt dargestellt werden.';
+
+$string['privacy:metadata'] = 'Das Plugin Schülerfeedback speichert alle Antworten der Schülerinnen und Schüler anonym, so dass hier keine personenbezogenen Daten anfallen.';

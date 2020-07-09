@@ -198,7 +198,7 @@ class mod_individualfeedback_generator extends testing_module_generator {
             'values' => "a\nb\nc\nd\ne"
         );
 
-        $presentation = str_replace("\n", individualfeedback_MULTICHOICE_LINE_SEP, trim($record['values']));
+        $presentation = str_replace("\n", INDIVIDUALFEEDBACK_MULTICHOICE_LINE_SEP, trim($record['values']));
 
         if ($record['horizontal'] == 1 AND $record['subtype'] != 'd') {
             $presentation .= INDIVIDUALFEEDBACK_MULTICHOICE_ADJUST_SEP.'1';
@@ -395,4 +395,3 @@ class mod_individualfeedback_generator extends testing_module_generator {
         return individualfeedback_create_pagebreak($individualfeedback->id);
     }
 }
-

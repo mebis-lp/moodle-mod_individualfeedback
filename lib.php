@@ -1044,8 +1044,15 @@ function individualfeedback_get_incomplete_users(cm_info $cm,
     //now get all completeds
     $params = array('individualfeedback'=>$cm->instance);
     if ($completedusers = $DB->get_records_menu('individualfeedback_completed', $params, '', 'id, userid')) {
+
+        // Completed users are stored with hashes like userid = asdf893hrt4w98ergzw38934.
+        $allusershashes = [];
+        foreach ($allusers as $userid) {
+            $allusershashes[$userid] = individualfeedback_hash_userid($userid);
+        }
         // Now strike all completedusers from allusers.
-        $allusers = array_diff($allusers, $completedusers);
+        $noncompletehashes = array_diff($allusershashes, $completedusers);
+        $allusers = array_keys($noncompletehashes);
     }
 
     //for paging I use array_slice()
