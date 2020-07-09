@@ -20,6 +20,7 @@
  * @package    mod_individualfeedback
  * @copyright  2013 Ankit Agarwal
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
+ *
  * @group      mod_individualfeedback
  * @group      mebis
  */
@@ -27,13 +28,14 @@
 global $CFG;
 
 /**
- * Class mod_individualfeedback_events_testcase
- *
- * Class for tests related to individualfeedback events.
+ * Tests for individualfeedback events.
  *
  * @package    mod_individualfeedback
  * @copyright  2013 Ankit Agarwal
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
+ *
+ * @group      mod_individualfeedback
+ * @group      mebis
  */
 class mod_individualfeedback_events_testcase extends advanced_testcase {
 
@@ -120,8 +122,8 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         // Validate event data.
         $this->assertInstanceOf('\mod_individualfeedback\event\response_deleted', $event);
         $this->assertEquals($this->eventindividualfeedbackcompleted->id, $event->objectid);
-        $this->assertEquals($USER->id, $event->userid);
-        $this->assertEquals(individualfeedback_hash_userid($this->eventuser->id), $event->relateduserid);
+        $this->assertEquals(0, $event->userid);
+        $this->assertEquals(0, $event->relateduserid);
         $this->assertEquals('individualfeedback_completed', $event->objecttable);
         $this->assertEquals(null, $event->get_url());
         $this->assertEquals($this->eventindividualfeedbackcompleted, $event->get_record_snapshot('individualfeedback_completed', $event->objectid));
@@ -228,8 +230,9 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         // Validate event data. individualfeedback is anonymous.
         $this->assertInstanceOf('\mod_individualfeedback\event\response_submitted', $event);
         $this->assertEquals($id, $event->objectid);
-        $this->assertEquals(individualfeedback_hash_userid($USER->id), $event->userid);
-        $this->assertEquals(individualfeedback_hash_userid($USER->id), $event->relateduserid);
+        // Userids in events must be datatype integer, so we do check if 0 is set.
+        $this->assertEquals(0, $event->userid);
+        $this->assertEquals(0, $event->relateduserid);
         $this->assertEquals('individualfeedback_completed', $event->objecttable);
         $this->assertEquals(1, $event->anonymous);
         $this->assertEquals(INDIVIDUALFEEDBACK_ANONYMOUS_YES, $event->other['anonymous']);
@@ -265,8 +268,9 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         $sink->close();
 
         // Test legacy data.
+        $anonymoususerid = 0;
         $arr = array($this->eventcourse->id, 'individualfeedback', 'submit', 'view.php?id=' . $this->eventcm->id, $this->eventindividualfeedback->id,
-                     $this->eventcm->id, individualfeedback_hash_userid($this->eventuser->id));
+                     $this->eventcm->id, $anonymoususerid);
         $this->assertEventLegacyLogData($arr, $event);
 
         // Test can_view().

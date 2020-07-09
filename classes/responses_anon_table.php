@@ -81,10 +81,9 @@ class mod_individualfeedback_responses_anon_table extends mod_individualfeedback
 
         $group = (empty($group)) ? groups_get_activity_group($this->individualfeedbackstructure->get_cm(), true) : $group;
         if ($group) {
-            $where .= ' AND c.userid IN (SELECT g.userid FROM {groups_members} g WHERE g.groupid = :group)';
-            $params['group'] = $group;
+            // Select groupmember by hashed userids.
+            $this->add_groupmember_where_by_hashedids($group, $where, $params);
         }
-
         $this->set_sql($fields, $from, $where, $params);
         $this->set_count_sql("SELECT COUNT(c.id) FROM $from WHERE $where", $params);
     }

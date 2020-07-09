@@ -75,11 +75,15 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
 
         // Create at least one page.
         $itemscreated[] = $individualfeedbackgenerator->create_item_label($individualfeedback);
+        // Add a text question for replacement of original info question (lost by refactoring by SYNERGY LEARNING).
+        $itemscreated[] = $individualfeedbackgenerator->create_item_textfield($individualfeedback);
         $itemscreated[] = $individualfeedbackgenerator->create_item_numeric($individualfeedback);
 
         // Check if we want more pages.
         for ($i = 1; $i < $pagescount; $i++) {
             $itemscreated[] = $individualfeedbackgenerator->create_item_pagebreak($individualfeedback);
+            $itemscreated[] = $individualfeedbackgenerator->create_item_multichoice($individualfeedback);
+            // Add another multichoice item to make tests working.
             $itemscreated[] = $individualfeedbackgenerator->create_item_multichoice($individualfeedback);
             $itemscreated[] = $individualfeedbackgenerator->create_item_textarea($individualfeedback);
             $itemscreated[] = $individualfeedbackgenerator->create_item_textfield($individualfeedback);
@@ -236,7 +240,8 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         $this->assertTrue($result['canviewreports']);
         $this->assertTrue($result['canedititems']);
         $this->assertTrue($result['candeletesubmissions']);
-        $this->assertFalse($result['cancomplete']);
+        // Edtiting teacher is allowed to complete an individual feedback according to access definitions of this plugin.
+        $this->assertTrue($result['cancomplete']);
         $this->assertTrue($result['cansubmit']);
         $this->assertTrue($result['isempty']);
         $this->assertTrue($result['isopen']);
@@ -311,7 +316,8 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         // Add a completed_tmp record.
         $record = [
             'individualfeedback' => $this->individualfeedback->id,
-            'userid' => $this->student->id,
+            // Additionally hash the user id.
+            'userid' => individualfeedback_hash_userid($this->student->id),
             'guestid' => '',
             'timemodified' => time() - DAYSECS,
             'random_response' => 0,
@@ -382,7 +388,7 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         // Add a completed_tmp record.
         $record = [
             'individualfeedback' => $this->individualfeedback->id,
-            'userid' => $this->student->id,
+            'userid' => individualfeedback_hash_userid($this->student->id),
             'guestid' => '',
             'timemodified' => time() - DAYSECS,
             'random_response' => 0,
@@ -394,7 +400,7 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         // Add a response to the individualfeedback for each question type with possible values.
         $response = [
             'course_id' => $this->course->id,
-            'item' => $itemscreated[1]->id, // First item is the info question.
+            'item' => $itemscreated[1]->id, // First item is the text question.
             'completed' => $record['id'],
             'tmp_completed' => $record['id'],
             'value' => 'A',
@@ -509,7 +515,7 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         $this->assertCount(7, $tmpitems);   // 2 from the first page + 5 from the second page.
 
         // And finally, save everything! We are going to modify one previous recorded value.
-        $data[2]['value'] = 'b';
+        $data[2]['value'] = 2; // 2 is value of the option 'b'.
         $secondpagedata = [$data[2], $data[3], $data[4], $data[5], $data[6]];
         $result = mod_individualfeedback_external::process_page($this->individualfeedback->id, 1, $secondpagedata);
         $result = external_api::clean_returnvalue(mod_individualfeedback_external::process_page_returns(), $result);
@@ -521,7 +527,10 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         // Check if the one we modified was correctly saved.
         $itemid = $itemscreated[4]->id;
         $itemsaved = $DB->get_field('individualfeedback_value', 'value', array('item' => $itemid));
-        $this->assertEquals('b', $itemsaved);
+        // Backport MDL-62947 mod_feedback: fix feedback so it correctly uses forms API.
+        $mcitem = new individualfeedback_item_multichoice();
+        $itemval = $mcitem->get_printval($itemscreated[4], (object) ['value' => $itemsaved]);
+        $this->assertEquals('b', $itemval);
     }
 
     /**
@@ -711,7 +720,9 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         $result = mod_individualfeedback_external::get_non_respondents($this->individualfeedback->id);
         $result = external_api::clean_returnvalue(mod_individualfeedback_external::get_non_respondents_returns(), $result);
         $this->assertCount(0, $result['warnings']);
-        $this->assertCount(1, $result['users']);
+
+        // Non respondents: 1 student and 1 editing teacher.
+        $this->assertCount(2, $result['users']);
         $this->assertEquals($anotherstudent->id, $result['users'][0]['userid']);
 
         // Create another student.
@@ -722,7 +733,7 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         $result = mod_individualfeedback_external::get_non_respondents($this->individualfeedback->id);
         $result = external_api::clean_returnvalue(mod_individualfeedback_external::get_non_respondents_returns(), $result);
         $this->assertCount(0, $result['warnings']);
-        $this->assertCount(2, $result['users']);
+        $this->assertCount(3, $result['users']);
 
         // Test pagination.
         $result = mod_individualfeedback_external::get_non_respondents($this->individualfeedback->id, 0, 'lastaccess', 0, 1);
@@ -833,7 +844,9 @@ class mod_individualfeedback_external_testcase extends externallib_advanced_test
         $result = mod_individualfeedback_external::get_responses_analysis($this->individualfeedback->id);
         $result = external_api::clean_returnvalue(mod_individualfeedback_external::get_responses_analysis_returns(), $result);
         $this->assertCount(0, $result['warnings']);
-        $this->assertEquals(2, $result['totalattempts']);
+
+        // Should never return any non anonymized attempts!
+        $this->assertEquals(0, $result['totalattempts']);
         $this->assertEquals(0, $result['totalanonattempts']);   // Only see my groups.
 
         foreach ($result['attempts'] as $attempt) {

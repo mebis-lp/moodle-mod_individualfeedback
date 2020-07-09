@@ -69,6 +69,8 @@ class response_deleted extends \core\event\base {
             'courseid' => $cm->course,
             'context' => \context_module::instance($cm->id),
             'anonymous' => ($completed->anonymous_response == INDIVIDUALFEEDBACK_ANONYMOUS_YES),
+            // Anonymize user in events.
+            'userid' => 0,
             'other' => array(
                 'cmid' => $cm->id,
                 'instanceid' => $individualfeedback->id,

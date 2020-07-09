@@ -50,8 +50,8 @@ class individualfeedback_completed_exporter extends exporter {
                 'description' => 'The individualfeedback instance id this records belongs to.',
             ),
             'userid' => array(
-                'type' => PARAM_INT,
-                'description' => 'The user who completed the individualfeedback (0 for anonymous).',
+                'type' => PARAM_RAW,
+                'description' => 'The user who completed the individualfeedback (hash for anonymous).',
             ),
             'timemodified' => array(
                 'type' => PARAM_INT,

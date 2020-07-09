@@ -70,6 +70,8 @@ class response_submitted extends \core\event\base {
             'objectid' => $completed->id,
             'context' => \context_module::instance($cm->id),
             'anonymous' => ($completed->anonymous_response == INDIVIDUALFEEDBACK_ANONYMOUS_YES),
+            // Anonymize user in events.
+            'userid' => 0,
             'other' => array(
                 'cmid' => $cm->id,
                 'instanceid' => $completed->individualfeedback,

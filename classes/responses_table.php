@@ -119,8 +119,10 @@ class mod_individualfeedback_responses_table extends table_sql {
         $extrafields = get_extra_user_fields($this->get_context());
         $ufields = user_picture::fields('u', $extrafields, $this->useridfield);
         $fields = 'c.id, c.timemodified as completed_timemodified, c.courseid, '.$ufields;
+
+        // Set Userid to 0 to avoid datatype problems in postgres and to ensure that no not anonymize data is retrieved.
         $from = '{individualfeedback_completed} c '
-                . 'JOIN {user} u ON u.id = c.userid AND u.deleted = :notdeleted';
+                . 'JOIN {user} u ON u.id = 0 AND u.deleted = :notdeleted';
         $where = 'c.anonymous_response = :anon
                 AND c.individualfeedback = :instance';
         if ($this->individualfeedbackstructure->get_courseid()) {
@@ -164,8 +166,8 @@ class mod_individualfeedback_responses_table extends table_sql {
 
         $group = (empty($group)) ? groups_get_activity_group($this->individualfeedbackstructure->get_cm(), true) : $group;
         if ($group) {
-            $where .= ' AND c.userid IN (SELECT g.userid FROM {groups_members} g WHERE g.groupid = :group)';
-            $params['group'] = $group;
+            // Select groupmember by hashed userids.
+            $this->add_groupmember_where_by_hashedids($group, $where, $params);
         }
 
         $this->set_sql($fields, $from, $where, $params);
@@ -512,8 +514,6 @@ class mod_individualfeedback_responses_table extends table_sql {
             }
         }
         $this->build_table_chunk($chunk, $columnsgroups);
-
-        $this->rawdata->close();
     }
 
     /**
@@ -639,6 +639,27 @@ class mod_individualfeedback_responses_table extends table_sql {
         }
         $this->query_db($this->pagesize, false);
         $this->build_table();
+        $this->close_recordset();
         return $this->dataforexternal;
     }
+
+    /**
+     * Add a whwere clause using user ids hashed by individualfeedback_hash_userid().
+     *
+     * @param string $where
+     * @param array $params
+     */
+    protected function add_groupmember_where_by_hashedids($group, &$where, &$params) {
+        global $DB;
+
+        if ($groupmemberids = $DB->get_fieldset_select('groups_members', 'userid', 'groupid = ?', [$group])) {
+            $hashedids = array_map(function ($groupmemberid) {
+                return individualfeedback_hash_userid($groupmemberid);
+            }, $groupmemberids);
+            list($inids, $inparams) = $DB->get_in_or_equal($hashedids, SQL_PARAMS_NAMED);
+            $where .= " AND c.userid $inids ";
+            $params += $inparams;
+        }
+    }
+
 }

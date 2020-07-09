@@ -32,10 +32,12 @@ defined('MOODLE_INTERNAL') || die();
 function mod_individualfeedback_upgrade_courseid($tmp = false) {
     global $DB;
     $suffix = $tmp ? 'tmp' : '';
+    // Name is shortened for individual feedback.
+    $tablecompleted = $tmp ? 'indfeedback_completedtmp' : 'individualfeedback_completed';
 
     // Part 1. Ensure that each completed record has associated values with only one courseid.
     $sql = "SELECT c.id
-        FROM {individualfeedback_completed$suffix} c, {individualfeedback_value$suffix} v
+        FROM {{$tablecompleted}} c, {individualfeedback_value$suffix} v
         WHERE c.id = v.completed
         GROUP by c.id
         having count(DISTINCT v.course_id) > 1";
@@ -44,12 +46,12 @@ function mod_individualfeedback_upgrade_courseid($tmp = false) {
         $courses = $DB->get_fieldset_sql("SELECT DISTINCT course_id "
                 . "FROM {individualfeedback_value$suffix} WHERE completed = ?", array($problem));
         $firstcourse = array_shift($courses);
-        $record = $DB->get_record('individualfeedback_completed'.$suffix, array('id' => $problem));
+        $record = $DB->get_record($tablecompleted, array('id' => $problem));
         unset($record->id);
-        $DB->update_record('individualfeedback_completed'.$suffix, ['id' => $problem, 'courseid' => $firstcourse]);
+        $DB->update_record($tablecompleted, ['id' => $problem, 'courseid' => $firstcourse]);
         foreach ($courses as $courseid) {
             $record->courseid = $courseid;
-            $completedid = $DB->insert_record('individualfeedback_completed'.$suffix, $record);
+            $completedid = $DB->insert_record($tablecompleted, $record);
             $DB->execute("UPDATE {individualfeedback_value$suffix} SET completed = ? WHERE completed = ? AND course_id = ?",
                     array($completedid, $problem, $courseid));
         }
@@ -57,13 +59,13 @@ function mod_individualfeedback_upgrade_courseid($tmp = false) {
 
     // Part 2. Update courseid in the completed table.
     if ($DB->get_dbfamily() !== 'mysql') {
-        $sql = "UPDATE {individualfeedback_completed$suffix} "
+        $sql = "UPDATE {{$tablecompleted}} "
             . "SET courseid = (SELECT COALESCE(MIN(v.course_id), 0) "
             . "FROM {individualfeedback_value$suffix} v "
-            . "WHERE v.completed = {individualfeedback_completed$suffix}.id)";
+            . "WHERE v.completed = {{$tablecompleted}}.id)";
         $DB->execute($sql);
     } else {
-        $sql = "UPDATE {individualfeedback_completed$suffix} c, {individualfeedback_value$suffix} v "
+        $sql = "UPDATE {{$tablecompleted}} c, {individualfeedback_value$suffix} v "
             . "SET c.courseid = v.course_id "
             . "WHERE v.completed = c.id AND v.course_id <> 0";
         $DB->execute($sql);
