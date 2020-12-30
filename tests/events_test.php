@@ -60,7 +60,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
     /** @var  stdClass value associated with $eventindividualfeedbackitem . */
     private $eventindividualfeedbackvalue;
 
-    public function setUp() {
+    public function setUp(): void {
         global $DB;
 
         $this->setAdminUser();
