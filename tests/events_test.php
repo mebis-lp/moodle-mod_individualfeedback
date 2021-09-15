@@ -194,7 +194,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
             $this->fail("Event validation should not allow \\mod_individualfeedback\\event\\response_deleted to be triggered without
                     other['anonymous']");
         } catch (coding_exception $e) {
-            $this->assertContains("The 'anonymous' value must be set in other.", $e->getMessage());
+            $this->assertStringContainsString("The 'anonymous' value must be set in other.", $e->getMessage());
         }
     }
 
@@ -303,7 +303,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
             $this->fail("Event validation should not allow \\mod_individualfeedback\\event\\response_deleted to be triggered without
                     other['instanceid']");
         } catch (coding_exception $e) {
-            $this->assertContains("The 'instanceid' value must be set in other.", $e->getMessage());
+            $this->assertStringContainsString("The 'instanceid' value must be set in other.", $e->getMessage());
         }
 
         // Test not setting cmid.
@@ -318,7 +318,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
             $this->fail("Event validation should not allow \\mod_individualfeedback\\event\\response_deleted to be triggered without
                     other['cmid']");
         } catch (coding_exception $e) {
-            $this->assertContains("The 'cmid' value must be set in other.", $e->getMessage());
+            $this->assertStringContainsString("The 'cmid' value must be set in other.", $e->getMessage());
         }
 
         // Test not setting anonymous.
@@ -332,7 +332,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
             $this->fail("Event validation should not allow \\mod_individualfeedback\\event\\response_deleted to be triggered without
                     other['anonymous']");
         } catch (coding_exception $e) {
-            $this->assertContains("The 'anonymous' value must be set in other.", $e->getMessage());
+            $this->assertStringContainsString("The 'anonymous' value must be set in other.", $e->getMessage());
         }
     }
 
