@@ -26,12 +26,12 @@ defined('MOODLE_INTERNAL') || die();
 
 // Check if it's actually linked.
 if (!individualfeedback_get_linkedid($individualfeedback->id)) {
-    print_error('individualfeedback_not_linked', 'individualfeedback');
+    throw new \moodle_exception('individualfeedback_not_linked', 'individualfeedback');
 }
 
 // Check if the questions are equal.
 if (!individualfeedback_check_linked_questions($individualfeedback->id)) {
-    print_error('individualfeedback_questions_not_equal', 'individualfeedback');
+    throw new \moodle_exception('individualfeedback_questions_not_equal', 'individualfeedback');
 }
 
 // Button "Export to excel".

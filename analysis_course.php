@@ -53,7 +53,7 @@ require_course_login($course, true, $cm);
 $individualfeedback = $PAGE->activityrecord;
 
 if (!($individualfeedback->publish_stats OR has_capability('mod/individualfeedback:viewreports', $context))) {
-    print_error('error');
+    throw new \moodle_exception('error');
 }
 
 $individualfeedbackstructure = new mod_individualfeedback_structure($individualfeedback, $PAGE->cm, $courseid);
@@ -151,4 +151,3 @@ if ($courseitemfilter > 0) {
 }
 
 echo $OUTPUT->footer();
-

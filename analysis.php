@@ -42,7 +42,7 @@ $individualfeedbackstructure = new mod_individualfeedback_structure($individualf
 $context = context_module::instance($cm->id);
 
 if (!$individualfeedbackstructure->can_view_analysis()) {
-    print_error('error');
+    throw new \moodle_exception('error');
 }
 
 // Print the page header.
@@ -62,10 +62,9 @@ echo html_writer::end_tag('div');
 
 // Get the file based on the selected subtab.
 if (!file_exists($CFG->dirroot . "/mod/individualfeedback/" . $currentsubtab . ".php")) {
-    print_error('error_subtab', 'individualfeedback');
+    throw new \moodle_exception('error_subtab', 'individualfeedback');
 } else {
     require($currentsubtab . ".php");
 }
 
 echo $OUTPUT->footer();
-

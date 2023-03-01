@@ -31,7 +31,7 @@ individualfeedback_init_individualfeedback_session();
 $id = required_param('id', PARAM_INT);
 
 if (($formdata = data_submitted()) AND !confirm_sesskey()) {
-    print_error('invalidsesskey');
+    throw new \moodle_exception('invalidsesskey');
 }
 
 $do_show = optional_param('do_show', 'edit', PARAM_ALPHA);
@@ -75,7 +75,7 @@ $create_template_form = new individualfeedback_edit_create_template_form(null, a
 if ($data = $create_template_form->get_data()) {
     // Check the capabilities to create templates.
     if (!$cancreatetemplates) {
-        print_error('cannotsavetempl', 'individualfeedback', $url);
+        throw new \moodle_exception('cannotsavetempl', 'individualfeedback', $url);
     }
     $ispublic = !empty($data->ispublic) ? 1 : 0;
     if (!individualfeedback_save_as_template($individualfeedback, $data->templatename, $ispublic)) {
@@ -117,7 +117,7 @@ if (count($individualfeedbackitems) > 1) {
         // SFSUBM-21 - move the question out of the questiongroup div if it's outside the actual question group.
         $PAGE->requires->jquery();
         $PAGE->requires->js('/mod/individualfeedback/edit_movequestion.js');
-        
+
         $PAGE->requires->strings_for_js(array(
                'pluginname',
                'move_item',

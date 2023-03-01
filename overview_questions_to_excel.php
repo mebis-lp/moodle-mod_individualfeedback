@@ -49,7 +49,7 @@ ob_end_clean();
 // Get the questions (item-names).
 $individualfeedbackstructure = new mod_individualfeedback_structure($individualfeedback, $cm, $course->id);
 if (!$items = $individualfeedbackstructure->get_items()) {
-    print_error('no_items_available_yet', 'individualfeedback', $cm->url);
+    throw new \moodle_exception('no_items_available_yet', 'individualfeedback', $cm->url);
 }
 
 $mygroupid = groups_get_activity_group($cm);
