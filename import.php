@@ -41,15 +41,15 @@ if ($action !== false) {
 $PAGE->set_url($url);
 
 if (! $cm = get_coursemodule_from_id('individualfeedback', $id)) {
-    print_error('invalidcoursemodule');
+    throw new \moodle_exception('invalidcoursemodule');
 }
 
 if (! $course = $DB->get_record("course", array("id"=>$cm->course))) {
-    print_error('coursemisconf');
+    throw new \moodle_exception('coursemisconf');
 }
 
 if (! $individualfeedback = $DB->get_record("individualfeedback", array("id"=>$cm->instance))) {
-    print_error('invalidcoursemodule');
+    throw new \moodle_exception('invalidcoursemodule');
 }
 
 $context = context_module::instance($cm->id);
@@ -76,7 +76,7 @@ if ($choosefile) {
     $xmlcontent = $mform->get_file_content('choosefile');
 
     if (!$xmldata = individualfeedback_load_xml_data($xmlcontent)) {
-        print_error('cannotloadxml', 'individualfeedback', 'edit.php?id='.$id);
+        throw new \moodle_exception('cannotloadxml', 'individualfeedback', 'edit.php?id='.$id);
     }
 
     $importerror = individualfeedback_import_loaded_data($xmldata, $individualfeedback->id);

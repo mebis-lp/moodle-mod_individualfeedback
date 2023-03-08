@@ -3325,7 +3325,7 @@ function individualfeedback_extend_settings_navigation(settings_navigation $sett
     global $PAGE;
 
     if (!$context = context_module::instance($PAGE->cm->id, IGNORE_MISSING)) {
-        print_error('badcontext');
+        throw new \moodle_exception('badcontext');
     }
 
     if (has_capability('mod/individualfeedback:edititems', $context)) {

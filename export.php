@@ -36,15 +36,15 @@ if ($action !== false) {
 $PAGE->set_url($url);
 
 if (! $cm = get_coursemodule_from_id('individualfeedback', $id)) {
-    print_error('invalidcoursemodule');
+    throw new \moodle_exception('invalidcoursemodule');
 }
 
 if (! $course = $DB->get_record("course", array("id"=>$cm->course))) {
-    print_error('coursemisconf');
+    throw new \moodle_exception('coursemisconf');
 }
 
 if (! $individualfeedback = $DB->get_record("individualfeedback", array("id"=>$cm->instance))) {
-    print_error('invalidcoursemodule');
+    throw new \moodle_exception('invalidcoursemodule');
 }
 
 $context = context_module::instance($cm->id);
@@ -55,7 +55,7 @@ require_capability('mod/individualfeedback:edititems', $context);
 
 if ($action == 'exportfile') {
     if (!$exportdata = individualfeedback_get_xml_data($individualfeedback->id)) {
-        print_error('nodata');
+        throw new \moodle_exception('nodata');
     }
     @individualfeedback_send_xml_data($exportdata, 'individualfeedback_'.$individualfeedback->id.'.xml');
     exit;

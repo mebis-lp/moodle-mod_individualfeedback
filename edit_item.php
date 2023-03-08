@@ -65,7 +65,7 @@ if (!$item->id && $typ === 'pagebreak') {
 //get the existing item or create it
 // $formdata->itemid = isset($formdata->itemid) ? $formdata->itemid : NULL;
 if (!$typ || !file_exists($CFG->dirroot.'/mod/individualfeedback/item/'.$typ.'/lib.php')) {
-    print_error('typemissing', 'individualfeedback', $editurl->out(false));
+    throw new \moodle_exception('typemissing', 'individualfeedback', $editurl->out(false));
 }
 
 require_once($CFG->dirroot.'/mod/individualfeedback/item/'.$typ.'/lib.php');

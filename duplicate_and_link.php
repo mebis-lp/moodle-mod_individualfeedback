@@ -36,7 +36,7 @@ $context = context_module::instance($cm->id);
 $PAGE->set_url('/mod/individualfeedback/duplicate_and_link.php', array('id' => $cm->id, 'sectionreturn' => $sectionreturn));
 
 if (!$newcm = duplicate_module($course, $cm)) {
-    print_error('error_duplicating', 'individualfeedback');
+    throw new \moodle_exception('error_duplicating', 'individualfeedback');
 }
 
 $newcm = get_fast_modinfo($course)->get_cm($newcm->id);
@@ -46,4 +46,3 @@ individualfeedback_create_linked_record($cm->instance, $newcm->instance);
 
 redirect(course_get_url($course, $cm->sectionnum, array('sr' => $sectionreturn)),
             get_string('individualfeedback_cloned_and_linked', 'individualfeedback'));
-
