@@ -24,16 +24,19 @@
  * @since      Moodle 3.3
  */
 
-defined('MOODLE_INTERNAL') || die;
-
-require_once("$CFG->libdir/externallib.php");
-
 use mod_individualfeedback\external\individualfeedback_summary_exporter;
 use mod_individualfeedback\external\individualfeedback_completedtmp_exporter;
 use mod_individualfeedback\external\individualfeedback_item_exporter;
 use mod_individualfeedback\external\individualfeedback_valuetmp_exporter;
 use mod_individualfeedback\external\individualfeedback_value_exporter;
 use mod_individualfeedback\external\individualfeedback_completed_exporter;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_multiple_structure;
+use core_external\external_single_structure;
+use core_external\external_value;
+use core_external\external_warnings;
+use core_external\util;
 
 /**
  * individualfeedback external functions
@@ -90,7 +93,7 @@ class mod_individualfeedback_external extends external_api {
         // Ensure there are courseids to loop through.
         if (!empty($params['courseids'])) {
 
-            list($courses, $warnings) = external_util::validate_courses($params['courseids'], $mycourses);
+            list($courses, $warnings) = util::validate_courses($params['courseids'], $mycourses);
             $output = $PAGE->get_renderer('core');
 
             // Get the individualfeedbacks in this course, this function checks users visibility permissions.

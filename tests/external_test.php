@@ -26,13 +26,12 @@
  * @group      mebis
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 global $CFG;
 
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 require_once($CFG->dirroot . '/mod/individualfeedback/lib.php');
 
+use core_external\external_api;
 use mod_individualfeedback\external\individualfeedback_summary_exporter;
 
 class mod_individualfeedback_external_testcase extends externallib_advanced_testcase {

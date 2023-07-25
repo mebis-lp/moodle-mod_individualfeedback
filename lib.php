@@ -1022,7 +1022,8 @@ function individualfeedback_get_incomplete_users(cm_info $cm,
 
     //first get all user who can complete this individualfeedback
     $cap = 'mod/individualfeedback:complete';
-    $allnames = get_all_user_name_fields(true, 'u');
+    $userfieldsapi = \core_user\fields::for_name();
+    $allnames = $userfieldsapi->get_sql('u', false, '', '', false)->selects;
     $fields = 'u.id, ' . $allnames . ', u.picture, u.email, u.imagealt';
     if (!$allusers = get_users_by_capability($context,
                                             $cap,

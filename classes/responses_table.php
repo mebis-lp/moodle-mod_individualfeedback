@@ -113,11 +113,17 @@ class mod_individualfeedback_responses_table extends table_sql {
      */
     protected function init($group = 0) {
 
-        $tablecolumns = array('userpic', 'fullname');
-        $tableheaders = array(get_string('userpic'), get_string('fullnameuser'));
+        $tablecolumns = array('userpic', 'fullname', 'groups');
+        $tableheaders = array(
+            get_string('userpic'),
+            get_string('fullnameuser'),
+            get_string('groups')
+        );
 
-        $extrafields = get_extra_user_fields($this->get_context());
-        $ufields = user_picture::fields('u', $extrafields, $this->useridfield);
+        // TODO Does not support custom user profile fields (MDL-70456).
+        $userfieldsapi = \core_user\fields::for_identity($this->get_context(), false)->with_userpic();
+        $ufields = $userfieldsapi->get_sql('u', false, '', $this->useridfield, false)->selects;
+        $extrafields = $userfieldsapi->get_required_fields([\core_user\fields::PURPOSE_IDENTITY]);
         $fields = 'c.id, c.timemodified as completed_timemodified, c.courseid, '.$ufields;
 
         // Set Userid to 0 to avoid datatype problems in postgres and to ensure that no not anonymize data is retrieved.
@@ -139,7 +145,7 @@ class mod_individualfeedback_responses_table extends table_sql {
             foreach ($extrafields as $field) {
                 $fields .= ", u.{$field}";
                 $tablecolumns[] = $field;
-                $tableheaders[] = get_user_field_name($field);
+                $tableheaders[] = \core_user\fields::get_display_name($field);
             }
         }
 
@@ -155,6 +161,7 @@ class mod_individualfeedback_responses_table extends table_sql {
         $this->define_headers($tableheaders);
 
         $this->sortable(true, 'lastname', SORT_ASC);
+        $this->no_sorting('groups');
         $this->collapsible(true);
         $this->set_attribute('id', 'showentrytable');
 

@@ -22,13 +22,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_individualfeedback\external;
-defined('MOODLE_INTERNAL') || die();
 
 use core\external\exporter;
 use renderer_base;
-use external_util;
-use external_files;
-
+use core_external\util as external_util;
+use core_external\external_files;
 /**
  * Class for exporting partial individualfeedback data (some fields are only viewable by admins).
  *

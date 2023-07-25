@@ -25,8 +25,7 @@
  * @group      mebis
  */
 
-global $CFG;
-
+ namespace mod_idividualfeedback\event;
 /**
  * Tests for individualfeedback events.
  *
@@ -37,7 +36,7 @@ global $CFG;
  * @group      mod_individualfeedback
  * @group      mebis
  */
-class mod_individualfeedback_events_testcase extends advanced_testcase {
+class events_test extends \advanced_testcase {
 
     /** @var  stdClass A user who likes to interact with individualfeedback activity. */
     private $eventuser;
@@ -68,17 +67,17 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         $this->eventuser = $gen->create_user(); // Create a user.
         $course = $gen->create_course(); // Create a course.
         // Assign manager role, so user can see reports.
-        role_assign(1, $this->eventuser->id, context_course::instance($course->id));
+        role_assign(1, $this->eventuser->id, \context_course::instance($course->id));
 
         // Add a individualfeedback activity to the created course.
-        $record = new stdClass();
+        $record = new \stdClass();
         $record->course = $course->id;
         $individualfeedback = $gen->create_module('individualfeedback', $record);
         $this->eventindividualfeedback = $DB->get_record('individualfeedback', array('id' => $individualfeedback->id), '*', MUST_EXIST); // Get exact copy.
         $this->eventcm = get_coursemodule_from_instance('individualfeedback', $this->eventindividualfeedback->id, false, MUST_EXIST);
 
         // Create a individualfeedback item.
-        $item = new stdClass();
+        $item = new \stdClass();
         $item->individualfeedback = $this->eventindividualfeedback->id;
         $item->type = 'numeric';
         $item->presentation = '0|0';
@@ -86,14 +85,14 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         $this->eventindividualfeedbackitem = $DB->get_record('individualfeedback_item', array('id' => $itemid), '*', MUST_EXIST);
 
         // Create a response from a user.
-        $response = new stdClass();
+        $response = new \stdClass();
         $response->individualfeedback = $this->eventindividualfeedback->id;
         $response->userid = individualfeedback_hash_userid($this->eventuser->id);
         $response->anonymous_response = INDIVIDUALFEEDBACK_ANONYMOUS_YES;
         $completedid = $DB->insert_record('individualfeedback_completed', $response);
         $this->eventindividualfeedbackcompleted = $DB->get_record('individualfeedback_completed', array('id' => $completedid), '*', MUST_EXIST);
 
-        $value = new stdClass();
+        $value = new \stdClass();
         $value->course_id = $course->id;
         $value->item = $this->eventindividualfeedbackitem->id;
         $value->completed = $this->eventindividualfeedbackcompleted->id;
@@ -130,12 +129,6 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         $this->assertEquals($this->eventcourse, $event->get_record_snapshot('course', $event->courseid));
         $this->assertEquals($this->eventindividualfeedback, $event->get_record_snapshot('individualfeedback', $event->other['instanceid']));
 
-        // Test legacy data.
-        $arr = array($this->eventcourse->id, 'individualfeedback', 'delete', 'view.php?id=' . $this->eventcm->id, $this->eventindividualfeedback->id,
-                $this->eventindividualfeedback->id);
-        $this->assertEventLegacyLogData($arr, $event);
-        $this->assertEventContextNotUsed($event);
-
         // Test can_view() .
         $this->setUser($this->eventuser);
         $this->assertFalse($event->can_view());
@@ -145,13 +138,13 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         $this->assertDebuggingCalled();
 
         // Create a response, with anonymous set to no and test can_view().
-        $response = new stdClass();
+        $response = new \stdClass();
         $response->individualfeedback = $this->eventcm->instance;
         $response->userid = individualfeedback_hash_userid($this->eventuser->id);
         $response->anonymous_response = INDIVIDUALFEEDBACK_ANONYMOUS_NO;
         $completedid = $DB->insert_record('individualfeedback_completed', $response);
         $DB->get_record('individualfeedback_completed', array('id' => $completedid), '*', MUST_EXIST);
-        $value = new stdClass();
+        $value = new \stdClass();
         $value->course_id = $this->eventcourse->id;
         $value->item = $this->eventindividualfeedbackitem->id;
         $value->completed = $completedid;
@@ -182,7 +175,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $context = context_module::instance($this->eventcm->id);
+        $context = \context_module::instance($this->eventcm->id);
 
         // Test not setting other['anonymous'].
         try {
@@ -193,7 +186,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\mod_individualfeedback\\event\\response_deleted to be triggered without
                     other['anonymous']");
-        } catch (coding_exception $e) {
+        } catch (\coding_exception $e) {
             $this->assertStringContainsString("The 'anonymous' value must be set in other.", $e->getMessage());
         }
     }
@@ -207,13 +200,13 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         $this->setUser($this->eventuser);
 
         // Create a temporary response, with anonymous set to yes.
-        $response = new stdClass();
+        $response = new \stdClass();
         $response->individualfeedback = $this->eventcm->instance;
         $response->userid = individualfeedback_hash_userid($this->eventuser->id);
         $response->anonymous_response = INDIVIDUALFEEDBACK_ANONYMOUS_YES;
         $completedid = $DB->insert_record('indfeedback_completedtmp', $response);
         $completed = $DB->get_record('indfeedback_completedtmp', array('id' => $completedid), '*', MUST_EXIST);
-        $value = new stdClass();
+        $value = new \stdClass();
         $value->course_id = $this->eventcourse->id;
         $value->item = $this->eventindividualfeedbackitem->id;
         $value->completed = $completedid;
@@ -243,17 +236,14 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         $this->assertTrue($event->can_view());
         $this->assertDebuggingCalled();
 
-        // Test legacy data.
-        $this->assertEventLegacyLogData(null, $event);
-
         // Create a temporary response, with anonymous set to no.
-        $response = new stdClass();
+        $response = new \stdClass();
         $response->individualfeedback = $this->eventcm->instance;
         $response->userid = individualfeedback_hash_userid($this->eventuser->id);
         $response->anonymous_response = INDIVIDUALFEEDBACK_ANONYMOUS_NO;
         $completedid = $DB->insert_record('indfeedback_completedtmp', $response);
         $completed = $DB->get_record('indfeedback_completedtmp', array('id' => $completedid), '*', MUST_EXIST);
-        $value = new stdClass();
+        $value = new \stdClass();
         $value->course_id = $this->eventcourse->id;
         $value->item = $this->eventindividualfeedbackitem->id;
         $value->completed = $completedid;
@@ -266,12 +256,6 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
         $events = $sink->get_events();
         $event = array_pop($events); // Response submitted individualfeedback event.
         $sink->close();
-
-        // Test legacy data.
-        $anonymoususerid = 0;
-        $arr = array($this->eventcourse->id, 'individualfeedback', 'submit', 'view.php?id=' . $this->eventcm->id, $this->eventindividualfeedback->id,
-                     $this->eventcm->id, $anonymoususerid);
-        $this->assertEventLegacyLogData($arr, $event);
 
         // Test can_view().
         $this->assertTrue($event->can_view());
@@ -289,7 +273,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
 
         $this->resetAfterTest();
 
-        $context = context_module::instance($this->eventcm->id);
+        $context = \context_module::instance($this->eventcm->id);
 
         // Test not setting instanceid.
         try {
@@ -302,7 +286,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\mod_individualfeedback\\event\\response_deleted to be triggered without
                     other['instanceid']");
-        } catch (coding_exception $e) {
+        } catch (\coding_exception $e) {
             $this->assertStringContainsString("The 'instanceid' value must be set in other.", $e->getMessage());
         }
 
@@ -317,7 +301,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\mod_individualfeedback\\event\\response_deleted to be triggered without
                     other['cmid']");
-        } catch (coding_exception $e) {
+        } catch (\coding_exception $e) {
             $this->assertStringContainsString("The 'cmid' value must be set in other.", $e->getMessage());
         }
 
@@ -331,7 +315,7 @@ class mod_individualfeedback_events_testcase extends advanced_testcase {
             ));
             $this->fail("Event validation should not allow \\mod_individualfeedback\\event\\response_deleted to be triggered without
                     other['anonymous']");
-        } catch (coding_exception $e) {
+        } catch (\coding_exception $e) {
             $this->assertStringContainsString("The 'anonymous' value must be set in other.", $e->getMessage());
         }
     }
